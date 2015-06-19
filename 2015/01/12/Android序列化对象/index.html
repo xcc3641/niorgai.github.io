@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android序列化对象 | Jianqiu&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="默认情况下，Activity之间只能传递基本数据类型，如果需要传递某个对象，则需要将其序列化，Android中序列化便是实现Serializable或则Parcelable接口。
+序列化:永久性保存对象,即保存对象的字节序列到本地文件中。
+Serializable的作用是将对象的属性保存到本地文件、数据库、网络流以方便传输。Parcelable的设计初衷是因为Serializable的效率太慢，为">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android序列化对象">
+<meta property="og:url" content="http://yoursite.com/2015/01/12/Android序列化对象/index.html">
+<meta property="og:site_name" content="Jianqiu's blog">
+<meta property="og:description" content="默认情况下，Activity之间只能传递基本数据类型，如果需要传递某个对象，则需要将其序列化，Android中序列化便是实现Serializable或则Parcelable接口。
+序列化:永久性保存对象,即保存对象的字节序列到本地文件中。
+Serializable的作用是将对象的属性保存到本地文件、数据库、网络流以方便传输。Parcelable的设计初衷是因为Serializable的效率太慢，为">
+<meta property="og:updated_time" content="2015-04-10T07:07:05.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android序列化对象">
+<meta name="twitter:description" content="默认情况下，Activity之间只能传递基本数据类型，如果需要传递某个对象，则需要将其序列化，Android中序列化便是实现Serializable或则Parcelable接口。
+序列化:永久性保存对象,即保存对象的字节序列到本地文件中。
+Serializable的作用是将对象的属性保存到本地文件、数据库、网络流以方便传输。Parcelable的设计初衷是因为Serializable的效率太慢，为">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Jianqiu&#39;s blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Learn More</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">文档</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Android序列化对象" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/12/Android序列化对象/" class="article-date">
+  <time datetime="2015-01-12T10:48:05.000Z" itemprop="datePublished">2015 1月 12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android序列化对象
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>默认情况下，Activity之间只能传递基本数据类型，如果需要传递某个对象，则需要将其序列化，Android中序列化便是实现Serializable或则Parcelable接口。</p>
+<p>序列化:永久性保存对象,即保存对象的字节序列到本地文件中。</p>
+<p>Serializable的作用是<strong>将对象的属性保存到本地文件、数据库、网络流以方便传输</strong>。Parcelable的设计初衷是因为Serializable的效率太慢，为了**在程序内不同组件间及不同Android程序间(AIDL)高效传输而设计。</p>
+<p>使用的选择：</p>
+<ol>
+<li>在内存间传递数据时，推荐使用Parcelable，因为其内存开销小，性能高。</li>
+<li>在需要保存时，推荐使用Serializable，因为Parcelable不适合做持久化存储。</li>
+<li>Serializable使用IO读写存储在硬盘上，而Parcelable是直接在内存中读写，很明显内存的读写速度通常大于IO读写，所以在Android中通常优先选择Parcelable。</li>
+</ol>
+<p>接下来利用一个例子说明如何实现这些接口。首先是初始对象：</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Test</span> {
+    <span class="keyword">int</span> num;
+    String <span class="keyword">string</span>;
+}
+</code></pre><hr>
+<p>如果实现Serializable接口，只需要继承java.io.Serializable，并提供一个serialVersionUID即可。</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>{
+
+    <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">12345678</span>l;
+    <span class="keyword">int</span> num;
+    String string;
+}
+</code></pre><hr>
+<p>如果实现Parcelable,需要继承android.os.Parcelable，重写describeContents方法和writeToParcel方法，并定义一个Parcelable.Creator类型的静态变量，在该静态变量中实现readFromParcel方法(自己定义的名字)。</p>
+<p><strong>注意：</strong></p>
+<ol>
+<li>writeToParcel方法中将变量<strong>按顺序</strong>写入Parcel</li>
+<li><p>Parcelable.Creator的createFromParcel方法，从Parcel读入变量时<strong>必须按照writeToParcel方法中的顺序</strong>读入。</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">implements</span> <span class="title">Parcelable</span></span>{
+    <span class="keyword">int</span> num;
+    String string;
+
+    <span class="annotation">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">describeContents</span><span class="params">()</span> </span>{
+            <span class="keyword">return</span> <span class="number">0</span>;
+        }
+
+        <span class="annotation">@Override</span>
+        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeToParcel</span><span class="params">(Parcel dest, <span class="keyword">int</span> flags)</span> </span>{
+            dest.writeInt(num);
+             dest.writeString(string);
+        }
+
+    <span class="keyword">public</span> <span class="keyword">static</span> Creator&lt;Test&gt; creator = <span class="keyword">new</span> Creator&lt;Test&gt;() {
+            <span class="annotation">@Override</span>
+        <span class="function"><span class="keyword">public</span> Test <span class="title">createFromParcel</span><span class="params">(Parcel source)</span> </span>{
+            <span class="keyword">return</span> <span class="keyword">new</span> Test(source);
+        }
+
+        <span class="annotation">@Override</span>
+        <span class="keyword">public</span> Test[] newArray(<span class="keyword">int</span> size) {
+            <span class="keyword">return</span> <span class="keyword">new</span> Test[size];
+        }
+    };
+
+    Test(){}
+
+    Test(Parcel source){
+                readFromParcel(source);
+        }
+
+    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readFromParcel</span><span class="params">(Parcel source)</span></span>{
+        <span class="comment">//读取对象数据，必须按照writeToParcel方法中</span>
+        <span class="comment">//写入数据的顺序依次读取数据</span>
+        num = source.readInt();
+        string = source.readString();
+    }
+
+}
+</code></pre></li>
+<li><p>如果需要序列化自定义的数据，该数据也需要实现Parcelable接口。</p>
+<p> 例如希望通过序列化类TestA，类TestA中有一个List存放类TestB。</p>
+<pre><code><span class="class"><span class="keyword">class</span> <span class="title">TestA</span></span>{
+    <span class="keyword">List</span>&lt;TestB&gt; <span class="keyword">list</span>;
+}
+</code></pre><p> 那么TestA与TestB都需要实现Parcelable接口。且类TestA通过<code>parcel.writeTypedList</code>写入list，通过<code>parcel.readTypedList(list,TestB.creator)</code>读取list。</p>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/12/Android序列化对象/" data-id="cib3rkjf40047aq8slf1g49ks" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/序列化/">序列化</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/01/14/Android线程相关/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Android线程相关
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/01/12/Android-Log-Utils工具类/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Android DebugUtils工具类</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+   <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="post-Android序列化对象" data-title="Android序列化对象" data-url="http://yoursite.com/2015/01/12/Android序列化对象/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:'niorgai'};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+    <!-- 多说公共JS代码 end -->
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">43</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android开发tips/">Android开发tips</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/方便开发/">方便开发</a><span class="category-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Activity/">Activity</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AsyncTask/">AsyncTask</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BaseAdapter/">BaseAdapter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bitmap/">Bitmap</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Broadcast-Receiver/">Broadcast Receiver</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Content-Provider/">Content Provider</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditText/">EditText</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gradle/">Gradle</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Handler/">Handler</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ListView/">ListView</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFileInput/">OpenFileInput</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFileOutput/">OpenFileOutput</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PopupWindow/">PopupWindow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/">SQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ScrollView/">ScrollView</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Service/">Service</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TextView/">TextView</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UI线程/">UI线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/launchMode/">launchMode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shape/">shape</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sharedPreference/">sharedPreference</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代码混淆/">代码混淆</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优化性能/">优化性能</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存泄漏/">内存泄漏</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/反编译/">反编译</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/四大组件/">四大组件</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/壁纸设置/">壁纸设置</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多线程/">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/对象引用/">对象引用</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/屏幕单位/">屏幕单位</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/序列化/">序列化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/手柄支持/">手柄支持</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据存储/">数据存储</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件存储/">文件存储</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/版本控制/">版本控制</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/获取图片/">获取图片</a><span class="tag-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">19</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2015/05/13/ProgressBar相关/">ProgressBar相关</a>
+          </li>
+        
+          <li>
+            <a href="/2015/04/24/ListView的一些坑/">ListView的一些坑</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/23/Android文件存储/">Android文件存储</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/19/Handler原理浅析/">Handler原理浅析</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/19/Android-Studio开发遇到的问题/">Android Studio开发遇到的问题</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2015 Jianqiu<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">文档</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+  </div>
+</body>
+</html>

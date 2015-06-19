@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android代码混淆 | Jianqiu&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="在这篇文章中说了反编译Android APK的方法，当然作为开发者很多时候不希望某些涉及机密的代码被别人看到，于是需要在打包APK的时候做一些代码混淆。
+混淆步骤：
+
+在项目的project.properties文件中一般已经默认注释了混淆的代码，代码为
+proguard.config=${sdk.dir}/tools/proguard/proguard-android.txt:proguard-">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android代码混淆">
+<meta property="og:url" content="http://yoursite.com/2014/12/26/Android代码混淆/index.html">
+<meta property="og:site_name" content="Jianqiu's blog">
+<meta property="og:description" content="在这篇文章中说了反编译Android APK的方法，当然作为开发者很多时候不希望某些涉及机密的代码被别人看到，于是需要在打包APK的时候做一些代码混淆。
+混淆步骤：
+
+在项目的project.properties文件中一般已经默认注释了混淆的代码，代码为
+proguard.config=${sdk.dir}/tools/proguard/proguard-android.txt:proguard-">
+<meta property="og:updated_time" content="2014-12-26T13:35:01.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android代码混淆">
+<meta name="twitter:description" content="在这篇文章中说了反编译Android APK的方法，当然作为开发者很多时候不希望某些涉及机密的代码被别人看到，于是需要在打包APK的时候做一些代码混淆。
+混淆步骤：
+
+在项目的project.properties文件中一般已经默认注释了混淆的代码，代码为
+proguard.config=${sdk.dir}/tools/proguard/proguard-android.txt:proguard-">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Jianqiu&#39;s blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Learn More</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">文档</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Android代码混淆" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/26/Android代码混淆/" class="article-date">
+  <time datetime="2014-12-26T11:58:07.000Z" itemprop="datePublished">2014 12月 26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android代码混淆
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在<a href="http://niorgai.github.io/2014/12/23/Mac%E4%B8%8B%E5%8F%8D%E7%BC%96%E8%AF%91Android-APK/" target="_blank" rel="external">这篇文章</a>中说了反编译Android APK的方法，当然作为开发者很多时候不希望某些涉及机密的代码被别人看到，于是需要在打包APK的时候做一些代码混淆。</p>
+<p>混淆步骤：</p>
+<ol>
+<li><p>在项目的project.properties文件中一般已经默认注释了混淆的代码，代码为</p>
+<pre><code>proguard.config=<span class="envvar">${sdk.dir}</span>/tools/proguard/proguard-android.txt:proguard-<span class="keyword">project</span>.txt
+</code></pre><p> 这是利用Android自带sdk的规则来混淆代码的，如果需要根据自己的规则来混淆代码，需要这样做：</p>
+<ol>
+<li><p>在项目中新建一个名为proguard.cfg的文件,并向其中添加自定义的规则。</p>
+</li>
+<li><p>在project.properties添加以下代码：</p>
+<pre><code><span class="attribute">proguard.config</span>=<span class="string">proguard.cfg</span>
+</code></pre><p> 即将混淆的规则制定为proguard.cfg文件。</p>
+</li>
+<li><p>按照正常流程打包APK即可，同时会在项目中生成proguard文件夹。</p>
+</li>
+</ol>
+</li>
+</ol>
+<p>这是一些混淆的规则(其他的可以到<a href="http://proguard.sourceforge.net/" target="_blank" rel="external">这里</a>查询)：</p>
+<pre><code>-keepattributes <span class="type">Signature</span>
+
+<span class="comment">//不进行混淆保持原样 </span>
+-keep public <span class="class"><span class="keyword">class</span> <span class="title">*</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">android</span>.<span class="title">app</span>.<span class="title">Activity</span> 
+</span>
+<span class="comment">//保护指定的类和类的成员的名称，如果所有指定的类成员出席 </span>
+-keepclasseswithmembernames <span class="class"><span class="keyword">class</span> <span class="title">*</span> {</span> 
+    native &lt;methods&gt;; 
+} 
+
+<span class="comment">//保护指定的类和类的成员，但条件是所有指定的类和类成员是要存在 </span>
+-keepclasseswithmembers <span class="class"><span class="keyword">class</span> <span class="title">*</span> {</span> 
+    public &lt;init&gt;(android.content.<span class="type">Context</span>, android.util.<span class="type">AttributeSet</span>); 
+} 
+
+<span class="comment">//保护指定类的成员，如果此类受到保护他们会保护的更好 </span>
+-keepclassmembers <span class="class"><span class="keyword">class</span> <span class="title">*</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">android</span>.<span class="title">app</span>.<span class="title">Activity</span> {</span> 
+       public void *(android.view.<span class="type">View</span>); 
+} 
+
+<span class="comment">//保护指定的类文件和类成员 </span>
+-keep <span class="class"><span class="keyword">class</span> <span class="title">*</span> <span class="title">implements</span> <span class="title">android</span>.<span class="title">os</span>.<span class="title">Parcelable</span> {</span> 
+     public static <span class="keyword">final</span> android.os.<span class="type">Parcelable</span>$<span class="type">Creator</span> *; 
+} 
+</code></pre><p>如果在打包的过程中出现以下错误：</p>
+<ol>
+<li><p>Proguard returned with error code 1. See console </p>
+<p> 解决方法为：在<a href="http://proguard.sourceforge.net/" target="_blank" rel="external">Proguard官网</a>下载最新的压缩包，解压后将lib和bin文件夹替换到sdk/tool/proguard文件夹中。</p>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/12/26/Android代码混淆/" data-id="cib3rkjft004paq8sfpkuiejn" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码混淆/">代码混淆</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2014/12/30/OpenFileOutput-OpenFileIntput-使用/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          OpenFileOutput &amp; OpenFileIntput 使用
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2014/12/23/Mac下反编译Android-APK/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Mac下反编译Android APK</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+   <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="post-Android代码混淆" data-title="Android代码混淆" data-url="http://yoursite.com/2014/12/26/Android代码混淆/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:'niorgai'};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+    <!-- 多说公共JS代码 end -->
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">43</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android开发tips/">Android开发tips</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/方便开发/">方便开发</a><span class="category-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Activity/">Activity</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AsyncTask/">AsyncTask</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BaseAdapter/">BaseAdapter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bitmap/">Bitmap</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Broadcast-Receiver/">Broadcast Receiver</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Content-Provider/">Content Provider</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditText/">EditText</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gradle/">Gradle</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Handler/">Handler</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ListView/">ListView</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFileInput/">OpenFileInput</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFileOutput/">OpenFileOutput</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PopupWindow/">PopupWindow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/">SQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ScrollView/">ScrollView</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Service/">Service</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TextView/">TextView</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UI线程/">UI线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/launchMode/">launchMode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shape/">shape</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sharedPreference/">sharedPreference</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代码混淆/">代码混淆</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优化性能/">优化性能</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存泄漏/">内存泄漏</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/反编译/">反编译</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/四大组件/">四大组件</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/壁纸设置/">壁纸设置</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多线程/">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/对象引用/">对象引用</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/屏幕单位/">屏幕单位</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/序列化/">序列化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/手柄支持/">手柄支持</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据存储/">数据存储</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件存储/">文件存储</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/版本控制/">版本控制</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/获取图片/">获取图片</a><span class="tag-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">19</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2015/05/13/ProgressBar相关/">ProgressBar相关</a>
+          </li>
+        
+          <li>
+            <a href="/2015/04/24/ListView的一些坑/">ListView的一些坑</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/23/Android文件存储/">Android文件存储</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/19/Handler原理浅析/">Handler原理浅析</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/19/Android-Studio开发遇到的问题/">Android Studio开发遇到的问题</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2015 Jianqiu<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">文档</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+  </div>
+</body>
+</html>

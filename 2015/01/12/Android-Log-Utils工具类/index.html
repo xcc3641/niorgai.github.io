@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android DebugUtils工具类 | Jianqiu&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="开发过程中经常需要一些调试信息，与其每次都自己打Log或者System.out.println，不如实现写好一个DebugUtils类，即方便调试又可以在正式发布的时候直接设置DebugFlag为false，而不用删除调试信息。
+首先介绍一些Log类，android.util.Log常用的方法有以下：
+Log.v,Log.d,Log.i,Log.w,Log.e以及Log.wtf。
+根据首字母对应V">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android DebugUtils工具类">
+<meta property="og:url" content="http://yoursite.com/2015/01/12/Android-Log-Utils工具类/index.html">
+<meta property="og:site_name" content="Jianqiu's blog">
+<meta property="og:description" content="开发过程中经常需要一些调试信息，与其每次都自己打Log或者System.out.println，不如实现写好一个DebugUtils类，即方便调试又可以在正式发布的时候直接设置DebugFlag为false，而不用删除调试信息。
+首先介绍一些Log类，android.util.Log常用的方法有以下：
+Log.v,Log.d,Log.i,Log.w,Log.e以及Log.wtf。
+根据首字母对应V">
+<meta property="og:updated_time" content="2015-03-19T11:02:18.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android DebugUtils工具类">
+<meta name="twitter:description" content="开发过程中经常需要一些调试信息，与其每次都自己打Log或者System.out.println，不如实现写好一个DebugUtils类，即方便调试又可以在正式发布的时候直接设置DebugFlag为false，而不用删除调试信息。
+首先介绍一些Log类，android.util.Log常用的方法有以下：
+Log.v,Log.d,Log.i,Log.w,Log.e以及Log.wtf。
+根据首字母对应V">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Jianqiu&#39;s blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Learn More</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">文档</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Android-Log-Utils工具类" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/12/Android-Log-Utils工具类/" class="article-date">
+  <time datetime="2015-01-12T05:57:02.000Z" itemprop="datePublished">2015 1月 12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android开发tips/">Android开发tips</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android DebugUtils工具类
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>开发过程中经常需要一些调试信息，与其每次都自己打Log或者System.out.println，不如实现写好一个DebugUtils类，即方便调试又可以在正式发布的时候直接设置DebugFlag为false，而不用删除调试信息。</p>
+<p>首先介绍一些Log类，android.util.Log常用的方法有以下：</p>
+<p>Log.v,Log.d,Log.i,Log.w,Log.e以及Log.wtf。</p>
+<p>根据首字母对应Verbose,Debug,Info, Warn，Error和What the f**k….</p>
+<ul>
+<li>Log.v : Verbose为啰嗦的意思，如果希望查看每一个输出，使用Log.v</li>
+<li>Log.d : 主要用于Debug信息。</li>
+<li>Log.i : 主要用于输出拥有信息，比如成功连接到服务器~</li>
+<li>Log.w : 当有些问题不确定，但又不算是bug时，使用Log.w</li>
+<li>Log.e : 用于捕捉已知Error.</li>
+<li>Log.wtf : 这个算是题外话了。用于捕捉你特别不想它出现的重大bug.what the f**k…</li>
+</ul>
+<p>以下就是LogUtils类,出处为<a href="http://zmywly8866.github.io/2014/12/12/android-develop-experience-can-not-learn-from-school.html" target="_blank" rel="external">这篇博客</a>：</p>
+<pre><code><span class="keyword">public</span> class LogUtils{
+    <span class="keyword">public</span> static final <span class="built_in">String</span> <span class="built_in">TAG</span> <span class="subst">=</span> <span class="string">"Debug"</span>;
+    <span class="keyword">private</span> static final <span class="built_in">boolean</span> DEBUG_FLAG <span class="subst">=</span> <span class="literal">true</span>;
+
+    <span class="keyword">public</span> static <span class="literal">void</span> println( <span class="built_in">String</span> printInfo ){
+        <span class="keyword">if</span>( DEBUG_FLAG <span class="subst">&amp;&amp;</span> <span class="built_in">null</span> <span class="subst">!=</span> printInfo ){
+            System<span class="built_in">.</span>out<span class="built_in">.</span>println( printInfo );
+        }
+    }
+
+    <span class="keyword">public</span> static <span class="literal">void</span> print( <span class="built_in">String</span> printInfo ){
+        <span class="keyword">if</span>( DEBUG_FLAG <span class="subst">&amp;&amp;</span> <span class="built_in">null</span> <span class="subst">!=</span> printInfo ){
+            System<span class="built_in">.</span>out<span class="built_in">.</span>print( printInfo );
+        }
+    }
+
+    <span class="keyword">public</span> static <span class="literal">void</span> printLogI( <span class="built_in">String</span> logInfo ){
+        printLogI( <span class="built_in">TAG</span>, logInfo );
+    }
+
+    <span class="keyword">public</span> static <span class="literal">void</span> printLogI( <span class="built_in">String</span> <span class="built_in">tag</span>, <span class="built_in">String</span> logInfo ){
+        <span class="keyword">if</span>( DEBUG_FLAG <span class="subst">&amp;&amp;</span> <span class="built_in">null</span> <span class="subst">!=</span> <span class="built_in">tag</span> <span class="subst">&amp;&amp;</span> <span class="built_in">null</span> <span class="subst">!=</span> logInfo ){
+            <span class="keyword">Log</span><span class="built_in">.</span>i(<span class="built_in">tag</span>, logInfo);
+        }
+    }
+
+    <span class="keyword">public</span> static <span class="literal">void</span> printLogE( <span class="built_in">String</span> logInfo ){
+        printLogE( <span class="built_in">TAG</span>, logInfo );
+    }
+
+    <span class="keyword">public</span> static <span class="literal">void</span> printLogE( <span class="built_in">String</span> <span class="built_in">tag</span>, <span class="built_in">String</span> logInfo ){
+        <span class="keyword">if</span>( DEBUG_FLAG <span class="subst">&amp;&amp;</span> <span class="built_in">null</span> <span class="subst">!=</span> <span class="built_in">tag</span> <span class="subst">&amp;&amp;</span> <span class="built_in">null</span> <span class="subst">!=</span> logInfo ){
+            <span class="keyword">Log</span><span class="built_in">.</span>e( <span class="built_in">tag</span>, logInfo );
+        }
+    }
+
+    <span class="keyword">public</span> static <span class="literal">void</span> printLogW( <span class="built_in">String</span> logInfo ){
+        printLogW( <span class="built_in">TAG</span>, logInfo );
+    }
+
+    <span class="keyword">public</span> static <span class="literal">void</span> printLogW( <span class="built_in">String</span> <span class="built_in">tag</span>, <span class="built_in">String</span> logInfo ){
+        <span class="keyword">if</span>( DEBUG_FLAG <span class="subst">&amp;&amp;</span> <span class="built_in">null</span> <span class="subst">!=</span> <span class="built_in">tag</span> <span class="subst">&amp;&amp;</span> <span class="built_in">null</span> <span class="subst">!=</span> logInfo ){
+            <span class="keyword">Log</span><span class="built_in">.</span>w( <span class="built_in">tag</span>, logInfo );
+        }
+    }
+
+    <span class="keyword">public</span> static <span class="literal">void</span> printLogD( <span class="built_in">String</span> logInfo ){
+        printLogD( <span class="built_in">TAG</span>, logInfo );
+    }
+
+    <span class="keyword">public</span> static <span class="literal">void</span> printLogD( <span class="built_in">String</span> <span class="built_in">tag</span>, <span class="built_in">String</span> logInfo ){
+        <span class="keyword">if</span>( DEBUG_FLAG <span class="subst">&amp;&amp;</span> <span class="built_in">null</span> <span class="subst">!=</span> <span class="built_in">tag</span> <span class="subst">&amp;&amp;</span> <span class="built_in">null</span> <span class="subst">!=</span> logInfo ){
+            <span class="keyword">Log</span><span class="built_in">.</span>d( <span class="built_in">tag</span>, logInfo );
+        }
+    }
+
+    <span class="keyword">public</span> static <span class="literal">void</span> printLogV( <span class="built_in">String</span> logInfo ){
+        printLogV( <span class="built_in">TAG</span>, logInfo );
+    }
+
+    <span class="keyword">public</span> static <span class="literal">void</span> printLogV( <span class="built_in">String</span> <span class="built_in">tag</span>, <span class="built_in">String</span> logInfo ){
+        <span class="keyword">if</span>( DEBUG_FLAG <span class="subst">&amp;&amp;</span> <span class="built_in">null</span> <span class="subst">!=</span> <span class="built_in">tag</span> <span class="subst">||</span> <span class="built_in">null</span> <span class="subst">!=</span> logInfo ){
+            <span class="keyword">Log</span><span class="built_in">.</span>v( <span class="built_in">tag</span>, logInfo );
+        }
+    }
+
+    <span class="keyword">public</span> static <span class="literal">void</span> printLogWtf( <span class="built_in">String</span> logInfo ){
+        printLogWtf( <span class="built_in">TAG</span>, logInfo );
+    }
+
+    <span class="keyword">public</span> static <span class="literal">void</span> printLogWtf( <span class="built_in">String</span> <span class="built_in">tag</span>, <span class="built_in">String</span> logInfo ){
+        <span class="keyword">if</span>( DEBUG_FLAG <span class="subst">&amp;&amp;</span> <span class="built_in">null</span> <span class="subst">!=</span> <span class="built_in">tag</span> <span class="subst">&amp;&amp;</span> <span class="built_in">null</span> <span class="subst">!=</span> logInfo ){
+            <span class="keyword">Log</span><span class="built_in">.</span>wtf( <span class="built_in">tag</span>, logInfo );
+        }
+    }
+
+    <span class="keyword">public</span> static <span class="literal">void</span> showToast( Context context, <span class="built_in">String</span> toastInfo ){
+        <span class="keyword">if</span>( <span class="built_in">null</span> <span class="subst">!=</span> context <span class="subst">&amp;&amp;</span> <span class="built_in">null</span> <span class="subst">!=</span> toastInfo ){
+            Toast<span class="built_in">.</span>makeText(context, toastInfo, Toast<span class="built_in">.</span>LENGTH_LONG)<span class="built_in">.</span>show( );
+        }
+    }
+
+    <span class="keyword">public</span> static <span class="literal">void</span> showToast( Context context, <span class="built_in">String</span> toastInfo, int timeLen ){
+        <span class="keyword">if</span>( <span class="built_in">null</span> <span class="subst">!=</span> context <span class="subst">&amp;&amp;</span> <span class="built_in">null</span> <span class="subst">!=</span> toastInfo <span class="subst">&amp;&amp;</span> ( timeLen <span class="subst">&gt;</span> <span class="number">0</span> ) ){
+            Toast<span class="built_in">.</span>makeText( context, toastInfo, timeLen )<span class="built_in">.</span>show( );
+        }
+    }
+
+}
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/12/Android-Log-Utils工具类/" data-id="cib3rkjh2005naq8s9mzlfspk" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/01/12/Android序列化对象/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Android序列化对象
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/01/10/Android-Service-三/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Android Service (三)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+   <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="post-Android-Log-Utils工具类" data-title="Android DebugUtils工具类" data-url="http://yoursite.com/2015/01/12/Android-Log-Utils工具类/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:'niorgai'};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+    <!-- 多说公共JS代码 end -->
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">43</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android开发tips/">Android开发tips</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/方便开发/">方便开发</a><span class="category-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Activity/">Activity</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AsyncTask/">AsyncTask</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BaseAdapter/">BaseAdapter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bitmap/">Bitmap</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Broadcast-Receiver/">Broadcast Receiver</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Content-Provider/">Content Provider</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditText/">EditText</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gradle/">Gradle</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Handler/">Handler</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ListView/">ListView</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFileInput/">OpenFileInput</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFileOutput/">OpenFileOutput</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PopupWindow/">PopupWindow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/">SQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ScrollView/">ScrollView</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Service/">Service</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TextView/">TextView</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UI线程/">UI线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/launchMode/">launchMode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shape/">shape</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sharedPreference/">sharedPreference</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代码混淆/">代码混淆</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优化性能/">优化性能</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存泄漏/">内存泄漏</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/反编译/">反编译</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/四大组件/">四大组件</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/壁纸设置/">壁纸设置</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多线程/">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/对象引用/">对象引用</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/屏幕单位/">屏幕单位</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/序列化/">序列化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/手柄支持/">手柄支持</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据存储/">数据存储</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件存储/">文件存储</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/版本控制/">版本控制</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/获取图片/">获取图片</a><span class="tag-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">19</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2015/05/13/ProgressBar相关/">ProgressBar相关</a>
+          </li>
+        
+          <li>
+            <a href="/2015/04/24/ListView的一些坑/">ListView的一些坑</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/23/Android文件存储/">Android文件存储</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/19/Handler原理浅析/">Handler原理浅析</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/19/Android-Studio开发遇到的问题/">Android Studio开发遇到的问题</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2015 Jianqiu<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">文档</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+  </div>
+</body>
+</html>

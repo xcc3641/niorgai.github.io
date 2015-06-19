@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Jianqiu&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Android | jianqiu&apos;s blog">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Jianqiu's blog">
+<meta property="og:url" content="http://yoursite.com/page/9/index.html">
+<meta property="og:site_name" content="Jianqiu's blog">
+<meta property="og:description" content="Android | jianqiu&apos;s blog">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Jianqiu's blog">
+<meta name="twitter:description" content="Android | jianqiu&apos;s blog">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Jianqiu&#39;s blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Learn More</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">文档</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-Git小技巧" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/26/Git小技巧/" class="article-date">
+  <time datetime="2015-01-26T14:41:15.000Z" itemprop="datePublished">2015 1月 26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/方便开发/">方便开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/26/Git小技巧/">Git小技巧</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<p><strong>add：</strong></p>
+<ol>
+<li>git add -u 只添加更新了的文件</li>
+</ol>
+<hr>
+<p><strong>commit：</strong></p>
+<ol>
+<li>commit —amend会修正上次的提交(包括description)</li>
+<li>直接<code>git commit</code>会通过vim打开，可以编辑详细的commit信息。</li>
+<li><p><code>git rebase</code> 可以理解为重新定位base。</p>
+<p> 比如现在从master的A点开了一个分支branch，branch改动了，但是master也改动到了B。那么可以这样做：</p>
+<pre><code>git checkout master<span class="comment">; </span>
+git pull origin master<span class="comment">; </span>
+git checkout branch<span class="comment">; </span>
+git rebase master<span class="comment">; </span>
+</code></pre><p> 这样branch也是从master的B点为base了。可能会遇到冲突，打开相应文件更改为正确的内容然后重新add修改后的文件，继续执行<code>git rebase --continue</code>即可。</p>
+</li>
+<li><p>git rebase -i <tag> 从某一个tag开始重新整理commit点。</tag></p>
+<p> eg：如果当前commit是A -&gt; B -&gt;C -&gt;D,想调整为A-&gt;C-&gt;B-&gt;D.</p>
+<ol>
+<li><code>git rebase -i A</code>,即从B点开始调整，这时候会用自带的编辑器打开<code>.git/rebase-merge/git-rebase-todo</code>文件，内容如下：<strong>(如果遇到提示:</strong><code>Could not execute editor</code><strong>,表示没有找到文本编辑器，因为我用的是vim，所以直接添加vim路径到git的config中：</strong><code>git config --global core.editor &quot;/usr/bin/vim&quot;</code><strong>,然后重新运行rebase命令即可)</strong></li>
+<li><p>打开后文件前部分内容大致如下：</p>
+<pre><code>pick <span class="number">2</span>c97b26 A
+pick fd19f8e B
+pick <span class="number">02849</span>bf C
+pick bd73d4d D
+
+<span class="preprocessor"># Rebase 0580eab..74d8a3d onto 0580eab</span>
+<span class="preprocessor"># ...[chunked]</span>
+</code></pre><p> 文件中第一列表示操作指令：</p>
+<pre><code>pick = 使用这个<span class="operator"><span class="keyword">commit</span> ，不改动
+reword = 使用这个<span class="keyword">commit</span> ，但改动<span class="keyword">commit</span> message
+edit = 使用这个<span class="keyword">commit</span>，但改动<span class="keyword">commit</span> 的內容
+squash = 使用这个<span class="keyword">commit</span>，但会与上面的<span class="keyword">commit</span>合并，<span class="keyword">commit</span>的message也会合并
+fixup = squash + 只使用上面<span class="keyword">commit</span>的message
+<span class="keyword">exec</span> = 执行一条命令</span>
+</code></pre><p> 上面四条commit信息可以随意移动位置，复制粘贴即可。</p>
+<p>3.<code>:wq</code>退出编辑器,会自动继续rebase操作，最后成功整理commit信息。</p>
+</li>
+</ol>
+</li>
+</ol>
+<hr>
+<p><strong>push：</strong></p>
+<ol>
+<li>push -f强制推送本地代码</li>
+</ol>
+<hr>
+<p><strong>merge: </strong></p>
+<ol>
+<li>git merge —squash，merge but do not commit</li>
+</ol>
+<hr>
+<p><strong>撤销</strong></p>
+<ol>
+<li>git rm —cache file会将已经提交的file从git仓库删除，并重置文件为untracked状态</li>
+<li>git clean -f 删除 untracked files</li>
+<li>git clean -fd 连 untracked 的目录也一起删掉</li>
+<li><p>git clean -xfd 连 gitignore 的untrack 文件/目录也一起删掉 （慎用，一般这个是用来删掉编译出来的 .class之类的文件用的）</p>
+<p>  <strong>在用上述 git clean 前，加上 -n 参数来先看看会删掉哪些文件，防止重要文件被误删</strong></p>
+<ol>
+<li>git clean -nxfd</li>
+<li>git clean -nf</li>
+<li>git clean -nfd</li>
+</ol>
+</li>
+</ol>
+<hr>
+<p><strong>branch</strong></p>
+<ol>
+<li><code>git push origin :branch-name</code>，推一个空的分支到server上，即删除该分支。</li>
+<li><code>git branch -r -d origin/branch-name</code>删除本地分支</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/26/Git小技巧/" data-id="cib3rkjcl0022aq8sdgzo5fiu" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/">Git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/版本控制/">版本控制</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-AsyncTask实现异步执行任务" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/16/AsyncTask实现异步执行任务/" class="article-date">
+  <time datetime="2015-01-16T11:27:11.000Z" itemprop="datePublished">2015 1月 16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/16/AsyncTask实现异步执行任务/">简单使用AsyncTask实现异步执行任务</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>包android.os.AsyncTask用于执行异步任务，使用AsyncTask必须继承AsyncTask类，并传入三个泛型参数：</p>
+<pre><code><span class="attribute">Params</span>: <span class="string">新建任务时的参数。</span>
+<span class="attribute">Progress</span>: <span class="string">任务在后台执行的进度值类型，一般是Integer。</span>
+<span class="attribute">Result</span>: <span class="string">任务执行后的返回值类型。</span>
+</code></pre><p>同时必须实现doInBackground方法，顾名思义执行后台任务。</p>
+<p>AsyncTask还有一些方法：</p>
+<pre><code><span class="comment">//任务开始前调用</span>
+protected void <span class="function"><span class="title">onPreExecute</span><span class="params">()</span></span>
+
+<span class="comment">//后台任务执行,Params泛型数组作为参数传入，Result泛型作为返回值。</span>
+protected Result <span class="function"><span class="title">doInBackground</span><span class="params">(Params... params)</span></span>
+
+<span class="comment">//通过AsyncTask.publishProgress调用，Progress泛型数组会当做参数传入。</span>
+protected void <span class="function"><span class="title">onProgressUpdate</span><span class="params">(Progress... values)</span></span> 
+
+<span class="comment">//任务运行后(doInBackground方法结束后)调用，doInBackground方法的返回值作为参数。</span>
+protected void <span class="function"><span class="title">onPostExecute</span><span class="params">(Result result)</span></span>
+
+<span class="comment">//通过AsyncTask.cancel方法调用，doInBackground方法的返回值作为参数。</span>
+<span class="comment">//先调用cancel方法1，再调用cancel方法2.</span>
+<span class="number">1</span><span class="class">.protected</span> void <span class="function"><span class="title">onCancelled</span><span class="params">(Result result)</span></span>
+<span class="number">2</span><span class="class">.protected</span> void <span class="function"><span class="title">onCancelled</span><span class="params">()</span></span>
+</code></pre><p>在使用AsyncTask时，<strong>除了doInBackground方法</strong>，其他方法<strong>都可以访问UI控件</strong>。</p>
+<p>使用AsyncTask：</p>
+<pre><code><span class="comment">//AsyncTask定义</span>
+<span class="class"><span class="keyword">class</span> <span class="title">MyTask</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">AsyncTask&lt;String</span>,<span class="title">Integer</span>,<span class="title">Long&gt;</span>
+</span><span class="comment">//新建AsyncTask</span>
+<span class="type">MyTask</span> myTask = <span class="keyword">new</span> <span class="type">MyTask</span>();
+myTask.execute(<span class="string">"task1"</span>,<span class="string">"task2"</span>);
+</code></pre><p>取消AsyncTask：</p>
+<pre><code><span class="comment">//通过mayInterruptIfRunning参数决定是否会在任务运行时结束任务。</span>
+myTask.cancel(<span class="keyword">boolean</span> mayInterruptIfRunning);
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/16/AsyncTask实现异步执行任务/" data-id="cib3rkjdx0035aq8s6vmvmbab" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AsyncTask/">AsyncTask</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android线程相关" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/14/Android线程相关/" class="article-date">
+  <time datetime="2015-01-14T04:36:12.000Z" itemprop="datePublished">2015 1月 14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/14/Android线程相关/">Android线程相关</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Android经常会需要处理一些耗时操作(比如下载，上传等)，执行这些耗时操作的时候，UI是没有反应的，如果时间很久会报ANR，所以需要开启新线程来执行耗时操作。</p>
+<p><strong>正确的开启新线程的方法：</strong></p>
+<pre><code><span class="tag">new</span> <span class="tag">Thread</span>(new <span class="function">Runnable</span>() {
+    <span class="variable">@Override</span>
+    public void <span class="function">run</span>() {
+        <span class="comment">//此处进行耗时操作</span>
+    }
+})<span class="class">.start</span>();
+</code></pre><hr>
+<p>Android中Activity所在窗口的线程叫做主线程(Main Thread),因此所有在窗口上显示的控件(UI控件)都是在主线程中创建的，而在主线程创建的新线程中是不允许访问非当前线程(主要是主线程)创建的控件的。所以才会有很多Android坑是<strong>不能在非UI线程中访问UI控件。</strong></p>
+<p>通常会有以下几种解决方法：</p>
+<ol>
+<li><p>View.post方法</p>
+<pre><code>view.post(<span class="keyword">new</span> Runnable() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
+        <span class="comment">//对该view进行操作</span>
+    }
+});
+</code></pre></li>
+<li><p>Activity.runOnUiThread方法</p>
+<pre><code>MainActivity.<span class="keyword">this</span>.runOnUiThread(<span class="keyword">new</span> Runnable() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
+        <span class="comment">//该方法如果在UI线程中执行，Runnale.run方法会立即执行</span>
+        <span class="comment">//如果在非UI线程中执行，系统会将该方法的引用加入UI线程的任务队列中</span>
+    }
+});
+</code></pre></li>
+<li><p>使用android.os.handler对象，handler将访问UI线程的代码的引用压入UI线程的处理队列，在其他代码执行完后执行handleMessage方法。</p>
+<pre><code><span class="keyword">Message</span> <span class="keyword">message</span> = new <span class="keyword">Message</span>();  <span class="comment">//Message对象可以放一些参数</span>
+handler.sendMessage(<span class="keyword">message</span>);    <span class="comment">//sendMessage方法通知handle</span>
+</code></pre></li>
+</ol>
+<pre><code>Handler <span class="keyword">handler</span> = <span class="keyword">new</span> Handler(){
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>{
+        <span class="comment">//可以在这里进行UI操作</span>
+        <span class="keyword">super</span>.handleMessage(msg);
+    }
+
+};
+</code></pre><hr>
+<h4 id="以上总结了开启新线程的方法和进行UI操作的方法，那么综合起来比较好的解决方法是：">以上总结了开启新线程的方法和进行UI操作的方法，那么综合起来比较好的解决方法是：</h4><ol>
+<li><p>先定义Handler对象</p>
+<pre><code>private <span class="operator"><span class="keyword">Handler</span> <span class="keyword">handler</span> = <span class="literal">null</span>;</span>
+</code></pre></li>
+<li><p>然后创建新线程，并在线程结束时进行调用hanlder.sendMessage方法。</p>
+<pre><code><span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
+        <span class="comment">//此处进行耗时操作</span>
+        <span class="keyword">handler</span>.sendMessage(msg);
+    }
+}).start(); 
+</code></pre></li>
+<li><p>在handler.handleMessage方法中进行UI操作。</p>
+<pre><code><span class="keyword">handler</span> = <span class="keyword">new</span> Handler(){
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>{
+        <span class="comment">//可以在这里进行UI操作</span>
+        <span class="keyword">super</span>.handleMessage(msg);
+    }
+
+};
+</code></pre></li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/14/Android线程相关/" data-id="cib3rkjec003faq8s5zr27obl" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UI线程/">UI线程</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/多线程/">多线程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
+    </nav>
+  
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">43</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android开发tips/">Android开发tips</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/方便开发/">方便开发</a><span class="category-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Activity/">Activity</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AsyncTask/">AsyncTask</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BaseAdapter/">BaseAdapter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bitmap/">Bitmap</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Broadcast-Receiver/">Broadcast Receiver</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Content-Provider/">Content Provider</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditText/">EditText</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gradle/">Gradle</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Handler/">Handler</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ListView/">ListView</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFileInput/">OpenFileInput</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFileOutput/">OpenFileOutput</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PopupWindow/">PopupWindow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/">SQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ScrollView/">ScrollView</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Service/">Service</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TextView/">TextView</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UI线程/">UI线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/launchMode/">launchMode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shape/">shape</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sharedPreference/">sharedPreference</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代码混淆/">代码混淆</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优化性能/">优化性能</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存泄漏/">内存泄漏</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/反编译/">反编译</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/四大组件/">四大组件</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/壁纸设置/">壁纸设置</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多线程/">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/对象引用/">对象引用</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/屏幕单位/">屏幕单位</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/序列化/">序列化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/手柄支持/">手柄支持</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据存储/">数据存储</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件存储/">文件存储</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/版本控制/">版本控制</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/获取图片/">获取图片</a><span class="tag-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">19</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2015/05/13/ProgressBar相关/">ProgressBar相关</a>
+          </li>
+        
+          <li>
+            <a href="/2015/04/24/ListView的一些坑/">ListView的一些坑</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/23/Android文件存储/">Android文件存储</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/19/Handler原理浅析/">Handler原理浅析</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/19/Android-Studio开发遇到的问题/">Android Studio开发遇到的问题</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2015 Jianqiu<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">文档</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+  </div>
+</body>
+</html>

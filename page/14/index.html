@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Jianqiu&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Android | jianqiu&apos;s blog">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Jianqiu's blog">
+<meta property="og:url" content="http://yoursite.com/page/14/index.html">
+<meta property="og:site_name" content="Jianqiu's blog">
+<meta property="og:description" content="Android | jianqiu&apos;s blog">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Jianqiu's blog">
+<meta name="twitter:description" content="Android | jianqiu&apos;s blog">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Jianqiu&#39;s blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Learn More</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">文档</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-PopupWindow相关" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/16/PopupWindow相关/" class="article-date">
+  <time datetime="2014-12-16T07:42:25.000Z" itemprop="datePublished">2014 12月 16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/12/16/PopupWindow相关/">PopupWindow相关</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>PopupWindow顾名思义，就是一个弹出窗口。不过特性倒是挺好玩的：</p>
+<ol>
+<li>以弹出窗口的形式展示，可以替代系统的dialog。</li>
+<li>可以在任意位置出现，并且会浮动在当前窗口的顶部(获取焦点)。</li>
+<li>可以用来装载任意的view。</li>
+<li>通过设置背景颜色0xaa000000可以实现半透明效果</li>
+<li><p>关于点击消失：</p>
+<ol>
+<li><p>如果需要点击外部消失，只需设置背景，foucs，outSideTouchable。</p>
+<pre><code><span class="keyword">this</span>.setBackgroundDrawable(<span class="keyword">new</span> ColorDrawable(<span class="number">0xaa000000</span>));
+<span class="keyword">this</span>.setFocusable(<span class="literal">true</span>);
+<span class="keyword">this</span>.setOutsideTouchable(<span class="literal">true</span>);
+</code></pre></li>
+<li><p>如果需要点击自身(非按钮控件)消失，在自身设置onclick就好。</p>
+<pre><code>mWindow.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>{
+        GetExpressAlert.<span class="keyword">this</span>.dismiss();
+    }
+});
+</code></pre></li>
+</ol>
+</li>
+<li><p>因为某些机型是虚拟按键的,所以要加上以下设置防止挡住按键.</p>
+<pre><code><span class="tag">this</span><span class="class">.setSoftInputMode</span>(<span class="tag">WindowManager</span><span class="class">.LayoutParams</span><span class="class">.SOFT_INPUT_ADJUST_RESIZE</span>);
+</code></pre></li>
+</ol>
+<p>整个类也特别简单：</p>
+<pre><code>public <span class="class"><span class="keyword">class</span> <span class="title">GetExpressAlert</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">PopupWindow</span> {</span>
+    <span class="type">Context</span> mContext;
+    <span class="type">View</span> mWindow;
+
+    public <span class="type">GetExpressAlert</span>(<span class="type">Context</span> context) {
+    mContext = context;
+    <span class="type">LayoutInflater</span> inflater = (<span class="type">LayoutInflater</span>) context
+            .getSystemService(<span class="type">Context</span>.<span class="type">LAYOUT_INFLATER_SERVICE</span>);
+    mWindow = inflater.inflate(<span class="type">R</span>.layout.get_express_alert, <span class="literal">null</span>);
+    <span class="keyword">this</span>.setContentView(mWindow);
+    <span class="keyword">this</span>.setWidth(<span class="type">LayoutParams</span>.<span class="type">FILL_PARENT</span>);
+    <span class="keyword">this</span>.setHeight(<span class="type">LayoutParams</span>.<span class="type">FILL_PARENT</span>);
+
+    <span class="keyword">this</span>.setBackgroundDrawable(<span class="keyword">new</span> <span class="type">ColorDrawable</span>(<span class="number">0xaa000000</span>));
+    }
+
+}
+</code></pre><p>显示效果：<br><img src="http://7sbqys.com1.z0.glb.clouddn.com/alert.png" alt=""></p>
+<p>xml代码没有什么特别的，所以不贴了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/12/16/PopupWindow相关/" data-id="cib3rkjaq000oaq8swqboznd7" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PopupWindow/">PopupWindow</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android开发小tips" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/16/Android开发小tips/" class="article-date">
+  <time datetime="2014-12-16T07:19:20.000Z" itemprop="datePublished">2014 12月 16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android开发tips/">Android开发tips</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/12/16/Android开发小tips/">Android开发小tips</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ol>
+<li><p>点击事件</p>
+<p> 很多点击事件是后台回调的，因为在onClick中设置clickable(false)然后在回调中设置clickable(true).</p>
+</li>
+<li><p>xml中color的值两个一位，16进制，AABBCCDD，</p>
+<p> AA表示alpha值，越大越透明，其他每2位分别表示RGB。</p>
+</li>
+<li><p>假如从Activity A跳转到B后，在B中需要返回A并清除回退栈中所有在A上面的Activity，可以这样处理</p>
+<pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(B.this,A.<span class="keyword">class</span>);
+<span class="type">intent</span>.addFlags(<span class="type">Intent</span>.FLAG_ACTIVITY_CLEAR_TOP);
+startActivity(<span class="type">intent</span>);
+</code></pre><p> 反正这样比一堆的startActivityForResult靠谱不多了。。</p>
+</li>
+</ol>
+<p>5.资源图片最好使用Android的.9.png格式的图片，通过设置内容的可拉伸区域，可以在拉伸图片的同时保持文字的排版正确。<a href="http://isux.tencent.com/android-ui-9-png.html" target="_blank" rel="external">腾讯的ISUX的这篇文章</a>介绍的挺详细的~</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/12/16/Android开发小tips/" data-id="cib3rkjf10045aq8swph8wa5y" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Java初学者" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/16/Java初学者/" class="article-date">
+  <time datetime="2014-12-15T17:41:14.000Z" itemprop="datePublished">2014 12月 16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/12/16/Java初学者/">Android中Java相关</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ol>
+<li><p>final类型变量指定值后就不能更改</p>
+<p> final类函数不能再继承</p>
+</li>
+<li><p>abstract抽象类，每个继承该抽象类的函数需要重写其全部接口。</p>
+</li>
+<li><p>String、 StringBuffer 、 StringBuilder</p>
+<ol>
+<li>都是final类，不可被继承。</li>
+<li>String长度不可变，其他可以</li>
+<li>StringBuffer线程安全，StringBuilder线程不安全</li>
+<li>操作少量数据-&gt;String，单线程大量数据-&gt;StringBuilder, 多线程大量数据—&gt;StringBuffer</li>
+</ol>
+</li>
+<li><p>static类静态变量无需声明类即可调用。</p>
+</li>
+<li><p>java.util.ConcurrentModificationException</p>
+<p> 当使用 fail-fast iterator 对 Collection 或 Map 进行迭代操作过程中尝试直接修改 Collection / Map 的内容时，即使是在单线程下运行，   java.util.ConcurrentModificationException 异常也将被抛出。</p>
+<p> Iterator 是工作在一个独立的线程中，并且拥有一个 mutex 锁。 Iterator 被创建之后会建立一个指向原来对象的单链索引表，当原来的对象数量发生变化时，这个索引表的内容不会同步改变，所以当索引指针往后移动的时候就找不到要迭代的对象，所以按照 fail-fast 原则 Iterator 会马上抛出 java.util.ConcurrentModificationException 异常。</p>
+<p> 所以 Iterator 在工作的时候是不允许被迭代的对象被改变的。但你可以使用 Iterator 本身的方法 remove() 来删除对象， Iterator.remove() 方法会在删除当前迭代对象的同时维护索引的一致性。</p>
+</li>
+<li><ul>
+<li>mkdir: 创建目录，但只有目录创建成功才返回true.</li>
+<li>mkdirs: 创建目录，包括必要但不存在的父目录，当且仅当目录创建成功时才会返回true，注意返回false时也可能创建了父目录。</li>
+</ul>
+</li>
+<li>当使用ArrayList等数据结构时，可以使用Collections类，通过<code>Collections.swap</code>,<code>Collections.sort</code>方法等查看。</li>
+<li>枚举类型进行操作时，最好使用EnumSet<t>类。通过<code>EnumSet.allof(T.class)</code>方法导入。</t></li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/12/16/Java初学者/" data-id="cib3rkjbr001paq8sjhkik7k5" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
+    </nav>
+  
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">43</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android开发tips/">Android开发tips</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/方便开发/">方便开发</a><span class="category-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Activity/">Activity</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AsyncTask/">AsyncTask</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BaseAdapter/">BaseAdapter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bitmap/">Bitmap</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Broadcast-Receiver/">Broadcast Receiver</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Content-Provider/">Content Provider</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditText/">EditText</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gradle/">Gradle</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Handler/">Handler</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ListView/">ListView</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFileInput/">OpenFileInput</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFileOutput/">OpenFileOutput</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PopupWindow/">PopupWindow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/">SQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ScrollView/">ScrollView</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Service/">Service</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TextView/">TextView</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UI线程/">UI线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/launchMode/">launchMode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shape/">shape</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sharedPreference/">sharedPreference</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代码混淆/">代码混淆</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优化性能/">优化性能</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存泄漏/">内存泄漏</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/反编译/">反编译</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/四大组件/">四大组件</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/壁纸设置/">壁纸设置</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多线程/">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/对象引用/">对象引用</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/屏幕单位/">屏幕单位</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/序列化/">序列化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/手柄支持/">手柄支持</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据存储/">数据存储</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件存储/">文件存储</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/版本控制/">版本控制</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/获取图片/">获取图片</a><span class="tag-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">19</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2015/05/13/ProgressBar相关/">ProgressBar相关</a>
+          </li>
+        
+          <li>
+            <a href="/2015/04/24/ListView的一些坑/">ListView的一些坑</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/23/Android文件存储/">Android文件存储</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/19/Handler原理浅析/">Handler原理浅析</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/19/Android-Studio开发遇到的问题/">Android Studio开发遇到的问题</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2015 Jianqiu<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">文档</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+  </div>
+</body>
+</html>
