@@ -61,6 +61,143 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Android裁剪图片" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/18/Android裁剪图片/" class="article-date">
+  <time datetime="2014-12-18T12:53:20.000Z" itemprop="datePublished">2014 12月 18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/12/18/Android裁剪图片/">Android裁剪图片</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>使用Intent：</p>
+<p>注意点：</p>
+<ol>
+<li><strong>非官方提供的代码，该方法并不通用，不是所有机器都支持这个intent，不推荐</strong></li>
+<li>裁剪时putExtra设置crop为true即可。</li>
+<li><strong>Uri必须以file://开头，不然会导致“无法保存剪裁的图片”的错误。</strong></li>
+</ol>
+<p>可以封装这样一段代码：</p>
+<pre><code>private void cropImageUri<span class="params">(Uri uri, int outputX, int outputY, int requestCode,Uri outputUri)</span>{
+    Intent intent = new Intent<span class="params">(<span class="string">"com.android.camera.action.CROP"</span>)</span>;
+    intent.setDataAndType<span class="params">(uri, <span class="string">"image/*"</span>)</span>;
+    intent.putExtra<span class="params">(<span class="string">"crop"</span>, <span class="string">"true"</span>)</span>;
+    intent.putExtra<span class="params">(<span class="string">"aspectX"</span>, <span class="number">2</span>)</span>;
+    intent.putExtra<span class="params">(<span class="string">"aspectY"</span>, <span class="number">1</span>)</span>;
+    intent.putExtra<span class="params">(<span class="string">"outputX"</span>, outputX)</span>;
+    intent.putExtra<span class="params">(<span class="string">"outputY"</span>, outputY)</span>;
+    intent.putExtra<span class="params">(<span class="string">"scale"</span>, <span class="literal">true</span>)</span>;
+    intent.putExtra<span class="params">(MediaStore.EXTRA_OUTPUT, outputUri)</span>;
+    intent.putExtra<span class="params">(<span class="string">"return-data"</span>, <span class="literal">false</span>)</span>;
+    intent.putExtra<span class="params">(<span class="string">"outputFormat"</span>, Bitmap.CompressFormat.JPEG.toString<span class="params">()</span>)</span>;
+    intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</span>, <span class="literal">true</span>)</span>; <span class="comment">// no face detection</span>
+    startActivityForResult<span class="params">(intent, requestCode)</span>;
+}
+</code></pre><p>另外关于putExtra的信号：</p>
+<table>
+<thead>
+<tr>
+<th>附加选项</th>
+<th>数据类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>crop</td>
+<td>String</td>
+<td>发送裁剪信号</td>
+</tr>
+<tr>
+<td>aspectX</td>
+<td>int</td>
+<td>X方向上的比例</td>
+</tr>
+<tr>
+<td>aspectY</td>
+<td>int</td>
+<td>Y方向上的比例</td>
+</tr>
+<tr>
+<td>outputX</td>
+<td>int</td>
+<td>裁剪区的宽</td>
+</tr>
+<tr>
+<td>outputY</td>
+<td>int</td>
+<td>裁剪区的高</td>
+</tr>
+<tr>
+<td>scale</td>
+<td>boolean</td>
+<td>是否保留比例</td>
+</tr>
+<tr>
+<td>return-data</td>
+<td>boolean</td>
+<td>是否将数据保留在Bitmap中返回</td>
+</tr>
+<tr>
+<td>data</td>
+<td>Parcelable</td>
+<td>相应的Bitmap数据</td>
+</tr>
+<tr>
+<td>circleCrop</td>
+<td>String</td>
+<td>圆形裁剪区域？</td>
+</tr>
+<tr>
+<td>MediaStore.EXTRA_OUTPUT (“output”)</td>
+<td>URI</td>
+<td>将URI指向相应的file:///…</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p>使用Github lib,<br>以下是一些star比较高的lib：</p>
+<ul>
+<li><p><a href="https://github.com/lvillani/android-cropimage" target="_blank" rel="external">https://github.com/lvillani/android-cropimage</a></p>
+<p>  这是基于Gradle的，可以收到加上com.android.camera这个包里面的代码，加上resource即可使用，example里面有使用示例。</p>
+</li>
+<li><p><a href="https://github.com/biokys/cropimage" target="_blank" rel="external">https://github.com/biokys/cropimage</a></p>
+<p>  提供ant及gradle的lib，但在我机器(vivo Xplay)上crash了。。</p>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/12/18/Android裁剪图片/" data-id="cib8612pe003btw8sszau62e5" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/获取图片/">获取图片</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-PopupWindow相关" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2014/12/16/PopupWindow相关/" class="article-date">
@@ -138,7 +275,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/12/16/PopupWindow相关/" data-id="cib3yd2o1000o738s44gp843x" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/12/16/PopupWindow相关/" data-id="cib8612nf000otw8s268o95ir" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PopupWindow/">PopupWindow</a></li></ul>
@@ -195,76 +332,7 @@ startActivity(<span class="type">intent</span>);
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/12/16/Android开发小tips/" data-id="cib3yd2qj0045738sx787co8s" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Java初学者" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/12/16/Java初学者/" class="article-date">
-  <time datetime="2014-12-15T17:41:14.000Z" itemprop="datePublished">2014 12月 16</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Java/">Java</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/12/16/Java初学者/">Android中Java相关</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ol>
-<li><p>final类型变量指定值后就不能更改</p>
-<p> final类函数不能再继承</p>
-</li>
-<li><p>abstract抽象类，每个继承该抽象类的函数需要重写其全部接口。</p>
-</li>
-<li><p>String、 StringBuffer 、 StringBuilder</p>
-<ol>
-<li>都是final类，不可被继承。</li>
-<li>String长度不可变，其他可以</li>
-<li>StringBuffer线程安全，StringBuilder线程不安全</li>
-<li>操作少量数据-&gt;String，单线程大量数据-&gt;StringBuilder, 多线程大量数据—&gt;StringBuffer</li>
-</ol>
-</li>
-<li><p>static类静态变量无需声明类即可调用。</p>
-</li>
-<li><p>java.util.ConcurrentModificationException</p>
-<p> 当使用 fail-fast iterator 对 Collection 或 Map 进行迭代操作过程中尝试直接修改 Collection / Map 的内容时，即使是在单线程下运行，   java.util.ConcurrentModificationException 异常也将被抛出。</p>
-<p> Iterator 是工作在一个独立的线程中，并且拥有一个 mutex 锁。 Iterator 被创建之后会建立一个指向原来对象的单链索引表，当原来的对象数量发生变化时，这个索引表的内容不会同步改变，所以当索引指针往后移动的时候就找不到要迭代的对象，所以按照 fail-fast 原则 Iterator 会马上抛出 java.util.ConcurrentModificationException 异常。</p>
-<p> 所以 Iterator 在工作的时候是不允许被迭代的对象被改变的。但你可以使用 Iterator 本身的方法 remove() 来删除对象， Iterator.remove() 方法会在删除当前迭代对象的同时维护索引的一致性。</p>
-</li>
-<li><ul>
-<li>mkdir: 创建目录，但只有目录创建成功才返回true.</li>
-<li>mkdirs: 创建目录，包括必要但不存在的父目录，当且仅当目录创建成功时才会返回true，注意返回false时也可能创建了父目录。</li>
-</ul>
-</li>
-<li>当使用ArrayList等数据结构时，可以使用Collections类，通过<code>Collections.swap</code>,<code>Collections.sort</code>方法等查看。</li>
-<li>枚举类型进行操作时，最好使用EnumSet<t>类。通过<code>EnumSet.allof(T.class)</code>方法导入。</t></li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/12/16/Java初学者/" data-id="cib3yd2os001p738szjk6355v" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/12/16/Android开发小tips/" data-id="cib8612pu0045tw8s39rhehgz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -276,7 +344,7 @@ startActivity(<span class="type">intent</span>);
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -305,7 +373,7 @@ startActivity(<span class="type">intent</span>);
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">19</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">19</span></li></ul>
     </div>
   </div>
 
@@ -315,6 +383,10 @@ startActivity(<span class="type">intent</span>);
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2015/06/23/Android-Design包22-2-0笔记/">Android Design包22.2.0笔记</a>
+          </li>
         
           <li>
             <a href="/2015/05/13/ProgressBar相关/">ProgressBar相关</a>
@@ -330,10 +402,6 @@ startActivity(<span class="type">intent</span>);
         
           <li>
             <a href="/2015/03/19/Handler原理浅析/">Handler原理浅析</a>
-          </li>
-        
-          <li>
-            <a href="/2015/03/19/Android-Studio开发遇到的问题/">Android Studio开发遇到的问题</a>
           </li>
         
       </ul>

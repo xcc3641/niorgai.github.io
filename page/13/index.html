@@ -61,6 +61,63 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-OpenFileOutput-OpenFileIntput-使用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/30/OpenFileOutput-OpenFileIntput-使用/" class="article-date">
+  <time datetime="2014-12-30T15:47:46.000Z" itemprop="datePublished">2014 12月 30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/12/30/OpenFileOutput-OpenFileIntput-使用/">OpenFileOutput &amp; OpenFileIntput 使用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>与sharedPreference相似，OpenFileOutput和OpenFileIntput也是在Context中调用，同时将文件保存在以下路径：</p>
+<pre><code><span class="type">data</span>/<span class="type">data</span>/&lt;package <span class="keyword">name</span>&gt;/files
+</code></pre><p><strong>name为String类型，表示文件名称</strong></p>
+<p><strong>text为String类型，表示所需写入的内容</strong></p>
+<p>使用方法(需要注意catch FileNotFoundException)：</p>
+<p>写:</p>
+<pre><code>OutputStream os = context.openFileOutput<span class="params">(name,Context.MODE_PRIVATE)</span>;
+os.write<span class="params">(text.getBytes<span class="params">(<span class="string">"UTF-8"</span>)</span>)</span>;
+os.close<span class="params">()</span>;
+</code></pre><p>读:</p>
+<pre><code>InputStream <span class="keyword">is</span> = <span class="keyword">context</span>.openFileInput(name);
+byte[] <span class="keyword">buffer</span> = <span class="keyword">new</span> byte[<span class="number">100</span>];
+int byteCount = <span class="keyword">is</span>.read(<span class="keyword">buffer</span>);
+<span class="typename">String</span> str = <span class="keyword">new</span> <span class="typename">String</span>(<span class="keyword">buffer</span>,<span class="number">0</span>,byteCount,<span class="string">"UTF-8"</span>);
+<span class="keyword">is</span>.close();
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/12/30/OpenFileOutput-OpenFileIntput-使用/" data-id="cib8612nj000stw8ss6mrto57" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenFileInput/">OpenFileInput</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenFileOutput/">OpenFileOutput</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据存储/">数据存储</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Android代码混淆" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2014/12/26/Android代码混淆/" class="article-date">
@@ -140,7 +197,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/12/26/Android代码混淆/" data-id="cib3yd2qv004p738scayrj9b8" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/12/26/Android代码混淆/" data-id="cib8612q7004ptw8sq1iefiq4" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码混淆/">代码混淆</a></li></ul>
@@ -227,7 +284,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/12/23/Mac下反编译Android-APK/" data-id="cib3yd2o9000z738sx43t5gk7" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/12/23/Mac下反编译Android-APK/" data-id="cib8612nn000ztw8s558xrhc3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/反编译/">反编译</a></li></ul>
@@ -239,146 +296,9 @@
 
 
   
-    <article id="post-Android裁剪图片" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/12/18/Android裁剪图片/" class="article-date">
-  <time datetime="2014-12-18T12:53:20.000Z" itemprop="datePublished">2014 12月 18</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Android/">Android</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/12/18/Android裁剪图片/">Android裁剪图片</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>使用Intent：</p>
-<p>注意点：</p>
-<ol>
-<li><strong>非官方提供的代码，该方法并不通用，不是所有机器都支持这个intent，不推荐</strong></li>
-<li>裁剪时putExtra设置crop为true即可。</li>
-<li><strong>Uri必须以file://开头，不然会导致“无法保存剪裁的图片”的错误。</strong></li>
-</ol>
-<p>可以封装这样一段代码：</p>
-<pre><code>private void cropImageUri<span class="params">(Uri uri, int outputX, int outputY, int requestCode,Uri outputUri)</span>{
-    Intent intent = new Intent<span class="params">(<span class="string">"com.android.camera.action.CROP"</span>)</span>;
-    intent.setDataAndType<span class="params">(uri, <span class="string">"image/*"</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"crop"</span>, <span class="string">"true"</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"aspectX"</span>, <span class="number">2</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"aspectY"</span>, <span class="number">1</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"outputX"</span>, outputX)</span>;
-    intent.putExtra<span class="params">(<span class="string">"outputY"</span>, outputY)</span>;
-    intent.putExtra<span class="params">(<span class="string">"scale"</span>, <span class="literal">true</span>)</span>;
-    intent.putExtra<span class="params">(MediaStore.EXTRA_OUTPUT, outputUri)</span>;
-    intent.putExtra<span class="params">(<span class="string">"return-data"</span>, <span class="literal">false</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"outputFormat"</span>, Bitmap.CompressFormat.JPEG.toString<span class="params">()</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</span>, <span class="literal">true</span>)</span>; <span class="comment">// no face detection</span>
-    startActivityForResult<span class="params">(intent, requestCode)</span>;
-}
-</code></pre><p>另外关于putExtra的信号：</p>
-<table>
-<thead>
-<tr>
-<th>附加选项</th>
-<th>数据类型</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>crop</td>
-<td>String</td>
-<td>发送裁剪信号</td>
-</tr>
-<tr>
-<td>aspectX</td>
-<td>int</td>
-<td>X方向上的比例</td>
-</tr>
-<tr>
-<td>aspectY</td>
-<td>int</td>
-<td>Y方向上的比例</td>
-</tr>
-<tr>
-<td>outputX</td>
-<td>int</td>
-<td>裁剪区的宽</td>
-</tr>
-<tr>
-<td>outputY</td>
-<td>int</td>
-<td>裁剪区的高</td>
-</tr>
-<tr>
-<td>scale</td>
-<td>boolean</td>
-<td>是否保留比例</td>
-</tr>
-<tr>
-<td>return-data</td>
-<td>boolean</td>
-<td>是否将数据保留在Bitmap中返回</td>
-</tr>
-<tr>
-<td>data</td>
-<td>Parcelable</td>
-<td>相应的Bitmap数据</td>
-</tr>
-<tr>
-<td>circleCrop</td>
-<td>String</td>
-<td>圆形裁剪区域？</td>
-</tr>
-<tr>
-<td>MediaStore.EXTRA_OUTPUT (“output”)</td>
-<td>URI</td>
-<td>将URI指向相应的file:///…</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>使用Github lib,<br>以下是一些star比较高的lib：</p>
-<ul>
-<li><p><a href="https://github.com/lvillani/android-cropimage" target="_blank" rel="external">https://github.com/lvillani/android-cropimage</a></p>
-<p>  这是基于Gradle的，可以收到加上com.android.camera这个包里面的代码，加上resource即可使用，example里面有使用示例。</p>
-</li>
-<li><p><a href="https://github.com/biokys/cropimage" target="_blank" rel="external">https://github.com/biokys/cropimage</a></p>
-<p>  提供ant及gradle的lib，但在我机器(vivo Xplay)上crash了。。</p>
-</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/12/18/Android裁剪图片/" data-id="cib3yd2py003b738st22q1s4x" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/获取图片/">获取图片</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/12/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/page/14/">14</a><a class="page-number" href="/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/14/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/12/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/page/14/">14</a><a class="page-number" href="/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="extend next" rel="next" href="/page/14/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -407,7 +327,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">19</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">19</span></li></ul>
     </div>
   </div>
 
@@ -417,6 +337,10 @@
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2015/06/23/Android-Design包22-2-0笔记/">Android Design包22.2.0笔记</a>
+          </li>
         
           <li>
             <a href="/2015/05/13/ProgressBar相关/">ProgressBar相关</a>
@@ -432,10 +356,6 @@
         
           <li>
             <a href="/2015/03/19/Handler原理浅析/">Handler原理浅析</a>
-          </li>
-        
-          <li>
-            <a href="/2015/03/19/Android-Studio开发遇到的问题/">Android Studio开发遇到的问题</a>
           </li>
         
       </ul>

@@ -61,6 +61,42 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Android-Design包22-2-0笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/06/23/Android-Design包22-2-0笔记/" class="article-date">
+  <time datetime="2015-06-22T16:14:46.000Z" itemprop="datePublished">2015 6月 23</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/06/23/Android-Design包22-2-0笔记/">Android Design包22.2.0笔记</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/06/23/Android-Design包22-2-0笔记/" data-id="cib8612qv005ptw8s9jmizmwc" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-ProgressBar相关" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/05/13/ProgressBar相关/" class="article-date">
@@ -111,7 +147,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/05/13/ProgressBar相关/" data-id="cib3yd2ny000k738shryd2xa9" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/05/13/ProgressBar相关/" data-id="cib8612nc000ktw8s0688l7di" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li></ul>
@@ -159,7 +195,7 @@ gridView.setEmptyView<span class="params">(view)</span>;
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/04/24/ListView的一些坑/" data-id="cib3yd2oh0016738s6n8m21la" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/04/24/ListView的一些坑/" data-id="cib8612nv0016tw8szkk4eipn" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ListView/">ListView</a></li></ul>
@@ -171,150 +207,9 @@ gridView.setEmptyView<span class="params">(view)</span>;
 
 
   
-    <article id="post-Android文件存储" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/03/23/Android文件存储/" class="article-date">
-  <time datetime="2015-03-23T02:04:39.000Z" itemprop="datePublished">2015 3月 23</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Android/">Android</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/03/23/Android文件存储/">Android文件存储</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>文件存储分内部文件存储和外部存储。</p>
-<p>默认情况下应用安装到内部存储，可以通过<code>AndroidMainfest.xml</code>文件下<code>application</code>的<code>android:installLocation</code>属性设置安装位置。</p>
-<table>
-<thead>
-<tr>
-<th>类别</th>
-<th>内部存储</th>
-<th>外部存储</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>可用</td>
-<td>一直可用</td>
-<td>没有挂载时不可用</td>
-</tr>
-<tr>
-<td>可访问性</td>
-<td>只能被自己的APP访问</td>
-<td>全部可读</td>
-</tr>
-<tr>
-<td>删除</td>
-<td>卸载应用时清除</td>
-<td>只有通过<code>getExternalFilesDir()</code>方法返回的路径的文件才会被删除</td>
-</tr>
-<tr>
-<td>权限</td>
-<td>无</td>
-<td><code>android.permission.WRITE_EXTERNAL_STORAGE</code> <code>android.permission.READ_EXTERNAL_STORAGE</code></td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>内部存储</p>
-<ol>
-<li><p><code>getFilesDir()</code> </p>
-<p> 返回app可用的内部存储文件地址。</p>
-</li>
-<li><p><code>getCacheDir()</code> </p>
-<p> 返回app可用的缓存文件地址。当缓存较大并且系统空间不足时会删除其中的文件。</p>
-</li>
-</ol>
-<p>内部存储保存文件：</p>
-<pre><code><span class="type">File</span> file = <span class="keyword">new</span> <span class="type">File</span>(context.getFilesDir<span class="literal">()</span>, filename);
-<span class="type">String</span> filename = <span class="string">"myfile"</span>;
-<span class="type">String</span> <span class="built_in">string</span> = <span class="string">"Hello world!"</span>;
-<span class="type">FileOutputStream</span> outputStream;
-
-<span class="keyword">try</span> {
-      outputStream = openFileOutput(filename, <span class="type">Context</span>.<span class="type">MODE_PRIVATE</span>);
-      outputStream.write(<span class="built_in">string</span>.getBytes<span class="literal">()</span>);
-      outputStream.close<span class="literal">()</span>;
-    } catch (<span class="type">Exception</span> e) {
-          e.printStackTrace<span class="literal">()</span>;
-}
-</code></pre><p>设置<code>MODE_PRIVATE</code>可以使其他应用无法访问文件。</p>
-<p>内部存储保存缓存文件：</p>
-<pre><code><span class="keyword">public</span> <span class="keyword">File</span> getTempFile(Context context, String url) {
-    <span class="keyword">File</span> <span class="keyword">file</span>;
-    <span class="keyword">try</span> {
-        String fileName = Uri.parse(url).getLastPathSegment();
-        <span class="keyword">file</span> = <span class="keyword">File</span>.createTempFile(fileName, <span class="keyword">null</span>, context.getCacheDir());
-    <span class="keyword">catch</span> (IOException e) {
-        <span class="comment">// Error while creating file</span>
-    }
-    <span class="keyword">return</span> <span class="keyword">file</span>;
-}
-</code></pre><hr>
-<p>外部存储</p>
-<p>因为外部存储可能没有被挂载，所以需要先判断是否可用：</p>
-<pre><code>/* Checks if external storage is available <span class="keyword">for</span> read and write */
-public boolean isExternalStorageWritable() {
-    String <span class="keyword">state</span> = Environment.getExternalStorageState();
-    if (Environment.MEDIA_MOUNTED.equals(<span class="keyword">state</span>)) {
-        return true;
-    }
-    return false;
-}
-
-/* Checks if external storage is available <span class="keyword">to</span> at least read */
-public boolean isExternalStorageReadable() {
-    String <span class="keyword">state</span> = Environment.getExternalStorageState();
-    if (Environment.MEDIA_MOUNTED.equals(<span class="keyword">state</span>) ||
-        Environment.MEDIA_MOUNTED_READ_ONLY.equals(<span class="keyword">state</span>)) {
-        return true;
-    }
-    return false;
-}
-</code></pre><ol>
-<li><p><code>getExternalStoragePublicDirectory()</code></p>
-<p> 返回可以任意访问的外部存储路径，删除应用时不会清除该路径。</p>
-</li>
-<li><p><code>getExternalFilesDir()</code></p>
-<p> 返回只能自己访问的外部存储路径，删除应用时该目录下的文件会被删除。</p>
-</li>
-</ol>
-<hr>
-<p><code>getFreeSpace ()</code>和<code>getTotalSpace ()</code>会返回路径下的可用空间和全部空间的字节。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/03/23/Android文件存储/" data-id="cib3yd2qe003v738s5ita6duy" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/文件存储/">文件存储</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -343,7 +238,7 @@ public boolean isExternalStorageReadable() {
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">19</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">19</span></li></ul>
     </div>
   </div>
 
@@ -353,6 +248,10 @@ public boolean isExternalStorageReadable() {
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2015/06/23/Android-Design包22-2-0笔记/">Android Design包22.2.0笔记</a>
+          </li>
         
           <li>
             <a href="/2015/05/13/ProgressBar相关/">ProgressBar相关</a>
@@ -368,10 +267,6 @@ public boolean isExternalStorageReadable() {
         
           <li>
             <a href="/2015/03/19/Handler原理浅析/">Handler原理浅析</a>
-          </li>
-        
-          <li>
-            <a href="/2015/03/19/Android-Studio开发遇到的问题/">Android Studio开发遇到的问题</a>
           </li>
         
       </ul>
