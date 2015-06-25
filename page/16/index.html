@@ -61,66 +61,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-Android连续点击两次back键退出" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/12/13/Android连续点击两次back键退出/" class="article-date">
-  <time datetime="2014-12-12T17:24:25.000Z" itemprop="datePublished">2014 12月 13</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Android开发tips/">Android开发tips</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/12/13/Android连续点击两次back键退出/">Android连续点击两次back键退出</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Android默认的推出就是按下BACK键，但有时候会不小心误触而推出应用=。=这样体验实在太差了，比较好的解决方法是连续点击按下BACK退出。</p>
-<p>实现的基本原理就是，当按下BACK键时，会被onKeyDown捕获，判断是BACK键，则执行exit方法。<br>在exit方法中，会首先判断isExit的值，如果为false的话，则置为true，同时会弹出提示，并在2000毫秒（2秒）后发出一个消息，在Handler中将此值还原成false。如果在发送消息间隔的2秒内，再次按了BACK键，则再次执行exit方法，此时isExit的值已为true，则会执行退出的方法。</p>
-<p>代码：</p>
-<p>先定义一个全局变量 Boolean isExit = false;</p>
-<pre><code><span class="annotation">@Override</span>
-<span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onKeyDown</span><span class="params">(<span class="keyword">int</span> keyCode, KeyEvent event)</span> </span>{
-     <span class="keyword">if</span> (keyCode == KeyEvent.KEYCODE_BACK) {
-          <span class="keyword">if</span>(!isExit) {
-               isExit = <span class="keyword">true</span>; 
-           Toast.makeText(getApplicationContext(),<span class="string">"再按一次返回键退出"</span>,Toast.LENGTH_SHORT).show();
-               <span class="keyword">new</span> Handler().postDelayed(<span class="keyword">new</span> Runnable(){
-                    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>{
-                         isExit = <span class="keyword">false</span>;
-                    }
-               }, <span class="number">2000</span>);;
-               <span class="keyword">return</span> <span class="keyword">false</span>;
-          }
-     }
-     <span class="function"><span class="keyword">return</span> <span class="keyword">super</span>.<span class="title">onKeyDown</span><span class="params">(keyCode, event)</span></span>;
-}
-</code></pre>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/12/13/Android连续点击两次back键退出/" data-id="cib8612pc0039tw8s6k06kk94" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
     <article id="post-Activity中launchMode的值" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2014/12/08/Activity中launchMode的值/" class="article-date">
@@ -178,7 +118,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/12/08/Activity中launchMode的值/" data-id="cib8612qy005utw8sj4edv19x" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/12/08/Activity中launchMode的值/" data-id="cibbx8hh0005t258s7al8f25a" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Activity/">Activity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/launchMode/">launchMode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/四大组件/">四大组件</a></li></ul>
@@ -239,7 +179,7 @@ PhantomReference pr = <span class="keyword">new</span> PhantomReference (object,
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/12/08/Java对对象的几种引用方式/" data-id="cib8612o5001ltw8svuxxcyq7" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/12/08/Java对对象的几种引用方式/" data-id="cibbx8he2001l258s3wtno0tq" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/对象引用/">对象引用</a></li></ul>
@@ -251,9 +191,116 @@ PhantomReference pr = <span class="keyword">new</span> PhantomReference (object,
 
 
   
+    <article id="post-Android壁纸设置" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/06/Android壁纸设置/" class="article-date">
+  <time datetime="2014-12-06T14:04:32.000Z" itemprop="datePublished">2014 12月 6</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/12/06/Android壁纸设置/">Android壁纸设置</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ol>
+<li><h4 id="设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下：">设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下：</h4><p> WallpaperManager wallpaperManager = WallpaperManager.getInstance(DisplayPicture.this);</p>
+<pre><code><span class="tag">wallpaperManager</span><span class="class">.suggestDesiredDimensions</span>(<span class="tag">bitmap</span><span class="class">.getWidth</span>(),<span class="tag">bitmap</span><span class="class">.getHeight</span>());
+</code></pre><p> wallpaperManager.setBitmap(bitmap);</p>
+</li>
+</ol>
+<p>注意这里的</p>
+<pre><code><span class="tag">wallpaperManager</span><span class="class">.suggestDesiredDimensions</span>(<span class="tag">bitmap</span><span class="class">.getWidth</span>(),<span class="tag">bitmap</span><span class="class">.getHeight</span>());
+</code></pre><p>是表示设置目前的像素是图片的像素，最好先获取手机屏幕像素大小，然后传递宽度和高度作为参数。</p>
+<pre><code>WallpaperManager wallpaperManager = WallpaperManager.getInstance<span class="params">(DisplayPicture.this)</span>;
+        wallpaperManager.suggestDesiredDimensions<span class="params">(Utils.getDisplayWidth<span class="params">()</span>,Utils.getDisplayHeight<span class="params">()</span>)</span>;
+</code></pre><p>因为某些手机是可以设置壁纸跟桌面一起滑动的，这样所需的壁纸长宽跟手机屏幕的长宽是不一样的，所以需要这样设置。</p>
+<h3 id="但是问题来了，这样加载的bitmap需要裁减，并且加载后非常容易out_of_memory。所以尝试以下的解决方法：">但是问题来了，这样加载的bitmap需要裁减，并且加载后非常容易out of memory。所以尝试以下的解决方法：</h3><ol>
+<li><h4 id="通过系统intent来设置，即传递一个image对象，系统luancher选择相应的程序来处理，这种方法还可以设置锁屏壁纸~~">通过系统intent来设置，即传递一个image对象，系统luancher选择相应的程序来处理，这种方法还可以设置锁屏壁纸~~</h4></li>
+</ol>
+<p>传递的sendUri为图片的Uri，代码如下：</p>
+<pre><code>Intent setAs = new Intent<span class="params">(Intent.ACTION_ATTACH_DATA)</span>;
+        setAs.setDataAndType<span class="params">(sendUri, <span class="string">"image/jpg"</span>)</span>;
+        setAs.putExtra<span class="params">(<span class="string">"mimeType"</span>,<span class="string">"image/jpg"</span>)</span>;
+        startActivity<span class="params">(Intent.createChooser<span class="params">(setAs, <span class="string">"set As"</span>)</span>)</span>;
+</code></pre><p>其中</p>
+<pre><code>setAs.<span class="function"><span class="title">putExtra</span><span class="params">(<span class="string">"mineType"</span>,<span class="string">"image/jpg"</span>)</span></span>
+</code></pre><p>非常重要，通过这句告诉intent的Filter当前intent的data传递的是什么内容，不加这一句会导致某些机型的相册程序崩溃。如vivo。。</p>
+<p>另外关于mineType的其他可以参考<a href="http://www.apkbus.com/blog-56077-44963.html" target="_blank" rel="external">这里</a></p>
+<ol>
+<li><h4 id="将bitmap传入系统裁减intent，裁减至手机屏幕大小，然后在onActivitiyResult中捕捉bitmap并设置壁纸（强行避免OOM）">将bitmap传入系统裁减intent，裁减至手机屏幕大小，然后在onActivitiyResult中捕捉bitmap并设置壁纸（强行避免OOM）</h4><pre><code>Intent intent = new Intent<span class="params">(<span class="string">"com.android.camera.action.CROP"</span>)</span>;
+    intent.setDataAndType<span class="params">(sendUri, <span class="string">"image/*"</span>)</span>;
+    intent.putExtra<span class="params">(<span class="string">"crop"</span>, <span class="string">"true"</span>)</span>;
+    <span class="comment">//裁剪框的比例，1：1</span>
+    DisplayMetrics dm = new DisplayMetrics<span class="params">()</span>;
+    dm = getResources<span class="params">()</span>.getDisplayMetrics<span class="params">()</span>;
+    <span class="comment">// float scale = (float)dm.heightPixels / (float)dm.widthPixels;</span>
+    intent.putExtra<span class="params">(<span class="string">"aspectX"</span>, dm.widthPixels)</span>;
+    intent.putExtra<span class="params">(<span class="string">"aspectY"</span>, dm.heightPixels)</span>;
+    intent.putExtra<span class="params">(<span class="string">"scale"</span>,<span class="literal">true</span>)</span>;
+    <span class="comment">//裁剪后输出图片的尺寸大小</span>
+    intent.putExtra<span class="params">(<span class="string">"outputX"</span>, dm.widthPixels)</span>;
+    intent.putExtra<span class="params">(<span class="string">"outputY"</span>, dm.heightPixels)</span>;
+    Uri uri = Uri.fromFile<span class="params">(file)</span>;
+    intent.putExtra<span class="params">(MediaStore.EXTRA_OUTPUT,uri)</span>;
+    <span class="comment">//图片格式</span>
+    intent.putExtra<span class="params">(<span class="string">"outputFormat"</span>, <span class="string">"JPEG"</span>)</span>;
+    intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</span>, <span class="literal">true</span>)</span>;
+    intent.putExtra<span class="params">(<span class="string">"return-data"</span>,<span class="literal">false</span>)</span>;
+    startActivityForResult<span class="params">(intent, <span class="number">1</span>)</span>;
+</code></pre></li>
+</ol>
+<p>返回这里(file是通过sendUri new出来的)：</p>
+<pre><code>@Override
+protected void onActivityResult<span class="params">(int requestCode, int resultCode, Intent data)</span> {
+    <span class="keyword">if</span><span class="params">(requestCode == <span class="number">1</span>)</span>{
+        Uri uri = Uri.fromFile<span class="params">(file)</span>;
+         Bitmap bitmap = null;
+        <span class="keyword">if</span><span class="params">(uri != null)</span>{
+            try {
+                bitmap= imgLoader.getBitmapByPath<span class="params">(uri.getPath<span class="params">()</span>)</span>;
+                WallpaperManager wallpaperManager = WallpaperManager.getInstance<span class="params">(DisplayPicture.this)</span>;
+                wallpaperManager.suggestDesiredDimensions<span class="params">(bitmap.getWidth<span class="params">()</span>,bitmap.getHeight<span class="params">()</span>)</span>;
+                wallpaperManager.setBitmap<span class="params">(bitmap)</span>;
+            }catch <span class="params">(Exception e)</span>{
+                e.printStackTrace<span class="params">()</span>;
+            }
+        }
+    super.onActivityResult<span class="params">(requestCode, resultCode, data)</span>;
+}
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/12/06/Android壁纸设置/" data-id="cibbx8hg0004h258s3m0k30aj" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/壁纸设置/">壁纸设置</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/15/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><a class="extend next" rel="next" href="/page/17/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/15/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/17/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -282,7 +329,7 @@ PhantomReference pr = <span class="keyword">new</span> PhantomReference (object,
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">19</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">19</span></li></ul>
     </div>
   </div>
 
@@ -292,10 +339,6 @@ PhantomReference pr = <span class="keyword">new</span> PhantomReference (object,
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
-        
-          <li>
-            <a href="/2015/06/23/Android-Design包22-2-0笔记/">Android Design包22.2.0笔记</a>
-          </li>
         
           <li>
             <a href="/2015/05/13/ProgressBar相关/">ProgressBar相关</a>
@@ -311,6 +354,10 @@ PhantomReference pr = <span class="keyword">new</span> PhantomReference (object,
         
           <li>
             <a href="/2015/03/19/Handler原理浅析/">Handler原理浅析</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/19/Android-Studio开发遇到的问题/">Android Studio开发遇到的问题</a>
           </li>
         
       </ul>

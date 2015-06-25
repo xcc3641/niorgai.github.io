@@ -17,7 +17,7 @@ com.android.ide.common.internal.LoggedErrorException: Failed to run command:
 Error:Execution failed for task &apos;:app:dexDebug&apos;.
 com.android.ide.common.internal.LoggedErrorException: Failed to run command:
       /Users/qiu/Library/Android/sdk/build-tools/21.1.1/dx --d">
-<meta property="og:updated_time" content="2015-03-19T13:55:51.000Z">
+<meta property="og:updated_time" content="2015-06-25T08:21:17.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android Studio开发遇到的问题">
 <meta name="twitter:description" content="Gradle运行失败：
@@ -126,12 +126,18 @@ com.android.ide.common.internal.<span class="string">LoggedErrorException:</span
 </li>
 </ol>
 </li>
+<li><p><code>Executor Singleton not started</code></p>
+<p> 升级一下gradle到最新版本,然后在project的build.gradle中修改gradle版本即可.</p>
+</li>
+<li><p>java <code>finished with non-zero exit value 2</code></p>
+<p> 这是libs里面有包重复了,找出来删掉就好了</p>
+</li>
 </ol>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/03/19/Android-Studio开发遇到的问题/" data-id="cib8612qi0052tw8stwnsdsxk" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/03/19/Android-Studio开发遇到的问题/" data-id="cibbx8hgj0052258s1760l7op" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gradle/">Gradle</a></li></ul>
@@ -207,7 +213,7 @@ com.android.ide.common.internal.<span class="string">LoggedErrorException:</span
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">19</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">19</span></li></ul>
     </div>
   </div>
 
@@ -217,10 +223,6 @@ com.android.ide.common.internal.<span class="string">LoggedErrorException:</span
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
-        
-          <li>
-            <a href="/2015/06/23/Android-Design包22-2-0笔记/">Android Design包22.2.0笔记</a>
-          </li>
         
           <li>
             <a href="/2015/05/13/ProgressBar相关/">ProgressBar相关</a>
@@ -236,6 +238,10 @@ com.android.ide.common.internal.<span class="string">LoggedErrorException:</span
         
           <li>
             <a href="/2015/03/19/Handler原理浅析/">Handler原理浅析</a>
+          </li>
+        
+          <li>
+            <a href="/2015/03/19/Android-Studio开发遇到的问题/">Android Studio开发遇到的问题</a>
           </li>
         
       </ul>
