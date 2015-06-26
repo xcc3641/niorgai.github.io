@@ -61,6 +61,147 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Android文件存储" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/23/Android文件存储/" class="article-date">
+  <time datetime="2015-03-23T02:04:39.000Z" itemprop="datePublished">2015 3月 23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/23/Android文件存储/">Android文件存储</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>文件存储分内部文件存储和外部存储。</p>
+<p>默认情况下应用安装到内部存储，可以通过<code>AndroidMainfest.xml</code>文件下<code>application</code>的<code>android:installLocation</code>属性设置安装位置。</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>内部存储</th>
+<th>外部存储</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>可用</td>
+<td>一直可用</td>
+<td>没有挂载时不可用</td>
+</tr>
+<tr>
+<td>可访问性</td>
+<td>只能被自己的APP访问</td>
+<td>全部可读</td>
+</tr>
+<tr>
+<td>删除</td>
+<td>卸载应用时清除</td>
+<td>只有通过<code>getExternalFilesDir()</code>方法返回的路径的文件才会被删除</td>
+</tr>
+<tr>
+<td>权限</td>
+<td>无</td>
+<td><code>android.permission.WRITE_EXTERNAL_STORAGE</code> <code>android.permission.READ_EXTERNAL_STORAGE</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p>内部存储</p>
+<ol>
+<li><p><code>getFilesDir()</code> </p>
+<p> 返回app可用的内部存储文件地址。</p>
+</li>
+<li><p><code>getCacheDir()</code> </p>
+<p> 返回app可用的缓存文件地址。当缓存较大并且系统空间不足时会删除其中的文件。</p>
+</li>
+</ol>
+<p>内部存储保存文件：</p>
+<pre><code><span class="type">File</span> file = <span class="keyword">new</span> <span class="type">File</span>(context.getFilesDir<span class="literal">()</span>, filename);
+<span class="type">String</span> filename = <span class="string">"myfile"</span>;
+<span class="type">String</span> <span class="built_in">string</span> = <span class="string">"Hello world!"</span>;
+<span class="type">FileOutputStream</span> outputStream;
+
+<span class="keyword">try</span> {
+      outputStream = openFileOutput(filename, <span class="type">Context</span>.<span class="type">MODE_PRIVATE</span>);
+      outputStream.write(<span class="built_in">string</span>.getBytes<span class="literal">()</span>);
+      outputStream.close<span class="literal">()</span>;
+    } catch (<span class="type">Exception</span> e) {
+          e.printStackTrace<span class="literal">()</span>;
+}
+</code></pre><p>设置<code>MODE_PRIVATE</code>可以使其他应用无法访问文件。</p>
+<p>内部存储保存缓存文件：</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">File</span> getTempFile(Context context, String url) {
+    <span class="keyword">File</span> <span class="keyword">file</span>;
+    <span class="keyword">try</span> {
+        String fileName = Uri.parse(url).getLastPathSegment();
+        <span class="keyword">file</span> = <span class="keyword">File</span>.createTempFile(fileName, <span class="keyword">null</span>, context.getCacheDir());
+    <span class="keyword">catch</span> (IOException e) {
+        <span class="comment">// Error while creating file</span>
+    }
+    <span class="keyword">return</span> <span class="keyword">file</span>;
+}
+</code></pre><hr>
+<p>外部存储</p>
+<p>因为外部存储可能没有被挂载，所以需要先判断是否可用：</p>
+<pre><code>/* Checks if external storage is available <span class="keyword">for</span> read and write */
+public boolean isExternalStorageWritable() {
+    String <span class="keyword">state</span> = Environment.getExternalStorageState();
+    if (Environment.MEDIA_MOUNTED.equals(<span class="keyword">state</span>)) {
+        return true;
+    }
+    return false;
+}
+
+/* Checks if external storage is available <span class="keyword">to</span> at least read */
+public boolean isExternalStorageReadable() {
+    String <span class="keyword">state</span> = Environment.getExternalStorageState();
+    if (Environment.MEDIA_MOUNTED.equals(<span class="keyword">state</span>) ||
+        Environment.MEDIA_MOUNTED_READ_ONLY.equals(<span class="keyword">state</span>)) {
+        return true;
+    }
+    return false;
+}
+</code></pre><ol>
+<li><p><code>getExternalStoragePublicDirectory()</code></p>
+<p> 返回可以任意访问的外部存储路径，删除应用时不会清除该路径。</p>
+</li>
+<li><p><code>getExternalFilesDir()</code></p>
+<p> 返回只能自己访问的外部存储路径，删除应用时该目录下的文件会被删除。</p>
+</li>
+</ol>
+<hr>
+<p><code>getFreeSpace ()</code>和<code>getTotalSpace ()</code>会返回路径下的可用空间和全部空间的字节。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/03/23/Android文件存储/" data-id="cibd9bd7f003x6g8sa2im7l4q" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/文件存储/">文件存储</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Handler原理浅析" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/03/19/Handler原理浅析/" class="article-date">
@@ -295,7 +436,7 @@ mAsynchronous = async;
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/03/19/Handler原理浅析/" data-id="cibbx8hea001u258sw0lyh266" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/03/19/Handler原理浅析/" data-id="cibd9bd57001w6g8s74dgwq6y" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Handler/">Handler</a></li></ul>
@@ -375,7 +516,7 @@ com.android.ide.common.internal.<span class="string">LoggedErrorException:</span
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/03/19/Android-Studio开发遇到的问题/" data-id="cibbx8hgj0052258s1760l7op" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/03/19/Android-Studio开发遇到的问题/" data-id="cibd9bd8m00546g8sillr1th7" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gradle/">Gradle</a></li></ul>
@@ -387,124 +528,9 @@ com.android.ide.common.internal.<span class="string">LoggedErrorException:</span
 
 
   
-    <article id="post-ScrollView中放置ListView" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/03/14/ScrollView中放置ListView/" class="article-date">
-  <time datetime="2015-03-13T16:17:40.000Z" itemprop="datePublished">2015 3月 14</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Android/">Android</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/03/14/ScrollView中放置ListView/">ScrollView中放置ListView</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>最近有个需求是需要在ScrollView中放置一个ListView，如果不做处理的话，直接放置控件会导致：</p>
-<ol>
-<li>ListView的高度设置为wrap_content时，每个item的高度无法控制，可能导致item高度为0而不显示。</li>
-<li>ListView的高度设置为wrap_content时，疯狂调用getView方法导致卡顿。</li>
-<li>ListView的高度设置了合适的高度后，ListView无法滑动。</li>
-</ol>
-<p>其对应的解决方法：</p>
-<ol>
-<li><p>在ListView调用了<code>setAdapter</code>或者<code>notifyDataChange</code>后，使用该方法重新设置ListView的高度。</p>
-<pre><code>public static void setListViewHeightBasedOnChildren<span class="params">(ListView listView)</span> {
-    ListAdapter listAdapter = listView.getAdapter<span class="params">()</span>;
-    <span class="keyword">if</span> <span class="params">(listAdapter == null)</span>
-        return;
-
-    int desiredWidth = View.MeasureSpec.makeMeasureSpec<span class="params">(listView.getWidth<span class="params">()</span>, View.MeasureSpec.UNSPECIFIED)</span>;
-    int totalHeight = <span class="number">0</span>;
-    View view = null;
-    <span class="keyword">for</span> <span class="params">(int i = <span class="number">0</span>; i &lt; listAdapter.getCount<span class="params">()</span>; i++)</span> {
-        <span class="comment">//获取每个item的view</span>
-        view = listAdapter.getView<span class="params">(i, view, listView)</span>;
-        <span class="keyword">if</span> <span class="params">(i == <span class="number">0</span>)</span>
-            view.setLayoutParams<span class="params">(new AbsListView.LayoutParams<span class="params">(desiredWidth, AbsListView.LayoutParams.WRAP_CONTENT)</span>)</span>;
-
-        view.measure<span class="params">(desiredWidth, View.MeasureSpec.UNSPECIFIED)</span>;
-        <span class="comment">//计算总高度</span>
-        totalHeight += view.getMeasuredHeight<span class="params">()</span>;
-    }
-    ViewGroup.LayoutParams params = listView.getLayoutParams<span class="params">()</span>;
-    <span class="comment">//加上divider的高度</span>
-    params.height = totalHeight + <span class="params">(listView.getDividerHeight<span class="params">()</span> * <span class="params">(listAdapter.getCount<span class="params">()</span> - <span class="number">1</span>)</span>)</span>;
-    listView.setLayoutParams<span class="params">(params)</span>;
-    listView.requestLayout<span class="params">()</span>;
-}
-</code></pre><p> 该方法原理就是通过adapter的getView方法返回item的view，计算每个item的高度height乘以item的个数，最后加上divider的高度。(如果知道每个item的高度，可以直接获取adapter的count乘以高度即可，省区调用getView方法的时间)</p>
-<pre><code>使用该方法需要注意：
-<span class="number">1</span>. item的根布局是必须是LinearLayout等重写了<span class="escape">`o</span>nMeasure<span class="escape">`方</span>法的layout，因为获取高度时用到了<span class="escape">`v</span>iew.getMeasuredHeight()<span class="escape">`方</span>法.
-<span class="number">2</span>. 该方法会在Adapter的getView方法前被调用。
-</code></pre></li>
-<li><p>在ListView外部放置一层单独的FrameLayout(性能最高)，设置Layout的高度为wrap_content,然后设置ListView的高度为fill_parent,最后在<code>setAdapter</code>或<code>notifyDataChange</code>后修改<code>setListViewHeightBasedOnChildren</code>方法，通过该方法返回带有正确高度的LinearLayout.LayoutParams(你没有看错，用LinearLayout.LayoutParams来设置FrameLayout)，以此来设置FrameLayout的高度。这样不会疯狂调用getView方法了。</p>
-</li>
-<li><p>在onTouch事件中取消父布局的touch劫持。</p>
-<pre><code>listView.setOnTouchListener(<span class="keyword">new</span> OnTouchListener() {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onTouch</span><span class="params">(View v, MotionEvent event)</span> </span>{
-        v.getParent().requestDisallowInterceptTouchEvent(<span class="keyword">true</span>);
-        <span class="keyword">return</span> <span class="keyword">false</span>;
-    }
-});
-</code></pre></li>
-</ol>
-<hr>
-<p>如果使用了<a href="https://github.com/chrisbanes/Android-PullToRefresh" target="_blank" rel="external">Github开源项目-PullToRefreshListView</a>，它有一个headView和一个BottomView，所以它计算高度的方法会不同：</p>
-<pre><code>public static void setListViewHeightBasedOnChildren<span class="params">(PullToRefreshListView listView)</span> {
-    ListAdapter listAdapter = listView.getRefreshableView<span class="params">()</span>.getAdapter<span class="params">()</span>;
-    <span class="keyword">if</span> <span class="params">(listAdapter == null)</span>
-        return;
-
-    int totalHeight = <span class="number">0</span>;
-    View view = null;
-    <span class="comment">//去掉头尾两个view</span>
-    <span class="keyword">for</span> <span class="params">(int i = <span class="number">1</span>; i &lt; listAdapter.getCount<span class="params">()</span>-<span class="number">1</span>; i++)</span> {
-        view = listAdapter.getView<span class="params">(i, view, listView)</span>;
-        totalHeight += view.getLayoutParams<span class="params">()</span>.height;
-    }
-    ViewGroup.LayoutParams params = listView.getLayoutParams<span class="params">()</span>;
-    params.height = totalHeight + <span class="params">(listView.getRefreshableView<span class="params">()</span>.getDividerHeight<span class="params">()</span> * <span class="params">(listAdapter.getCount<span class="params">()</span> - <span class="number">1</span>)</span>)</span>;
-    listView.setLayoutParams<span class="params">(params)</span>;
-    listView.requestLayout<span class="params">()</span>;
-}
-</code></pre><p>这里使用的是LayoutParams的height作为item的高度，所以在adapter的getView方法中，应该这样初始化：</p>
-<pre><code><span class="keyword">public</span> <span class="function">View <span class="title">getView</span><span class="params">(<span class="keyword">int</span> position, View convertView, ViewGroup parent)</span> </span>{
-    convertView = inflater.inflate(R.layout.parenting_listview_item,parent,<span class="keyword">false</span>);
-}
-</code></pre>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/03/14/ScrollView中放置ListView/" data-id="cibbx8hd1000e258snrqsoi3c" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ListView/">ListView</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ScrollView/">ScrollView</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -524,7 +550,7 @@ com.android.ide.common.internal.<span class="string">LoggedErrorException:</span
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Activity/">Activity</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AsyncTask/">AsyncTask</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BaseAdapter/">BaseAdapter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bitmap/">Bitmap</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Broadcast-Receiver/">Broadcast Receiver</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Content-Provider/">Content Provider</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditText/">EditText</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gradle/">Gradle</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Handler/">Handler</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ListView/">ListView</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFileInput/">OpenFileInput</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFileOutput/">OpenFileOutput</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PopupWindow/">PopupWindow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/">SQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ScrollView/">ScrollView</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Service/">Service</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TextView/">TextView</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UI线程/">UI线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/launchMode/">launchMode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shape/">shape</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sharedPreference/">sharedPreference</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代码混淆/">代码混淆</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优化性能/">优化性能</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存泄漏/">内存泄漏</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/反编译/">反编译</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/四大组件/">四大组件</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/壁纸设置/">壁纸设置</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多线程/">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/对象引用/">对象引用</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/屏幕单位/">屏幕单位</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/序列化/">序列化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/手柄支持/">手柄支持</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据存储/">数据存储</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件存储/">文件存储</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/版本控制/">版本控制</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/获取图片/">获取图片</a><span class="tag-list-count">3</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Activity/">Activity</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AsyncTask/">AsyncTask</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BaseAdapter/">BaseAdapter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bitmap/">Bitmap</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Broadcast-Receiver/">Broadcast Receiver</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Content-Provider/">Content Provider</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditText/">EditText</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gradle/">Gradle</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Handler/">Handler</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ListView/">ListView</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFileInput/">OpenFileInput</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFileOutput/">OpenFileOutput</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PopupWindow/">PopupWindow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/">SQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ScrollView/">ScrollView</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Service/">Service</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TextView/">TextView</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UI线程/">UI线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/launchMode/">launchMode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shape/">shape</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sharedPreference/">sharedPreference</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代码混淆/">代码混淆</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优化性能/">优化性能</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存泄漏/">内存泄漏</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/反编译/">反编译</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/四大组件/">四大组件</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/壁纸设置/">壁纸设置</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多线程/">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/对象引用/">对象引用</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/屏幕单位/">屏幕单位</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/序列化/">序列化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/手柄支持/">手柄支持</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据存储/">数据存储</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件存储/">文件存储</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/版本控制/">版本控制</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/获取图片/">获取图片</a><span class="tag-list-count">3</span></li></ul>
     </div>
   </div>
 
@@ -533,7 +559,7 @@ com.android.ide.common.internal.<span class="string">LoggedErrorException:</span
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">19</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">19</span></li></ul>
     </div>
   </div>
 
@@ -543,6 +569,10 @@ com.android.ide.common.internal.<span class="string">LoggedErrorException:</span
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2015/06/26/一些自适应高度的控件/">一些自适应高度的控件</a>
+          </li>
         
           <li>
             <a href="/2015/05/13/ProgressBar相关/">ProgressBar相关</a>
@@ -558,10 +588,6 @@ com.android.ide.common.internal.<span class="string">LoggedErrorException:</span
         
           <li>
             <a href="/2015/03/19/Handler原理浅析/">Handler原理浅析</a>
-          </li>
-        
-          <li>
-            <a href="/2015/03/19/Android-Studio开发遇到的问题/">Android Studio开发遇到的问题</a>
           </li>
         
       </ul>
