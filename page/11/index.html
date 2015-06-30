@@ -61,127 +61,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-Android-Service-三" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/01/10/Android-Service-三/" class="article-date">
-  <time datetime="2015-01-10T11:32:15.000Z" itemprop="datePublished">2015 1月 10</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Android/">Android</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/10/Android-Service-三/">Android Service (三)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在前面有关服务的<a href="http://niorgai.github.io/2015/01/06/Android-Service-%E4%B8%80/" target="_blank" rel="external">第一篇</a>和<a href="http://niorgai.github.io/2015/01/08/Android-Service-%E4%BA%8C/" target="_blank" rel="external">第二篇</a>中已经说明了怎么开启一个服务，但之前的描述都是指一个应用内的服务，这些服务不能被其他应用程序调用。</p>
-<p>Android采用了远程过程调用(Remote Procedure Call,RPC)来使其他应用程序也可以访问本应用程序内的服务。与其他基于RPC的解决方案一样，Android使用接口定义语言(Interface Definition Language)来公开服务的接口，所以跨进程访问的服务便称为<strong>AIDL(Android Interface Definition Language)</strong>服务。</p>
-<p>一般创建AIDL服务的步骤如下(以Ant构建的项目为例)：</p>
-<ol>
-<li>在项目的src文件夹下任意包中新建一个XX.aidl文件，文件内容为相应包名及接口定义。如果aidl文件内容正确，gen目录下回自动生成一个同名的Java接口文件(gradle构建的项目没有找到。。)。</li>
-<li>建立一个Service类并实现aidl文件定义的Java接口。</li>
-<li>在AndroidManiFest.xml文件中注册AIDL服务。</li>
-</ol>
-<p>下面用一个例子来介绍：</p>
-<ol>
-<li><p>新建一个ITest.aidl文件,接口只有一个getData方法。</p>
-<pre><code><span class="keyword">package</span> qiu.test
-
-<span class="class"><span class="keyword">interface</span> <span class="title">ITest</span></span>{
-    <span class="function">String <span class="title">getData</span><span class="params">()</span></span>;
-}
-</code></pre></li>
-<li><p>编写一个TestService类。</p>
-<pre><code>public <span class="class"><span class="keyword">class</span> <span class="title">TestService</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">Service</span>{</span>
-
-    public <span class="class"><span class="keyword">class</span> <span class="title">TestServiceeImp</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">ITest</span>.<span class="title">Stub</span>{</span>
-
-        <span class="annotation">@Override</span>
-         public <span class="type">String</span> getData() <span class="keyword">throws</span> <span class="type">RemoteException</span>{
-            <span class="keyword">return</span> <span class="string">"Here is data"</span>;
-        }
-    }
-
-    <span class="annotation">@Override</span>
-    public <span class="type">IBinder</span> onBind(<span class="type">Intent</span> intent) {
-        <span class="keyword">return</span> <span class="keyword">new</span> <span class="type">TestServiceImp</span>();
-    }
-}
-</code></pre><p> Stub为IBinder的子类，通过onBind方法返回TestServiceImp对象，客户端便可以获取Service对象。</p>
-</li>
-<li><p>在AndroidManiFest.xml文件中配置Service。</p>
-<pre><code><span class="tag">&lt;<span class="title">service</span> <span class="attribute">android:name</span>=<span class="value">".TestService"</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">intent-filter</span>&gt;</span>
-        <span class="tag">&lt;<span class="title">action</span> <span class="attribute">android:name</span>=<span class="value">"qiu.test.ITest"</span>/&gt;</span>
-    <span class="tag">&lt;/<span class="title">intent-filter</span>&gt;</span>
-<span class="tag">&lt;/<span class="title">service</span>&gt;</span>
-</code></pre><p> 其实qiu.test.ITest便是客户端用于访问AIDL服务的ID。</p>
-</li>
-</ol>
-<hr>
-<h3 id="以上就是服务端的代码，也可以理解为另一程序的Service代码。下面来编写客户端，或者说调用端的代码。">以上就是服务端的代码，也可以理解为另一程序的Service代码。下面来编写客户端，或者说调用端的代码。</h3><hr>
-<p>首先需要将服务端自动生成的ITest.java文件连同包目录一起复制到src文件中。</p>
-<p>接下来实现MainActivity类。</p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>{
-
-    <span class="annotation">@Override</span>
-    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>{
-        <span class="keyword">super</span>.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        <span class="comment">//获取的服务端Service对象，通过该对象可以调用任意共有方法</span>
-        ITest service = <span class="keyword">null</span>;
-
-        ServiceConnection connection = <span class="keyword">new</span> ServiceConnection() {
-            <span class="annotation">@Override</span>
-            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceConnected</span><span class="params">(ComponentName name, IBinder service)</span> </span>{
-                <span class="comment">//初始化服务端Service对象</span>
-                service = ITest.Stub.asInterface(service);
-            }
-
-            <span class="annotation">@Override</span>
-            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceDisconnected</span><span class="params">(ComponentName name)</span> </span>{
-
-            }
-        };
-
-        <span class="comment">//绑定服务,使用隐式Intent</span>
-        bindService(<span class="keyword">new</span> Intent(<span class="string">"qiu.test.ITest"</span>), connection, BIND_AUTO_CREATE);
-
-        <span class="comment">//绑定后就可以调用ITest的任意方法，比如getData。</span>
-        System.out.println(<span class="string">"Data is : "</span> + service.getData());
-
-    }
-}
-</code></pre>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/10/Android-Service-三/" data-id="cibd9bd94005c6g8se7u8r853" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Service/">Service</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/四大组件/">四大组件</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
     <article id="post-Broadcast-Receiver使用" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/01/10/Broadcast-Receiver使用/" class="article-date">
@@ -345,9 +224,96 @@ sendBroadcast<span class="params">(broadcastIntent)</span>;
 
 
   
+    <article id="post-Android-Service-一" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/01/06/Android-Service-一/" class="article-date">
+  <time datetime="2015-01-06T07:40:40.000Z" itemprop="datePublished">2015 1月 6</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/01/06/Android-Service-一/">Android Service (一)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Service(服务)也是Android四大应用程序组件之一，Service都是通过android.app.Service类继承而来，在这里先介绍Service基础。</p>
+<p>Service没有UI部分，而是一直在Android后台运行，通常用于音乐播放或下载功能。可以通过onBind方法绑定Service与Activity,也可以通过onStartCommand方法启动Service(onStart方法已经废弃)。</p>
+<ul>
+<li><strong>使用onStartCommand方法启动Service,在应用退出时不会销毁服务。除非程序自己销毁</strong></li>
+<li><strong>使用onBind方法启动Service时，在绑定的组件销毁时也会销毁绑定的服务</strong></li>
+</ul>
+<p>Service的生命周期如下：</p>
+<p><img src="http://7sbqys.com1.z0.glb.clouddn.com/live_of_service.png" alt=""></p>
+<p>关于bindService的生命周期,这张图的解释也比较细致。</p>
+<p><img src="http://7sbqys.com1.z0.glb.clouddn.com/bind_service.png" alt=""></p>
+<p>下面来举个栗子：<strong>Service的名字为MyService</strong></p>
+<ul>
+<li><p>可以通过以下代码启动服务。</p>
+<pre><code>Intent serviceIntent = <span class="keyword">new</span> Intent(<span class="keyword">this</span>,MyService.class);
+<span class="comment">//启动服务</span>
+startService(serviceIntent);
+<span class="comment">//绑定服务,需要先定义ServiceConnection</span>
+ServiceConnection connection = <span class="keyword">new</span> ServiceConnection() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onServiceConnected</span><span class="params">(ComponentName name, IBinder service)</span> </span>{
+        <span class="comment">//start task</span>
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onServiceDisconnected</span><span class="params">(ComponentName name)</span> </span>{
+
+    }
+   };
+<span class="comment">//第三个参数为标志位,BIND_AUTO_CREATE表示绑定时自动创建Service(调用onCreate方法)</span>
+   bindService(serviceIntent,connection,BIND_AUTO_CREATE);
+</code></pre></li>
+</ul>
+<pre><code>还需在AndroidManifest.xml的&lt;<span class="type">application</span>&gt;标签中添加以下代码:
+
+    &lt;service android:enabled=<span class="string">"true"</span>
+         android:<span class="property">name</span>=<span class="string">".MyService"</span>/&gt;
+</code></pre><ul>
+<li><p>可以通过以下代码销毁服务。</p>
+<pre><code><span class="comment">//销毁服务</span>
+stopService<span class="params">(serviceIntent)</span>;
+<span class="comment">//解绑服务</span>
+unbindService<span class="params">(serviceIntent)</span>;
+</code></pre></li>
+</ul>
+<p>注意只有当一个Service没有与任何组件关联并停止时，该Service才会被销毁。即如果既调用了startService又调用了bindService,则要同时调用stopService和unbindService才能销毁服务。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/01/06/Android-Service-一/" data-id="cibd9bd9d005g6g8ssuqcn38c" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Service/">Service</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/四大组件/">四大组件</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/10/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="extend next" rel="next" href="/page/12/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/10/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/12/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -358,7 +324,7 @@ sendBroadcast<span class="params">(broadcastIntent)</span>;
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">43</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android开发tips/">Android开发tips</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/方便开发/">方便开发</a><span class="category-list-count">3</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android开发tips/">Android开发tips</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/方便开发/">方便开发</a><span class="category-list-count">3</span></li></ul>
     </div>
   </div>
 
@@ -367,7 +333,7 @@ sendBroadcast<span class="params">(broadcastIntent)</span>;
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Activity/">Activity</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AsyncTask/">AsyncTask</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BaseAdapter/">BaseAdapter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bitmap/">Bitmap</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Broadcast-Receiver/">Broadcast Receiver</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Content-Provider/">Content Provider</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditText/">EditText</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gradle/">Gradle</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Handler/">Handler</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ListView/">ListView</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFileInput/">OpenFileInput</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFileOutput/">OpenFileOutput</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PopupWindow/">PopupWindow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/">SQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ScrollView/">ScrollView</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Service/">Service</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TextView/">TextView</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UI线程/">UI线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/launchMode/">launchMode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shape/">shape</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sharedPreference/">sharedPreference</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代码混淆/">代码混淆</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优化性能/">优化性能</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存泄漏/">内存泄漏</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/反编译/">反编译</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/四大组件/">四大组件</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/壁纸设置/">壁纸设置</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多线程/">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/对象引用/">对象引用</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/屏幕单位/">屏幕单位</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/序列化/">序列化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/手柄支持/">手柄支持</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据存储/">数据存储</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件存储/">文件存储</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/版本控制/">版本控制</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/获取图片/">获取图片</a><span class="tag-list-count">3</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Activity/">Activity</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AsyncTask/">AsyncTask</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BaseAdapter/">BaseAdapter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bitmap/">Bitmap</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Broadcast-Receiver/">Broadcast Receiver</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Content-Provider/">Content Provider</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditText/">EditText</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gradle/">Gradle</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Handler/">Handler</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ListView/">ListView</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFileInput/">OpenFileInput</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFileOutput/">OpenFileOutput</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PopupWindow/">PopupWindow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/">SQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ScrollView/">ScrollView</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Service/">Service</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TextView/">TextView</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UI线程/">UI线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/launchMode/">launchMode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shape/">shape</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sharedPreference/">sharedPreference</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代码混淆/">代码混淆</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优化性能/">优化性能</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存泄漏/">内存泄漏</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/反编译/">反编译</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/四大组件/">四大组件</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/壁纸设置/">壁纸设置</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多线程/">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/对象引用/">对象引用</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/屏幕单位/">屏幕单位</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/序列化/">序列化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/手柄支持/">手柄支持</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据存储/">数据存储</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件存储/">文件存储</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/版本控制/">版本控制</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/获取图片/">获取图片</a><span class="tag-list-count">3</span></li></ul>
     </div>
   </div>
 
@@ -376,7 +342,7 @@ sendBroadcast<span class="params">(broadcastIntent)</span>;
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">19</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">19</span></li></ul>
     </div>
   </div>
 
