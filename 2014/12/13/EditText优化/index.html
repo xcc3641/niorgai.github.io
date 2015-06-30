@@ -23,7 +23,7 @@ android:singleLine=&quot;fals">
  在多行输入后光标会水平往右滚动，为了保持换行输入的习惯，还要设置
 android:inputType=&quot;textMultiLine&quot;
 android:singleLine=&quot;fals">
-<meta property="og:updated_time" content="2015-03-11T08:49:02.000Z">
+<meta property="og:updated_time" content="2015-06-30T09:59:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="EditText优化">
 <meta name="twitter:description" content="光标设置
@@ -146,6 +146,8 @@ textViewExtras.setMovementMethod(<span class="keyword">new</span> ScrollingMovem
 <li>中划线 : textview.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG );</li>
 <li>底部横线: textview.getPaint().setFlags(Paint. UNDERLINE_TEXT_FLAG )或者\<u>\</u></li>
 </ol>
+</li>
+<li><p>设置<code>android:imeOptions</code>属性时,有可能会失效.只需要再设置<code>android:singleLine</code>为true或者设置<code>android:inputType</code>为text,就可以修复~</p>
 </li>
 </ol>
 

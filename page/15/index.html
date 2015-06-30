@@ -284,6 +284,8 @@ textViewExtras.setMovementMethod(<span class="keyword">new</span> ScrollingMovem
 <li>底部横线: textview.getPaint().setFlags(Paint. UNDERLINE_TEXT_FLAG )或者\<u>\</u></li>
 </ol>
 </li>
+<li><p>设置<code>android:imeOptions</code>属性时,有可能会失效.只需要再设置<code>android:singleLine</code>为true或者设置<code>android:inputType</code>为text,就可以修复~</p>
+</li>
 </ol>
 
       
