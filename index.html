@@ -244,7 +244,19 @@
 <pre><code>View view = <span class="params">(LayoutInflater.from<span class="params">(context)</span>.inflate<span class="params">(R.layout.empty_goods,null,<span class="literal">false</span>)</span>)</span>;
 <span class="params">(<span class="params">(ViewGroup)</span>gridView.getParent<span class="params">()</span>)</span>.addView<span class="params">(view, new ViewGroup.LayoutParams<span class="params">(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)</span>)</span>;
 gridView.setEmptyView<span class="params">(view)</span>;
-</code></pre>
+</code></pre><ol>
+<li><p>ListView <code>setSelection</code>方法有时候可能会失效,原因一个是没有焦点,一个是没有在主线程中执行.解决方法是:</p>
+<pre><code>listView.<span class="params">(new Runnable<span class="params">()</span> {
+    @Override
+    public void run<span class="params">()</span> {
+        listView.requestFocusFromTouch<span class="params">()</span>;
+        listView.setItemChecked<span class="params">(i, <span class="literal">true</span>)</span>;
+        listView.setSelection<span class="params">(i)</span>;
+    }
+})</span>;
+</code></pre></li>
+</ol>
+
       
     </div>
     <footer class="article-footer">
