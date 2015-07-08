@@ -14,7 +14,7 @@ java进程：Android中运行于dalvik虚拟机之上的进程。每一个java�
 内存空间是一定的，所以在对象无用时就要回收一些对象来留出空间。当Java Garbage C">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android内存泄漏">
-<meta property="og:url" content="http://yoursite.com/2015/03/03/Android内存泄漏/index.html">
+<meta property="og:url" content="http://niorgai.github.io/2015/03/03/Android内存泄漏/index.html">
 <meta property="og:site_name" content="Jianqiu's blog">
 <meta property="og:description" content="以下内容提取于Android进程的内存管理分析及Android内存泄漏分析及调试.
 Android中的内存分为：
@@ -72,7 +72,7 @@ java进程：Android中运行于dalvik虚拟机之上的进程。每一个java�
         <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://niorgai.github.io"></form>
       </div>
     </div>
   </div>
@@ -116,8 +116,8 @@ java进程：Android中运行于dalvik虚拟机之上的进程。每一个java�
 <p><strong>常见的内存泄漏</strong></p>
 <ol>
 <li>查询数据库没有关闭Cursor。</li>
-<li>使用BaseAdapter作为适配器时没有复用convertView。可以参考<a href="http://niorgai.github.io/2014/12/13/ListView%E4%B8%8EBaseAdapter%E4%BC%98%E5%8C%96/" target="_blank" rel="external">ListView与BaseAdapter优化</a>.</li>
-<li>bitmap没有回收，可以参考<a href="http://niorgai.github.io/2015/02/27/Bitmap%E7%9B%B8%E5%85%B3-%E7%AE%A1%E7%90%86Bitmap%E5%86%85%E5%AD%98/" target="_blank" rel="external">Bitmap相关:管理Bitmap内存</a>.</li>
+<li>使用BaseAdapter作为适配器时没有复用convertView。可以参考<a href="http://niorgai.github.io/2014/12/13/ListView%E4%B8%8EBaseAdapter%E4%BC%98%E5%8C%96/">ListView与BaseAdapter优化</a>.</li>
+<li>bitmap没有回收，可以参考<a href="http://niorgai.github.io/2015/02/27/Bitmap%E7%9B%B8%E5%85%B3-%E7%AE%A1%E7%90%86Bitmap%E5%86%85%E5%AD%98/">Bitmap相关:管理Bitmap内存</a>.</li>
 <li>注册对象后没有反注册，比如Broadcast Receiver等。</li>
 <li>handler问题，如果handler是非静态的，会导致Activity或者Service不被回收，所以应当注册为静态内部类，同时在onDestroy时停止线程:<code>mThread.getLooper().quit();</code></li>
 <li>Activity被静态引用，特别是缓存bitmap时，解决方法可以考虑使用Application的context代替Activity的context。</li>
@@ -126,7 +126,7 @@ java进程：Android中运行于dalvik虚拟机之上的进程。每一个java�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/03/03/Android内存泄漏/" data-id="cibd9bd85004n6g8swxat78dg" class="article-share-link">Share</a>
+      <a data-url="http://niorgai.github.io/2015/03/03/Android内存泄漏/" data-id="cibd9bd85004n6g8swxat78dg" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内存泄漏/">内存泄漏</a></li></ul>
@@ -160,7 +160,7 @@ java进程：Android中运行于dalvik虚拟机之上的进程。每一个java�
 
 <section id="comments">
    <!-- 多说评论框 start -->
-    <div class="ds-thread" data-thread-key="post-Android内存泄漏" data-title="Android内存泄漏" data-url="http://yoursite.com/2015/03/03/Android内存泄漏/"></div>
+    <div class="ds-thread" data-thread-key="post-Android内存泄漏" data-title="Android内存泄漏" data-url="http://niorgai.github.io/2015/03/03/Android内存泄漏/"></div>
     <!-- 多说评论框 end -->
     <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
     <script type="text/javascript">

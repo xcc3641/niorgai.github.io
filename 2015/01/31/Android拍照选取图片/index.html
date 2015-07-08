@@ -10,7 +10,7 @@
 在onActivityResult中通过返回的intent.getExtras().get(&amp;q">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android拍照选取图片">
-<meta property="og:url" content="http://yoursite.com/2015/01/31/Android拍照选取图片/index.html">
+<meta property="og:url" content="http://niorgai.github.io/2015/01/31/Android拍照选取图片/index.html">
 <meta property="og:site_name" content="Jianqiu's blog">
 <meta property="og:description" content="Android经常会需要拍照、裁剪及图库中选择图片，其实都是通过intent调用系统相机或者系统图册，然后在onActivityResult中捕捉返回即可。
 正常拍照选择图片的代码：Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -60,7 +60,7 @@
         <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://niorgai.github.io"></form>
       </div>
     </div>
   </div>
@@ -102,7 +102,7 @@
 <p>说明：</p>
 <p>拍照获取的图片推荐存放在 <code>Activity.this.getExternalCacheDir()</code>返回的<code>/storage/sdcard0/Android/data/&lt;package name&gt;/cache</code>路径，通过<code>new File(path,fileName)</code>新建一个file，然后通过Uri.fromFile(file)即可获取正确的uri，记得fileName需要带后缀。</p>
 <p><strong>为了防止Uri路径不对导致不能保存，使用前必须确保文件路径无误，不然会导致“无法保存剪裁的图片”的错误。或者无提示但不能点击确定保存图片。正确获取的Uri最终以file://开头。</strong>。</p>
-<p><strong>uri获取bitmap对象的方法可以参考<a href="http://niorgai.github.io/2015/02/22/Bitmap%E7%9B%B8%E5%85%B3-%E8%AF%BB%E5%8F%96%E5%A4%A7%E5%9B%BE%E7%89%87/" target="_blank" rel="external">Bitmap相关:读取大图片</a>。</strong></p>
+<p><strong>uri获取bitmap对象的方法可以参考<a href="http://niorgai.github.io/2015/02/22/Bitmap%E7%9B%B8%E5%85%B3-%E8%AF%BB%E5%8F%96%E5%A4%A7%E5%9B%BE%E7%89%87/">Bitmap相关:读取大图片</a>。</strong></p>
 <p>代码示例：</p>
 <pre><code><span class="built_in">String</span> fileName ＝ <span class="string">"temp.jpg"</span>;
 File tmpFile = <span class="keyword">new</span> File(<span class="keyword">this</span>.getExternalCacheDir(),fileName);
@@ -121,7 +121,7 @@ intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</spa
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/31/Android拍照选取图片/" data-id="cibd9bd7i00416g8s5p1w5rc5" class="article-share-link">Share</a>
+      <a data-url="http://niorgai.github.io/2015/01/31/Android拍照选取图片/" data-id="cibd9bd7i00416g8s5p1w5rc5" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/获取图片/">获取图片</a></li></ul>
@@ -155,7 +155,7 @@ intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</spa
 
 <section id="comments">
    <!-- 多说评论框 start -->
-    <div class="ds-thread" data-thread-key="post-Android拍照选取图片" data-title="Android拍照选取图片" data-url="http://yoursite.com/2015/01/31/Android拍照选取图片/"></div>
+    <div class="ds-thread" data-thread-key="post-Android拍照选取图片" data-title="Android拍照选取图片" data-url="http://niorgai.github.io/2015/01/31/Android拍照选取图片/"></div>
     <!-- 多说评论框 end -->
     <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
     <script type="text/javascript">

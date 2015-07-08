@@ -8,7 +8,7 @@
   <meta name="description" content="Android | jianqiu&apos;s blog">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Jianqiu's blog">
-<meta property="og:url" content="http://yoursite.com/page/4/index.html">
+<meta property="og:url" content="http://niorgai.github.io/page/4/index.html">
 <meta property="og:site_name" content="Jianqiu's blog">
 <meta property="og:description" content="Android | jianqiu&apos;s blog">
 <meta name="twitter:card" content="summary">
@@ -53,7 +53,7 @@
         <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://niorgai.github.io"></form>
       </div>
     </div>
   </div>
@@ -99,8 +99,8 @@
 <p><strong>常见的内存泄漏</strong></p>
 <ol>
 <li>查询数据库没有关闭Cursor。</li>
-<li>使用BaseAdapter作为适配器时没有复用convertView。可以参考<a href="http://niorgai.github.io/2014/12/13/ListView%E4%B8%8EBaseAdapter%E4%BC%98%E5%8C%96/" target="_blank" rel="external">ListView与BaseAdapter优化</a>.</li>
-<li>bitmap没有回收，可以参考<a href="http://niorgai.github.io/2015/02/27/Bitmap%E7%9B%B8%E5%85%B3-%E7%AE%A1%E7%90%86Bitmap%E5%86%85%E5%AD%98/" target="_blank" rel="external">Bitmap相关:管理Bitmap内存</a>.</li>
+<li>使用BaseAdapter作为适配器时没有复用convertView。可以参考<a href="http://niorgai.github.io/2014/12/13/ListView%E4%B8%8EBaseAdapter%E4%BC%98%E5%8C%96/">ListView与BaseAdapter优化</a>.</li>
+<li>bitmap没有回收，可以参考<a href="http://niorgai.github.io/2015/02/27/Bitmap%E7%9B%B8%E5%85%B3-%E7%AE%A1%E7%90%86Bitmap%E5%86%85%E5%AD%98/">Bitmap相关:管理Bitmap内存</a>.</li>
 <li>注册对象后没有反注册，比如Broadcast Receiver等。</li>
 <li>handler问题，如果handler是非静态的，会导致Activity或者Service不被回收，所以应当注册为静态内部类，同时在onDestroy时停止线程:<code>mThread.getLooper().quit();</code></li>
 <li>Activity被静态引用，特别是缓存bitmap时，解决方法可以考虑使用Application的context代替Activity的context。</li>
@@ -109,7 +109,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/03/03/Android内存泄漏/" data-id="cibd9bd85004n6g8swxat78dg" class="article-share-link">Share</a>
+      <a data-url="http://niorgai.github.io/2015/03/03/Android内存泄漏/" data-id="cibd9bd85004n6g8swxat78dg" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内存泄漏/">内存泄漏</a></li></ul>
@@ -208,7 +208,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/03/02/Activity生命周期/" data-id="cibd9bd9i005r6g8smdyqj2m9" class="article-share-link">Share</a>
+      <a data-url="http://niorgai.github.io/2015/03/02/Activity生命周期/" data-id="cibd9bd9i005r6g8smdyqj2m9" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Activity/">Activity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/四大组件/">四大组件</a></li></ul>
@@ -421,7 +421,7 @@ dialog.dismiss()<span class="comment">;</span>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/03/02/Loading界面简单实现/" data-id="cibd9bd4c00156g8s7telpztt" class="article-share-link">Share</a>
+      <a data-url="http://niorgai.github.io/2015/03/02/Loading界面简单实现/" data-id="cibd9bd4c00156g8s7telpztt" class="article-share-link">Share</a>
       
       
     </footer>
