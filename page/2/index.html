@@ -646,6 +646,19 @@ mAsynchronous = async;
       
         
           <ol>
+<li><p>Android studio卡顿优化</p>
+<p> 除了机器配置之外,也可以给Android Studio分配更多内存.<br> 打开Android Studio的安装目录,Mac下进入bin目录,打开studio.vmoptions文件,<br> 修改以下配置</p>
+<ol>
+<li>-Xms:JVM堆内存,默认是物理内存的1/64.</li>
+<li>-Xmx:JVM最大内存,默认是物理内存的1/4.</li>
+<li>-XX:MaxPermSize:最大非堆内存,默认是物理内存的1/4.</li>
+<li><p>-XX:ReservedCodeCacheSize:缓存大小.</p>
+<p>把这些调大就好了~</p>
+</li>
+</ol>
+</li>
+</ol>
+<ol>
 <li><p>Gradle运行失败：</p>
 <pre><code><span class="string">Error:</span>Execution failed <span class="keyword">for</span> task <span class="string">':app:dexDebug'</span>.
 com.android.ide.common.internal.<span class="string">LoggedErrorException:</span> Failed to run <span class="string">command:</span>
