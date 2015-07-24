@@ -144,6 +144,116 @@
           
           
             
+              <a class="post-title-link" href="/2015/02/09/Gradle开发添加libs/">
+                Gradle开发添加libs
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Feb 9
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/02/09/Gradle开发添加libs/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/02/09/Gradle开发添加libs/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>使用Android Studio构建工程时，默认会使用Gradle，工程结构和编译都有不同。</p>
+<p><strong>添加libs：</strong></p>
+<ol>
+<li>jar包一样还是放在libs根目录下.</li>
+<li>so文件放在<code>src/main/jniLibs/armeabi</code>目录下,有的cpu可能要放在<code>src/main/jniLibs/armeabi-v7a</code>目录下，暂时不支持x86架构。否则会因为找不到so文件引发<code>java.lang.UnsatisfiedLinkError</code>.</li>
+</ol>
+<p>最后app下完整的dependencies为：</p>
+<pre><code><span class="keyword">dependencies</span> {
+    <span class="keyword">compile</span> <span class="keyword">fileTree</span>(dir: <span class="string">'libs'</span>, <span class="keyword">include</span>: [<span class="string">'*.jar'</span>])
+    <span class="keyword">compile</span> <span class="keyword">fileTree</span>(dir: <span class="string">'src/main/jniLibs/armeabi'</span>, <span class="keyword">include</span>: [<span class="string">'*.so'</span>])
+}
+</code></pre><p><strong>添加Module(dependency)：</strong></p>
+<p>Android Studio默认方式是File-&gt;Import Module.同时会在添加的Module目录下<strong>自动</strong>添加<code>build.gradle</code>文件，需要在该文件中将gradle配置<strong>手动</strong>修改为与原工程<code>build.gradle</code>相同的Gradle配置。不然会因为该gradle文件的不同而导致很多编译不通过的问题。</p>
+<p>eg：我添加了<code>:Slidelibrary</code>,project下的<code>settings.gradle</code>文件为：</p>
+<pre><code><span class="keyword">include</span> <span class="string">':app'</span>, <span class="string">':Slidelibrary'</span>
+</code></pre><p>最后app下完整的dependencies为：</p>
+<pre><code><span class="keyword">dependencies</span> {
+    <span class="keyword">compile</span> <span class="keyword">fileTree</span>(dir: <span class="string">'libs'</span>, <span class="keyword">include</span>: [<span class="string">'*.jar'</span>])
+    <span class="keyword">compile</span> <span class="keyword">fileTree</span>(dir: <span class="string">'src/main/jniLibs/armeabi'</span>, <span class="keyword">include</span>: [<span class="string">'*.so'</span>])
+    <span class="keyword">compile</span> <span class="keyword">project</span>(<span class="string">':Slidelibrary'</span>)
+}
+</code></pre><p><strong>注意:</strong></p>
+<ol>
+<li>原项目的support包与library的support包不能重复，否则会导致报错：<code>binary xml file:</code>或者<code>classNotFoundException</code>.解决方法为在原项目的gradle文件中删除该dependence，在library的gardle中增加对应的dependence，并且记得编译该library。</li>
+</ol>
+<hr>
+<p>附上一些常用的lib：</p>
+<ol>
+<li><code>compile &#39;com.google.code.gson:gson:2.3.1&#39;</code> <a href="https://code.google.com/p/google-gson/" target="_blank" rel="external">解析Json</a></li>
+<li><code>compile &#39;com.loopj.android:android-async-http:1.4.6&#39;</code><a href="http://loopj.com/android-async-http/" target="_blank" rel="external">AsyncHttp异步HttpClient</a></li>
+<li><code>compile &#39;com.makeramen:roundedimageview:2.0.0&#39;</code> <a href="https://github.com/vinc3m1/RoundedImageView" target="_blank" rel="external">各种形状的图片</a></li>
+<li><code>compile &#39;com.mcxiaoke.volley:library:1.0.+&#39;</code> <a href="https://github.com/mcxiaoke/android-volley" target="_blank" rel="external">轻量Http Volley</a></li>
+<li><code>compile &#39;com.facebook.stetho:stetho:1.0.1&#39;</code><a href="https://github.com/facebook/stetho" target="_blank" rel="external">Chrome调试</a></li>
+</ol>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/02/09/Android游戏操控捕捉输入/">
                 Android游戏操控捕捉输入
               </a>
@@ -427,117 +537,11 @@ MotionEvent motionEvent = MotionEvent.obtain(
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/02/05/Android游戏操控基础相关/">
-                Android游戏操控基础相关
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Feb 5
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/02/05/Android游戏操控基础相关/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/02/05/Android游戏操控基础相关/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <ol>
-<li><p>先说明SDK更新方面：</p>
-<ul>
-<li>2.3(SDK9) 支持 D-pad。</li>
-<li>3.1(SDK12) 支持 添加了Gamepad和Joystick。</li>
-<li>4.1(SDK16) 完善了InputDevice的相关API。</li>
-</ul>
-</li>
-<li><p>主要的HIM(Human Interface Device)包括遥控杆(Joystick),手柄(gamepad),而D-pad是指手柄的方向键(下图中的1)。分别在InputDevice中可以判断：</p>
-<pre><code>   int[] devs = InputDevice.getDeviceIds<span class="params">()</span>;
-<span class="keyword">for</span><span class="params">(int id : devs)</span>{
-    InputDevice dev = InputDevice.getDevice<span class="params">(id)</span>;
-    int sources = dev.getSources<span class="params">()</span>;
-
-    <span class="keyword">if</span><span class="params">(<span class="params">(sources &amp; InputDevice.SOURCE_GAMEPAD)</span> == InputDevice.SOURCE_GAMEPAD)</span>{
-           <span class="comment">//is Gamepad</span>
-       }
-
-       <span class="keyword">if</span><span class="params">(<span class="params">(sources &amp; InputDevice.SOURCE_JOYSTICK)</span> == InputDevice.SOURCE_JOYSTICK)</span>{
-           <span class="comment">//is Joystick</span>
-       }
-
-       <span class="keyword">if</span><span class="params">(<span class="params">(sources &amp; InputDevice.SOURCE_DPAD)</span> != InputDevice.SOURCE_DPAD)</span>{
-           <span class="comment">//is Joystick,notice is '!='</span>
-       }
-   }
-</code></pre></li>
-<li><p>官方的训练教程中主要有三篇，<a href="http://developer.android.com/intl/zh-cn/training/game-controllers/controller-input.html" target="_blank" rel="external">第一篇</a>说明怎么检测输入设备。<a href="http://developer.android.com/intl/zh-cn/training/game-controllers/compatibility.html" target="_blank" rel="external">第二篇</a>说明怎么根据SDK兼容不同Android版本。<a href="http://developer.android.com/intl/zh-cn/training/game-controllers/multiple-controllers.html" target="_blank" rel="external">第三篇</a>说明怎么处理多个用户同时操控。</p>
-</li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
   <div class="pagination">
-    <a class="extend prev" rel="prev" href="/page/6/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/8/">&raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/6/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="extend next" rel="next" href="/page/8/">&raquo;</a>
   </div>
 
 
@@ -571,7 +575,7 @@ MotionEvent motionEvent = MotionEvent.obtain(
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">54</span>
+              <span class="site-state-item-count">55</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

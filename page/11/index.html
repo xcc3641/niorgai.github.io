@@ -144,6 +144,161 @@
           
           
             
+              <a class="post-title-link" href="/2015/01/10/Android-Service-三/">
+                Android Service (三)
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Jan 10
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/01/10/Android-Service-三/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/10/Android-Service-三/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>在前面有关服务的<a href="http://niorgai.github.io/2015/01/06/Android-Service-%E4%B8%80/">第一篇</a>和<a href="http://niorgai.github.io/2015/01/08/Android-Service-%E4%BA%8C/">第二篇</a>中已经说明了怎么开启一个服务，但之前的描述都是指一个应用内的服务，这些服务不能被其他应用程序调用。</p>
+<p>Android采用了远程过程调用(Remote Procedure Call,RPC)来使其他应用程序也可以访问本应用程序内的服务。与其他基于RPC的解决方案一样，Android使用接口定义语言(Interface Definition Language)来公开服务的接口，所以跨进程访问的服务便称为<strong>AIDL(Android Interface Definition Language)</strong>服务。</p>
+<p>一般创建AIDL服务的步骤如下(以Ant构建的项目为例)：</p>
+<ol>
+<li>在项目的src文件夹下任意包中新建一个XX.aidl文件，文件内容为相应包名及接口定义。如果aidl文件内容正确，gen目录下回自动生成一个同名的Java接口文件(gradle构建的项目没有找到。。)。</li>
+<li>建立一个Service类并实现aidl文件定义的Java接口。</li>
+<li>在AndroidManiFest.xml文件中注册AIDL服务。</li>
+</ol>
+<p>下面用一个例子来介绍：</p>
+<ol>
+<li><p>新建一个ITest.aidl文件,接口只有一个getData方法。</p>
+<pre><code><span class="keyword">package</span> qiu.test
+
+<span class="class"><span class="keyword">interface</span> <span class="title">ITest</span></span>{
+    <span class="function">String <span class="title">getData</span><span class="params">()</span></span>;
+}
+</code></pre></li>
+<li><p>编写一个TestService类。</p>
+<pre><code>public <span class="class"><span class="keyword">class</span> <span class="title">TestService</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">Service</span>{</span>
+
+    public <span class="class"><span class="keyword">class</span> <span class="title">TestServiceeImp</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">ITest</span>.<span class="title">Stub</span>{</span>
+
+        <span class="annotation">@Override</span>
+         public <span class="type">String</span> getData() <span class="keyword">throws</span> <span class="type">RemoteException</span>{
+            <span class="keyword">return</span> <span class="string">"Here is data"</span>;
+        }
+    }
+
+    <span class="annotation">@Override</span>
+    public <span class="type">IBinder</span> onBind(<span class="type">Intent</span> intent) {
+        <span class="keyword">return</span> <span class="keyword">new</span> <span class="type">TestServiceImp</span>();
+    }
+}
+</code></pre><p> Stub为IBinder的子类，通过onBind方法返回TestServiceImp对象，客户端便可以获取Service对象。</p>
+</li>
+<li><p>在AndroidManiFest.xml文件中配置Service。</p>
+<pre><code><span class="tag">&lt;<span class="title">service</span> <span class="attribute">android:name</span>=<span class="value">".TestService"</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">intent-filter</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">action</span> <span class="attribute">android:name</span>=<span class="value">"qiu.test.ITest"</span>/&gt;</span>
+    <span class="tag">&lt;/<span class="title">intent-filter</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">service</span>&gt;</span>
+</code></pre><p> 其实qiu.test.ITest便是客户端用于访问AIDL服务的ID。</p>
+</li>
+</ol>
+<hr>
+<h3 id="以上就是服务端的代码，也可以理解为另一程序的Service代码。下面来编写客户端，或者说调用端的代码。">以上就是服务端的代码，也可以理解为另一程序的Service代码。下面来编写客户端，或者说调用端的代码。</h3><hr>
+<p>首先需要将服务端自动生成的ITest.java文件连同包目录一起复制到src文件中。</p>
+<p>接下来实现MainActivity类。</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>{
+
+    <span class="annotation">@Override</span>
+    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>{
+        <span class="keyword">super</span>.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        <span class="comment">//获取的服务端Service对象，通过该对象可以调用任意共有方法</span>
+        ITest service = <span class="keyword">null</span>;
+
+        ServiceConnection connection = <span class="keyword">new</span> ServiceConnection() {
+            <span class="annotation">@Override</span>
+            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceConnected</span><span class="params">(ComponentName name, IBinder service)</span> </span>{
+                <span class="comment">//初始化服务端Service对象</span>
+                service = ITest.Stub.asInterface(service);
+            }
+
+            <span class="annotation">@Override</span>
+            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceDisconnected</span><span class="params">(ComponentName name)</span> </span>{
+
+            }
+        };
+
+        <span class="comment">//绑定服务,使用隐式Intent</span>
+        bindService(<span class="keyword">new</span> Intent(<span class="string">"qiu.test.ITest"</span>), connection, BIND_AUTO_CREATE);
+
+        <span class="comment">//绑定后就可以调用ITest的任意方法，比如getData。</span>
+        System.out.println(<span class="string">"Data is : "</span> + service.getData());
+
+    }
+}
+</code></pre>
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/01/10/Broadcast-Receiver使用/">
                 Broadcast Receiver使用
               </a>
@@ -364,132 +519,11 @@ sendBroadcast<span class="params">(broadcastIntent)</span>;
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/01/06/Android-Service-一/">
-                Android Service (一)
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Jan 6
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/01/06/Android-Service-一/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/06/Android-Service-一/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>Service(服务)也是Android四大应用程序组件之一，Service都是通过android.app.Service类继承而来，在这里先介绍Service基础。</p>
-<p>Service没有UI部分，而是一直在Android后台运行，通常用于音乐播放或下载功能。可以通过onBind方法绑定Service与Activity,也可以通过onStartCommand方法启动Service(onStart方法已经废弃)。</p>
-<ul>
-<li><strong>使用onStartCommand方法启动Service,在应用退出时不会销毁服务。除非程序自己销毁</strong></li>
-<li><strong>使用onBind方法启动Service时，在绑定的组件销毁时也会销毁绑定的服务</strong></li>
-</ul>
-<p>Service的生命周期如下：</p>
-<p><img src="http://7sbqys.com1.z0.glb.clouddn.com/live_of_service.png" alt=""></p>
-<p>关于bindService的生命周期,这张图的解释也比较细致。</p>
-<p><img src="http://7sbqys.com1.z0.glb.clouddn.com/bind_service.png" alt=""></p>
-<p>下面来举个栗子：<strong>Service的名字为MyService</strong></p>
-<ul>
-<li><p>可以通过以下代码启动服务。</p>
-<pre><code>Intent serviceIntent = <span class="keyword">new</span> Intent(<span class="keyword">this</span>,MyService.class);
-<span class="comment">//启动服务</span>
-startService(serviceIntent);
-<span class="comment">//绑定服务,需要先定义ServiceConnection</span>
-ServiceConnection connection = <span class="keyword">new</span> ServiceConnection() {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onServiceConnected</span><span class="params">(ComponentName name, IBinder service)</span> </span>{
-        <span class="comment">//start task</span>
-    }
-
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onServiceDisconnected</span><span class="params">(ComponentName name)</span> </span>{
-
-    }
-   };
-<span class="comment">//第三个参数为标志位,BIND_AUTO_CREATE表示绑定时自动创建Service(调用onCreate方法)</span>
-   bindService(serviceIntent,connection,BIND_AUTO_CREATE);
-</code></pre></li>
-</ul>
-<pre><code>还需在AndroidManifest.xml的&lt;<span class="type">application</span>&gt;标签中添加以下代码:
-
-    &lt;service android:enabled=<span class="string">"true"</span>
-         android:<span class="property">name</span>=<span class="string">".MyService"</span>/&gt;
-</code></pre><ul>
-<li><p>可以通过以下代码销毁服务。</p>
-<pre><code><span class="comment">//销毁服务</span>
-stopService<span class="params">(serviceIntent)</span>;
-<span class="comment">//解绑服务</span>
-unbindService<span class="params">(serviceIntent)</span>;
-</code></pre></li>
-</ul>
-<p>注意只有当一个Service没有与任何组件关联并停止时，该Service才会被销毁。即如果既调用了startService又调用了bindService,则要同时调用stopService和unbindService才能销毁服务。</p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
   <div class="pagination">
-    <a class="extend prev" rel="prev" href="/page/10/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/12/">&raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/10/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="extend next" rel="next" href="/page/12/">&raquo;</a>
   </div>
 
 
@@ -523,7 +557,7 @@ unbindService<span class="params">(serviceIntent)</span>;
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">54</span>
+              <span class="site-state-item-count">55</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

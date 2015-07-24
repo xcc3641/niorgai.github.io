@@ -144,6 +144,107 @@
           
           
             
+              <a class="post-title-link" href="/2015/07/25/高效使用ImageLoader及Volley/">
+                高效使用ImageLoader及Volley
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Jul 25
+        </span>
+
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/07/25/高效使用ImageLoader及Volley/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/07/25/高效使用ImageLoader及Volley/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>ImageLoader或者Volley,在使用时都是通过<code>ImageLoader.getInstance()</code>或者<code>Volley.newRequestQueue(mContext)</code>来初始化,但其实这些方法都是导致其内部类的重复初始化,更高效的方法是使用单例模式来实现~这样最大的好处是使ImageLoader和RequestQueue维持在整个Application的生命周期.</p>
+<p>比如Google给出的例子:</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MySingleton</span> </span>{
+    <span class="keyword">private</span> <span class="keyword">static</span> MySingleton mInstance;
+    <span class="keyword">private</span> RequestQueue mRequestQueue;
+    <span class="keyword">private</span> ImageLoader mImageLoader;
+    <span class="keyword">private</span> <span class="keyword">static</span> Context mCtx;
+
+    <span class="function"><span class="keyword">private</span> <span class="title">MySingleton</span><span class="params">(Context context)</span> </span>{
+        mCtx = context;
+        mRequestQueue = getRequestQueue();
+        mImageLoader = ImageLoader.getInstance();
+    }
+
+    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> MySingleton <span class="title">getInstance</span><span class="params">(Context context)</span> </span>{
+        <span class="keyword">if</span> (mInstance == <span class="keyword">null</span>) {
+            mInstance = <span class="keyword">new</span> MySingleton(context);
+        }
+        <span class="keyword">return</span> mInstance;
+    }
+
+    <span class="function"><span class="keyword">public</span> RequestQueue <span class="title">getRequestQueue</span><span class="params">()</span> </span>{
+        <span class="keyword">if</span> (mRequestQueue == <span class="keyword">null</span>) {
+            mRequestQueue = Volley.newRequestQueue(mCtx.getApplicationContext());
+        }
+        <span class="keyword">return</span> mRequestQueue;
+    }
+
+    <span class="function"><span class="keyword">public</span> ImageLoader <span class="title">getImageLoader</span><span class="params">()</span> </span>{
+        <span class="keyword">return</span> mImageLoader;
+    }
+}
+</code></pre><p>在使用时通过以下方法获取imageLoader或RequestQueue.</p>
+<pre><code>RequestQueue queue = MySingleton.getInstance<span class="params">(this.getApplicationContext<span class="params">()</span>)</span>.getRequestQueue<span class="params">()</span>;
+
+   ImageLoader imageLoader = MySingleton.getInstance<span class="params">(this.getApplicationContext<span class="params">()</span>)</span>.getImageLoader<span class="params">()</span>;    
+</code></pre>
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/06/26/一些自适应高度的控件/">
                 一些自适应高度的控件
               </a>
@@ -345,105 +446,11 @@
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/04/24/ListView的一些坑/">
-                ListView的一些坑
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Apr 24
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/04/24/ListView的一些坑/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/04/24/ListView的一些坑/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <ol>
-<li>setEmptyView需要listView与emptyView在一个Layout下，所以需要这样加入（获取ViewParent加入emptyView）：</li>
-</ol>
-<pre><code>View view = <span class="params">(LayoutInflater.from<span class="params">(context)</span>.inflate<span class="params">(R.layout.empty_goods,null,<span class="literal">false</span>)</span>)</span>;
-<span class="params">(<span class="params">(ViewGroup)</span>gridView.getParent<span class="params">()</span>)</span>.addView<span class="params">(view, new ViewGroup.LayoutParams<span class="params">(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)</span>)</span>;
-gridView.setEmptyView<span class="params">(view)</span>;
-</code></pre><ol>
-<li><p>ListView <code>setSelection</code>方法有时候可能会失效,原因一个是没有焦点,一个是没有在主线程中执行.解决方法是:</p>
-<pre><code>listView.<span class="params">(new Runnable<span class="params">()</span> {
-    @Override
-    public void run<span class="params">()</span> {
-        listView.requestFocusFromTouch<span class="params">()</span>;
-        listView.setItemChecked<span class="params">(i, <span class="literal">true</span>)</span>;
-        listView.setSelection<span class="params">(i)</span>;
-    }
-})</span>;
-</code></pre></li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
   <div class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/2/">&raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="extend next" rel="next" href="/page/2/">&raquo;</a>
   </div>
 
 
@@ -477,7 +484,7 @@ gridView.setEmptyView<span class="params">(view)</span>;
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">54</span>
+              <span class="site-state-item-count">55</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

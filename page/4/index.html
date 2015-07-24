@@ -144,6 +144,131 @@
           
           
             
+              <a class="post-title-link" href="/2015/03/10/Java接口与抽象类的区别/">
+                Java接口与抽象类的区别
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Mar 10
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Java/">Java</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/03/10/Java接口与抽象类的区别/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/10/Java接口与抽象类的区别/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <ul>
+<li><p>抽象类：故名思义，抽象出来的，一般是用于反应子类的通用属性，它不能被实例化，只能被当作子类的父类，继承该抽象类的子类必须实现其抽象方法。</p>
+</li>
+<li><p>接口：更加抽象化，如果一个类声明了该接口，那么它必须实现这个接口的抽象方法。</p>
+</li>
+</ul>
+<p><strong>对比：</strong></p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>抽象类</th>
+<th>接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>构造函数</td>
+<td>作为一个类，可以有构造函数</td>
+<td>没有</td>
+</tr>
+<tr>
+<td>修饰符</td>
+<td>作为一个类，正常的修饰都可以</td>
+<td>只能是public</td>
+</tr>
+<tr>
+<td>多重继承</td>
+<td>可以继承一个类<strong>和</strong>实现多个接口</td>
+<td>只能继承一个类<strong>或</strong>实现多个接口</td>
+</tr>
+<tr>
+<td>实现</td>
+<td>extends关键字，必须实现所有抽象函数</td>
+<td>implements关键字，必须实现全部函数</td>
+</tr>
+<tr>
+<td>偶合度</td>
+<td>改动抽象类如果给了实现方法，则不用改动继承了它的类</td>
+<td>改动接口必须改动实现了该接口的代码</td>
+</tr>
+</tbody>
+</table>
+<p><strong>使用场景：</strong></p>
+<ol>
+<li>如果希望方法中有默认实现，使用抽象类</li>
+<li>如果希望实现多重继承，因为<strong>Java不支持多继承</strong>，所以使用接口</li>
+<li>如果现有功能经常改动，使用抽象类</li>
+</ol>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/03/03/Android内存泄漏/">
                 Android内存泄漏
               </a>
@@ -360,258 +485,11 @@
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/03/02/Loading界面简单实现/">
-                Loading界面简单实现
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Mar 2
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android开发tips/">Android开发tips</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/03/02/Loading界面简单实现/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/02/Loading界面简单实现/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>应用经常会涉及一些耗时操作，尽管经常会开新线程去处理，但总是会耗时。所以就希望有一个loading界面,<br>想来想去觉得使用自定义的Dialog比较好。</p>
-<p>思路：</p>
-<ol>
-<li>使用Dialog，自定义其布局。</li>
-<li>布局中使用ProgressBar实现旋转的Loading。</li>
-<li>通过setText方法可以设置文字</li>
-</ol>
-<p><strong>LoadingDialog类</strong></p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoadingDialog</span> <span class="keyword">extends</span> <span class="title">Dialog</span></span>{
-    <span class="keyword">private</span> LinearLayout parentLayout;
-    <span class="keyword">private</span> TextView loadingText;
-
-    <span class="function"><span class="keyword">public</span> <span class="title">LoadingDialog</span><span class="params">(Context context)</span> </span>{
-        <span class="keyword">super</span>(context,R.style.loading_dialog);
-        init(context);
-    }
-
-    <span class="function"><span class="keyword">public</span> <span class="title">LoadingDialog</span><span class="params">(Context context, <span class="keyword">int</span> theme)</span> </span>{
-        <span class="keyword">super</span>(context, R.style.loading_dialog);
-        init(context);
-    }
-
-    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(Context context)</span></span>{
-        <span class="keyword">this</span>.setContentView(LayoutInflater.from(context).inflate(R.layout.loading_dialog, <span class="keyword">null</span>));
-        parentLayout = (LinearLayout) findViewById(R.id.dialog_view);
-        loadingText = (TextView) findViewById(R.id.text);
-        <span class="keyword">this</span>.setCancelable(<span class="keyword">true</span>);
-    }
-
-    <span class="comment">//设置名字和外层背景色</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setText</span><span class="params">(String text, <span class="keyword">int</span> color)</span></span>{
-        <span class="keyword">if</span>(!TextUtils.isEmpty(text)) {
-            parentLayout.setBackgroundColor(color);
-            loadingText.setText(text);
-            loadingText.setVisibility(View.VISIBLE);
-        }<span class="keyword">else</span> {
-            loadingText.setVisibility(View.GONE);
-        }
-    }
-}
-</code></pre><p><strong>自定义样式R.style.loading_dialog(bg颜色值为#00000000全透明)</strong></p>
-<pre><code>&lt;style <span class="property">name</span>=<span class="string">"loading_dialog"</span> parent=<span class="string">"android:style/Theme.Dialog"</span>&gt;
-    &lt;<span class="property">item</span> <span class="property">name</span>=<span class="string">"android:windowFrame"</span>&gt;@null&lt;/<span class="property">item</span>&gt;
-    &lt;<span class="property">item</span> <span class="property">name</span>=<span class="string">"android:windowNoTitle"</span>&gt;<span class="constant">true</span>&lt;/<span class="property">item</span>&gt;
-    &lt;<span class="property">item</span> <span class="property">name</span>=<span class="string">"android:windowBackground"</span>&gt;@color/bg&lt;/<span class="property">item</span>&gt;
-    &lt;<span class="property">item</span> <span class="property">name</span>=<span class="string">"android:windowIsFloating"</span>&gt;<span class="constant">true</span>&lt;/<span class="property">item</span>&gt;
-    &lt;<span class="property">item</span> <span class="property">name</span>=<span class="string">"android:windowContentOverlay"</span>&gt;@null&lt;/<span class="property">item</span>&gt;
-&lt;/style&gt;
-</code></pre><p><strong>自定义布局loading_dialog.xml</strong></p>
-<pre><code>&lt;?xml <span class="variable">version=</span><span class="string">"1.0"</span> <span class="variable">encoding=</span><span class="string">"utf-8"</span>?&gt;
-&lt;LinearLayout xmlns:<span class="variable">android=</span><span class="string">"http://schemas.android.com/apk/res/android"</span>
-    android:<span class="variable">id=</span><span class="string">"@+id/dialog_view"</span>
-    android:<span class="variable">orientation=</span><span class="string">"vertical"</span>
-    android:<span class="variable">paddingTop=</span><span class="string">"20dp"</span>
-    android:<span class="variable">paddingBottom=</span><span class="string">"20dp"</span>
-    android:<span class="variable">paddingLeft=</span><span class="string">"10dp"</span>
-    android:<span class="variable">paddingRight=</span><span class="string">"10dp"</span>
-    android:<span class="variable">layout_width=</span><span class="string">"wrap_content"</span>
-    android:<span class="variable">layout_height=</span><span class="string">"wrap_content"</span>&gt;
-    &lt;ProgressBar
-        android:<span class="variable">layout_gravity=</span><span class="string">"center"</span>
-        android:<span class="variable">indeterminateDrawable=</span><span class="string">"@drawable/loading_drawable"</span>
-        android:<span class="variable">layout_width=</span><span class="string">"20dp"</span>
-        android:<span class="variable">layout_height=</span><span class="string">"20dp"</span> /&gt;
-    &lt;TextView
-        android:<span class="variable">id=</span><span class="string">"@+id/text"</span>
-        android:<span class="variable">layout_gravity=</span><span class="string">"center"</span>
-        android:<span class="variable">layout_marginTop=</span><span class="string">"10dp"</span>
-        android:<span class="variable">layout_width=</span><span class="string">"wrap_content"</span>
-        android:<span class="variable">layout_height=</span><span class="string">"wrap_content"</span>/&gt;
-&lt;/LinearLayout&gt;
-</code></pre><p><strong>ProgressBar的drawable文件loading_drawable.xml</strong></p>
-<pre><code>&lt;?xml <span class="variable">version=</span><span class="string">"1.0"</span> <span class="variable">encoding=</span><span class="string">"UTF-8"</span>?&gt;
-&lt;animation-list xmlns:<span class="variable">android=</span><span class="string">"http://schemas.android.com/apk/res/android"</span>
-    android:<span class="variable">oneshot=</span><span class="string">"false"</span> &gt;
-
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading1"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading2"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading3"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading4"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading5"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading6"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading7"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading8"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading9"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading10"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading11"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading12"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-
-&lt;/animation-list&gt;
-</code></pre><p>其实这些资源图片就是Loading菊花图按帧分割，效果还是不错的。</p>
-<p>下载地址：</p>
-<ol>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading1.png" target="_blank" rel="external">loading1</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading2.png" target="_blank" rel="external">loading2</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading3.png" target="_blank" rel="external">loading3</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading4.png" target="_blank" rel="external">loading4</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading5.png" target="_blank" rel="external">loading5</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading6.png" target="_blank" rel="external">loading6</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading7.png" target="_blank" rel="external">loading7</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading8.png" target="_blank" rel="external">loading8</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading9.png" target="_blank" rel="external">loading9</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading10.png" target="_blank" rel="external">loading10</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading11.png" target="_blank" rel="external">loading11</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading12.png" target="_blank" rel="external">loading12</a></li>
-</ol>
-<hr>
-<p>使用方式因为其实这只是一个Dialog，所以使用方式一样：</p>
-<pre><code>LoadingDialog dialog = new LoadingDialog(this)<span class="comment">;</span>
-dialog.show()<span class="comment">;</span>
-dialog.dismiss()<span class="comment">;</span>
-</code></pre>
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
   <div class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/5/">&raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/3/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="extend next" rel="next" href="/page/5/">&raquo;</a>
   </div>
 
 
@@ -645,7 +523,7 @@ dialog.dismiss()<span class="comment">;</span>
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">54</span>
+              <span class="site-state-item-count">55</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

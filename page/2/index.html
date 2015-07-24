@@ -144,6 +144,100 @@
           
           
             
+              <a class="post-title-link" href="/2015/04/24/ListView的一些坑/">
+                ListView的一些坑
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Apr 24
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/04/24/ListView的一些坑/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/04/24/ListView的一些坑/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <ol>
+<li>setEmptyView需要listView与emptyView在一个Layout下，所以需要这样加入（获取ViewParent加入emptyView）：</li>
+</ol>
+<pre><code>View view = <span class="params">(LayoutInflater.from<span class="params">(context)</span>.inflate<span class="params">(R.layout.empty_goods,null,<span class="literal">false</span>)</span>)</span>;
+<span class="params">(<span class="params">(ViewGroup)</span>gridView.getParent<span class="params">()</span>)</span>.addView<span class="params">(view, new ViewGroup.LayoutParams<span class="params">(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)</span>)</span>;
+gridView.setEmptyView<span class="params">(view)</span>;
+</code></pre><ol>
+<li><p>ListView <code>setSelection</code>方法有时候可能会失效,原因一个是没有焦点,一个是没有在主线程中执行.解决方法是:</p>
+<pre><code>listView.<span class="params">(new Runnable<span class="params">()</span> {
+    @Override
+    public void run<span class="params">()</span> {
+        listView.requestFocusFromTouch<span class="params">()</span>;
+        listView.setItemChecked<span class="params">(i, <span class="literal">true</span>)</span>;
+        listView.setSelection<span class="params">(i)</span>;
+    }
+})</span>;
+</code></pre></li>
+</ol>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/03/23/Android文件存储/">
                 Android文件存储
               </a>
@@ -588,138 +682,11 @@ mAsynchronous = async;
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/03/19/Android-Studio开发遇到的问题/">
-                Android Studio开发遇到的问题
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Mar 19
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/03/19/Android-Studio开发遇到的问题/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/19/Android-Studio开发遇到的问题/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <ol>
-<li><p>Android studio卡顿优化</p>
-<p> 除了机器配置之外,也可以给Android Studio分配更多内存.<br> 打开Android Studio的安装目录,Mac下进入bin目录,打开studio.vmoptions文件,<br> 修改以下配置</p>
-<ol>
-<li>-Xms:JVM堆内存,默认是物理内存的1/64.</li>
-<li>-Xmx:JVM最大内存,默认是物理内存的1/4.</li>
-<li>-XX:MaxPermSize:最大非堆内存,默认是物理内存的1/4.</li>
-<li><p>-XX:ReservedCodeCacheSize:缓存大小.</p>
-<p>把这些调大就好了~</p>
-</li>
-</ol>
-</li>
-</ol>
-<ol>
-<li><p>Gradle运行失败：</p>
-<pre><code><span class="string">Error:</span>Execution failed <span class="keyword">for</span> task <span class="string">':app:dexDebug'</span>.
-com.android.ide.common.internal.<span class="string">LoggedErrorException:</span> Failed to run <span class="string">command:</span>
-      <span class="regexp">/Users/</span>qiu<span class="regexp">/Library/</span>Android<span class="regexp">/sdk/</span>build-tools<span class="regexp">/21.1.1/</span>dx --dex --no-optimize --output <span class="regexp">/Users/</span>qiu<span class="regexp">/svn/</span>mam<span class="regexp">/trunk/</span>app<span class="regexp">/build/</span>intermediates<span class="regexp">/dex/</span>debug --input-list=<span class="regexp">/Users/</span>qiu<span class="regexp">/svn/</span>mam<span class="regexp">/trunk/</span>app<span class="regexp">/build/</span>intermediates<span class="regexp">/tmp/</span>dex<span class="regexp">/debug/</span>inputList.txt
-      Error <span class="string">Code:</span>
-          <span class="number">2</span>
-<span class="label">      Output:</span>
-  UNEXPECTED TOP-LEVEL <span class="string">EXCEPTION:</span>
-  com.android.dex.<span class="string">DexException:</span> Multiple dex files define Landroid<span class="regexp">/support/</span>v4<span class="regexp">/accessibilityservice/</span>AccessibilityServiceInfoCompatIcs;
-      at com.android.dx.merge.DexMerger.readSortableTypes(DexMerger.<span class="string">java:</span><span class="number">596</span>)
-      at com.android.dx.merge.DexMerger.getSortedTypes(DexMerger.<span class="string">java:</span><span class="number">554</span>)
-      at com.android.dx.merge.DexMerger.mergeClassDefs(DexMerger.<span class="string">java:</span><span class="number">535</span>)
-      at com.android.dx.merge.DexMerger.mergeDexes(DexMerger.<span class="string">java:</span><span class="number">171</span>)
-      at com.android.dx.merge.DexMerger.merge(DexMerger.<span class="string">java:</span><span class="number">189</span>)
-      at com.android.dx.command.dexer.Main.mergeLibraryDexBuffers(Main.<span class="string">java:</span><span class="number">454</span>)
-      at com.android.dx.command.dexer.Main.runMonoDex(Main.<span class="string">java:</span><span class="number">302</span>)
-      at com.android.dx.command.dexer.Main.run(Main.<span class="string">java:</span><span class="number">245</span>)
-      at com.android.dx.command.dexer.Main.main(Main.<span class="string">java:</span><span class="number">214</span>)
-      at com.android.dx.command.Main.main(Main.<span class="string">java:</span><span class="number">106</span>)
-</code></pre><p>   此时删除<code>app/build</code>目录下的全部文件,然后重新gradle即可。</p>
-</li>
-<li><p>Gradle没有自动下载dependence包。</p>
-<p> 解决方法：</p>
-<ol>
-<li>检查gradle环境。<ol>
-<li>在工程目录下依次运行<code>gradle clean</code> , <code>gradle assemble</code></li>
-</ol>
-</li>
-</ol>
-</li>
-<li><p><code>Executor Singleton not started</code></p>
-<p> 升级一下gradle到最新版本,然后在project的build.gradle中修改gradle版本即可.</p>
-</li>
-<li><p>java <code>finished with non-zero exit value 2</code></p>
-<p> 这是libs里面有包重复了,找出来删掉就好了</p>
-</li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
   <div class="pagination">
-    <a class="extend prev" rel="prev" href="/">&laquo;</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/3/">&raquo;</a>
+    <a class="extend prev" rel="prev" href="/">&laquo;</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="extend next" rel="next" href="/page/3/">&raquo;</a>
   </div>
 
 
@@ -753,7 +720,7 @@ com.android.ide.common.internal.<span class="string">LoggedErrorException:</span
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">54</span>
+              <span class="site-state-item-count">55</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

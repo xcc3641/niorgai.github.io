@@ -144,6 +144,193 @@
           
           
             
+              <a class="post-title-link" href="/2015/02/22/Bitmap相关-异步加载图片/">
+                Bitmap相关:异步加载图片
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Feb 22
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/02/22/Bitmap相关-异步加载图片/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/02/22/Bitmap相关-异步加载图片/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>在<a href="http://niorgai.github.io/2015/02/22/Bitmap%E7%9B%B8%E5%85%B3-%E8%AF%BB%E5%8F%96%E5%A4%A7%E5%9B%BE%E7%89%87/">Bitmap相关:读取大图片</a>中介绍了一种官方文档提供的读取Bitmap的方法，可以有效的避免OOM，但解析Bitmap也是需要耗时的，所以可以考虑使用AsyncTask避免主线程堵塞。</p>
+<pre><code><span class="class"><span class="keyword">class</span> <span class="title">BitmapWorkerTask</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">AsyncTask&lt;Integer</span>, <span class="title">Void</span>, <span class="title">Bitmap&gt;</span> {</span>
+    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">WeakReference</span>&lt;<span class="type">ImageView</span>&gt; imageViewReference;
+    <span class="keyword">private</span> int data = <span class="number">0</span>;
+
+    public <span class="type">BitmapWorkerTask</span>(<span class="type">ImageView</span> imageView) {
+        <span class="comment">//使用弱引用可以保证对象一定会被回收，但使用软引用感觉更好？</span>
+        imageViewReference = <span class="keyword">new</span> <span class="type">WeakReference</span>&lt;<span class="type">ImageView</span>&gt;(imageView);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">protected</span> <span class="type">Bitmap</span> doInBackground(<span class="type">Integer</span>... params) {
+        data = params[<span class="number">0</span>];
+        <span class="comment">//此处通过上一篇文章介绍的方法获取bitmap。此处的param[0]是资源id。</span>
+        <span class="keyword">return</span> bitmap;
+    }
+
+    <span class="comment">//task完成后，需要检查imageView对象是否存在。</span>
+    <span class="annotation">@Override</span>
+    <span class="keyword">protected</span> void onPostExecute(<span class="type">Bitmap</span> bitmap) {
+        <span class="keyword">if</span> (imageViewReference != <span class="literal">null</span> &amp;&amp; bitmap != <span class="literal">null</span>) {
+            <span class="keyword">final</span> <span class="type">ImageView</span> imageView = imageViewReference.get();
+            <span class="keyword">if</span> (imageView != <span class="literal">null</span>) {
+                imageView.setImageBitmap(bitmap);
+            }
+        }
+    }
+}
+</code></pre><p>开启任务也比较简单(resId表示资源的Id)：</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">void</span> loadBitmap(<span class="keyword">int</span> resId, ImageView imageView) {
+    BitmapWorkerTask <span class="keyword">task</span> = <span class="keyword">new</span> BitmapWorkerTask(imageView);
+    <span class="keyword">task</span>.execute(resId);
+}
+</code></pre><p><strong>但上述的方法不适用ListView，GridView等控件，这些控件的子布局会被重用，如果在Task结束前布局文件已经被重用了，那么会导致加载的Bitmap错误。</strong></p>
+<p>解决方法如下：</p>
+<p>创建一个AsyncDrawable类。</p>
+<pre><code><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">AsyncDrawable</span> <span class="keyword">extends</span> <span class="title">BitmapDrawable</span> </span>{
+    <span class="keyword">private</span> <span class="keyword">final</span> WeakReference&lt;BitmapWorkerTask&gt; bitmapWorkerTaskReference;
+
+    <span class="function"><span class="keyword">public</span> <span class="title">AsyncDrawable</span><span class="params">(Resources res, Bitmap bitmap,
+            BitmapWorkerTask bitmapWorkerTask)</span> </span>{
+        <span class="keyword">super</span>(res, bitmap);
+        bitmapWorkerTaskReference =
+            <span class="keyword">new</span> WeakReference&lt;BitmapWorkerTask&gt;(bitmapWorkerTask);
+    }
+
+    <span class="keyword">public</span> <span class="function">BitmapWorkerTask <span class="title">getBitmapWorkerTask</span><span class="params">()</span> </span>{
+        <span class="function"><span class="keyword">return</span> bitmapWorkerTaskReference.<span class="title">get</span><span class="params">()</span></span>;
+    }
+}
+
+<span class="comment">//根据imageView获取绑定的task。</span>
+<span class="keyword">private</span> <span class="keyword">static</span> <span class="function">BitmapWorkerTask <span class="title">getBitmapWorkerTask</span><span class="params">(ImageView imageView)</span> </span>{
+       <span class="keyword">if</span> (imageView != <span class="keyword">null</span>) {
+           <span class="keyword">final</span> Drawable drawable = imageView.getDrawable();
+           <span class="keyword">if</span> (drawable <span class="keyword">instanceof</span> AsyncDrawable) {
+               <span class="keyword">final</span> AsyncDrawable asyncDrawable = (AsyncDrawable) drawable;
+               <span class="function"><span class="keyword">return</span> asyncDrawable.<span class="title">getBitmapWorkerTask</span><span class="params">()</span></span>;
+           }
+    }
+    <span class="keyword">return</span> <span class="keyword">null</span>;
+}
+
+<span class="comment">// 检查任务是否需要取消</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">boolean</span> <span class="title">cancelPotentialWork</span><span class="params">(<span class="keyword">int</span> data, ImageView imageView)</span> </span>{
+    <span class="keyword">final</span> BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
+
+    <span class="keyword">if</span> (bitmapWorkerTask != <span class="keyword">null</span>) {
+        <span class="keyword">final</span> <span class="keyword">int</span> bitmapData = bitmapWorkerTask.data;
+        <span class="comment">//如果bitmapData为null或者bitmapData与新data不同</span>
+        <span class="keyword">if</span> (bitmapData == <span class="number">0</span> || bitmapData != data) {
+            <span class="comment">// 取消该任务</span>
+            bitmapWorkerTask.cancel(<span class="keyword">true</span>);
+        } <span class="keyword">else</span> {
+            <span class="comment">// 相同的任务已经运行中</span>
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+        }
+    }
+    <span class="comment">// 该ImageView暂时没有加载任务，或者任务被取消了。</span>
+    <span class="keyword">return</span> <span class="keyword">true</span>;
+}
+</code></pre><p>更新<code>BitmapWorkerTask</code>的<code>onPostExecute</code>方法。</p>
+<pre><code><span class="class"><span class="keyword">class</span> <span class="title">BitmapWorkerTask</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">AsyncTask&lt;Integer</span>, <span class="title">Void</span>, <span class="title">Bitmap&gt;</span> {</span>
+    ...
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">protected</span> void onPostExecute(<span class="type">Bitmap</span> bitmap) {
+        <span class="keyword">if</span> (isCancelled()) {
+            bitmap = <span class="literal">null</span>;
+        }
+
+        <span class="keyword">if</span> (imageViewReference != <span class="literal">null</span> &amp;&amp; bitmap != <span class="literal">null</span>) {
+            <span class="keyword">final</span> <span class="type">ImageView</span> imageView = imageViewReference.get();
+            <span class="keyword">final</span> <span class="type">BitmapWorkerTask</span> bitmapWorkerTask =
+                    getBitmapWorkerTask(imageView);
+            <span class="keyword">if</span> (<span class="keyword">this</span> == bitmapWorkerTask &amp;&amp; imageView != <span class="literal">null</span>) {
+                imageView.setImageBitmap(bitmap);
+            }
+        }
+    }
+}
+</code></pre><p><strong>此时该AsyncTask已经可以用于ListView，GridView等控件了。</strong></p>
+<pre><code><span class="keyword">public</span> <span class="keyword">void</span> loadBitmap(<span class="keyword">int</span> resId, ImageView imageView) {
+    <span class="keyword">if</span> (cancelPotentialWork(resId, imageView)) {
+        <span class="keyword">final</span> BitmapWorkerTask <span class="keyword">task</span> = <span class="keyword">new</span> BitmapWorkerTask(imageView);
+        <span class="keyword">final</span> AsyncDrawable asyncDrawable =
+                <span class="keyword">new</span> AsyncDrawable(getResources(), mPlaceHolderBitmap, <span class="keyword">task</span>);
+        imageView.setImageDrawable(asyncDrawable);
+        <span class="keyword">task</span>.execute(resId);
+    }
+}
+</code></pre>
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/02/22/Bitmap相关-读取大图片/">
                 Bitmap相关:读取大图片
               </a>
@@ -577,121 +764,11 @@ Bitmap bitmap = BitmapFactory.decodeStream(bis, <span class="keyword">null</span
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/02/09/Gradle开发添加libs/">
-                Gradle开发添加libs
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Feb 9
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/02/09/Gradle开发添加libs/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/02/09/Gradle开发添加libs/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>使用Android Studio构建工程时，默认会使用Gradle，工程结构和编译都有不同。</p>
-<p><strong>添加libs：</strong></p>
-<ol>
-<li>jar包一样还是放在libs根目录下.</li>
-<li>so文件放在<code>src/main/jniLibs/armeabi</code>目录下,有的cpu可能要放在<code>src/main/jniLibs/armeabi-v7a</code>目录下，暂时不支持x86架构。否则会因为找不到so文件引发<code>java.lang.UnsatisfiedLinkError</code>.</li>
-</ol>
-<p>最后app下完整的dependencies为：</p>
-<pre><code><span class="keyword">dependencies</span> {
-    <span class="keyword">compile</span> <span class="keyword">fileTree</span>(dir: <span class="string">'libs'</span>, <span class="keyword">include</span>: [<span class="string">'*.jar'</span>])
-    <span class="keyword">compile</span> <span class="keyword">fileTree</span>(dir: <span class="string">'src/main/jniLibs/armeabi'</span>, <span class="keyword">include</span>: [<span class="string">'*.so'</span>])
-}
-</code></pre><p><strong>添加Module(dependency)：</strong></p>
-<p>Android Studio默认方式是File-&gt;Import Module.同时会在添加的Module目录下<strong>自动</strong>添加<code>build.gradle</code>文件，需要在该文件中将gradle配置<strong>手动</strong>修改为与原工程<code>build.gradle</code>相同的Gradle配置。不然会因为该gradle文件的不同而导致很多编译不通过的问题。</p>
-<p>eg：我添加了<code>:Slidelibrary</code>,project下的<code>settings.gradle</code>文件为：</p>
-<pre><code><span class="keyword">include</span> <span class="string">':app'</span>, <span class="string">':Slidelibrary'</span>
-</code></pre><p>最后app下完整的dependencies为：</p>
-<pre><code><span class="keyword">dependencies</span> {
-    <span class="keyword">compile</span> <span class="keyword">fileTree</span>(dir: <span class="string">'libs'</span>, <span class="keyword">include</span>: [<span class="string">'*.jar'</span>])
-    <span class="keyword">compile</span> <span class="keyword">fileTree</span>(dir: <span class="string">'src/main/jniLibs/armeabi'</span>, <span class="keyword">include</span>: [<span class="string">'*.so'</span>])
-    <span class="keyword">compile</span> <span class="keyword">project</span>(<span class="string">':Slidelibrary'</span>)
-}
-</code></pre><p><strong>注意:</strong></p>
-<ol>
-<li>原项目的support包与library的support包不能重复，否则会导致报错：<code>binary xml file:</code>或者<code>classNotFoundException</code>.解决方法为在原项目的gradle文件中删除该dependence，在library的gardle中增加对应的dependence，并且记得编译该library。</li>
-</ol>
-<hr>
-<p>附上一些常用的lib：</p>
-<ol>
-<li><code>compile &#39;com.google.code.gson:gson:2.3.1&#39;</code> <a href="https://code.google.com/p/google-gson/" target="_blank" rel="external">解析Json</a></li>
-<li><code>compile &#39;com.loopj.android:android-async-http:1.4.6&#39;</code><a href="http://loopj.com/android-async-http/" target="_blank" rel="external">AsyncHttp异步HttpClient</a></li>
-<li><code>compile &#39;com.makeramen:roundedimageview:2.0.0&#39;</code> <a href="https://github.com/vinc3m1/RoundedImageView" target="_blank" rel="external">各种形状的图片</a></li>
-<li><code>compile &#39;com.mcxiaoke.volley:library:1.0.+&#39;</code> <a href="https://github.com/mcxiaoke/android-volley" target="_blank" rel="external">轻量Http Volley</a></li>
-<li><code>compile &#39;com.facebook.stetho:stetho:1.0.1&#39;</code><a href="https://github.com/facebook/stetho" target="_blank" rel="external">Chrome调试</a></li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
   <div class="pagination">
-    <a class="extend prev" rel="prev" href="/page/5/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/7/">&raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/5/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="extend next" rel="next" href="/page/7/">&raquo;</a>
   </div>
 
 
@@ -725,7 +802,7 @@ Bitmap bitmap = BitmapFactory.decodeStream(bis, <span class="keyword">null</span
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">54</span>
+              <span class="site-state-item-count">55</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

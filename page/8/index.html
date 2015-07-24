@@ -144,6 +144,112 @@
           
           
             
+              <a class="post-title-link" href="/2015/02/05/Android游戏操控基础相关/">
+                Android游戏操控基础相关
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Feb 5
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/02/05/Android游戏操控基础相关/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/02/05/Android游戏操控基础相关/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <ol>
+<li><p>先说明SDK更新方面：</p>
+<ul>
+<li>2.3(SDK9) 支持 D-pad。</li>
+<li>3.1(SDK12) 支持 添加了Gamepad和Joystick。</li>
+<li>4.1(SDK16) 完善了InputDevice的相关API。</li>
+</ul>
+</li>
+<li><p>主要的HIM(Human Interface Device)包括遥控杆(Joystick),手柄(gamepad),而D-pad是指手柄的方向键(下图中的1)。分别在InputDevice中可以判断：</p>
+<pre><code>   int[] devs = InputDevice.getDeviceIds<span class="params">()</span>;
+<span class="keyword">for</span><span class="params">(int id : devs)</span>{
+    InputDevice dev = InputDevice.getDevice<span class="params">(id)</span>;
+    int sources = dev.getSources<span class="params">()</span>;
+
+    <span class="keyword">if</span><span class="params">(<span class="params">(sources &amp; InputDevice.SOURCE_GAMEPAD)</span> == InputDevice.SOURCE_GAMEPAD)</span>{
+           <span class="comment">//is Gamepad</span>
+       }
+
+       <span class="keyword">if</span><span class="params">(<span class="params">(sources &amp; InputDevice.SOURCE_JOYSTICK)</span> == InputDevice.SOURCE_JOYSTICK)</span>{
+           <span class="comment">//is Joystick</span>
+       }
+
+       <span class="keyword">if</span><span class="params">(<span class="params">(sources &amp; InputDevice.SOURCE_DPAD)</span> != InputDevice.SOURCE_DPAD)</span>{
+           <span class="comment">//is Joystick,notice is '!='</span>
+       }
+   }
+</code></pre></li>
+<li><p>官方的训练教程中主要有三篇，<a href="http://developer.android.com/intl/zh-cn/training/game-controllers/controller-input.html" target="_blank" rel="external">第一篇</a>说明怎么检测输入设备。<a href="http://developer.android.com/intl/zh-cn/training/game-controllers/compatibility.html" target="_blank" rel="external">第二篇</a>说明怎么根据SDK兼容不同Android版本。<a href="http://developer.android.com/intl/zh-cn/training/game-controllers/multiple-controllers.html" target="_blank" rel="external">第三篇</a>说明怎么处理多个用户同时操控。</p>
+</li>
+</ol>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/01/31/Bitmap相关-基础介绍/">
                 Bitmap相关:基础介绍
               </a>
@@ -342,127 +448,11 @@ intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</spa
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/01/31/Android相册选取图片/">
-                Android相册选取图片
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Jan 31
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/01/31/Android相册选取图片/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/31/Android相册选取图片/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>目前从图库选择图片可以有两种方法：</p>
-<p><strong>以下结果属于vivo Xplay,Android Version 4.4.4测试结果，如果有其他机型测试我会补充</strong><br>1.<strong>Intent.ACTION_PICK：</strong></p>
-<pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(<span class="type">Intent</span>.ACTION_PICK,
-            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
-</code></pre><p> onActivityResult返回的Intent中：</p>
-<ul>
-<li><code>intent.getData()</code>会返回所选图片的Uri，格式为<code>content://media/external/images/media/919</code></li>
-<li><code>intent.getExtras()</code>返回的bundle中包含一个boolean变量，通过<code>data.getExtras().get(&quot;isFinishGallery&quot;)</code>获取,应该是指是否获取完毕，查询文档没有官方结果。</li>
-<li><code>intent.putExtra(&quot;return-data&quot;,false)</code>对返回值没有影响。</li>
-</ul>
-<p>2.<strong>Intent.ACTION_GET_CONTENT</strong></p>
-<pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(<span class="type">Intent</span>.ACTION_GET_CONTENT);
-<span class="type">intent</span>.setType(<span class="string">"image/*"</span>);//不加会导致crash
-</code></pre><p>  onActivityResult返回的Intent中：</p>
-<ul>
-<li><code>intent.getData()</code>返回所选图片的Uri，格式如下：<ul>
-<li>系统版本大于等于19(KitKat):<code>content://com.android.providers.media.documents/document/image%3A919</code></li>
-<li>系统版本低于19:<code>content://media/external/images/media/919</code></li>
-</ul>
-</li>
-</ul>
-<hr>
-<p>关于返回Uri格式的说明：</p>
-<ol>
-<li><p><code>content://media/external/images/media/919</code>格式的Uri，可以通过以下函数获取真实路径：</p>
-<pre><code><span class="keyword">private</span> <span class="keyword">String</span> getRealPathFromURI(Context context,Uri contentUri) {
-    <span class="keyword">String</span>[] proj = {MediaStore.Images.Media.DATA};
-    Cursor <span class="built_in">cursor</span> = context.getContentResolver().query(contentUri, proj, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);
-    <span class="keyword">if</span> (<span class="built_in">cursor</span> == <span class="keyword">null</span>)
-        <span class="keyword">return</span> <span class="keyword">null</span>;
-    <span class="built_in">cursor</span>.moveToFirst();
-    <span class="built_in">int</span> columnIndex = <span class="built_in">cursor</span>.getColumnIndex(proj[<span class="number">0</span>]);
-    <span class="keyword">String</span> path = <span class="built_in">cursor</span>.getString(columnIndex);
-    <span class="built_in">cursor</span>.close();
-    <span class="keyword">return</span> path;
-}
-</code></pre></li>
-<li>Uri获取bitmap的方法可以参考<a href="http://niorgai.github.io/2015/02/22/Bitmap%E7%9B%B8%E5%85%B3-%E8%AF%BB%E5%8F%96%E5%A4%A7%E5%9B%BE%E7%89%87/">Bitmap相关:读取大图片</a>.</li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
   <div class="pagination">
-    <a class="extend prev" rel="prev" href="/page/7/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/9/">&raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/7/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="extend next" rel="next" href="/page/9/">&raquo;</a>
   </div>
 
 
@@ -496,7 +486,7 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">54</span>
+              <span class="site-state-item-count">55</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

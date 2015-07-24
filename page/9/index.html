@@ -144,6 +144,122 @@
           
           
             
+              <a class="post-title-link" href="/2015/01/31/Android相册选取图片/">
+                Android相册选取图片
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Jan 31
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/01/31/Android相册选取图片/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/31/Android相册选取图片/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>目前从图库选择图片可以有两种方法：</p>
+<p><strong>以下结果属于vivo Xplay,Android Version 4.4.4测试结果，如果有其他机型测试我会补充</strong><br>1.<strong>Intent.ACTION_PICK：</strong></p>
+<pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(<span class="type">Intent</span>.ACTION_PICK,
+            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
+</code></pre><p> onActivityResult返回的Intent中：</p>
+<ul>
+<li><code>intent.getData()</code>会返回所选图片的Uri，格式为<code>content://media/external/images/media/919</code></li>
+<li><code>intent.getExtras()</code>返回的bundle中包含一个boolean变量，通过<code>data.getExtras().get(&quot;isFinishGallery&quot;)</code>获取,应该是指是否获取完毕，查询文档没有官方结果。</li>
+<li><code>intent.putExtra(&quot;return-data&quot;,false)</code>对返回值没有影响。</li>
+</ul>
+<p>2.<strong>Intent.ACTION_GET_CONTENT</strong></p>
+<pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(<span class="type">Intent</span>.ACTION_GET_CONTENT);
+<span class="type">intent</span>.setType(<span class="string">"image/*"</span>);//不加会导致crash
+</code></pre><p>  onActivityResult返回的Intent中：</p>
+<ul>
+<li><code>intent.getData()</code>返回所选图片的Uri，格式如下：<ul>
+<li>系统版本大于等于19(KitKat):<code>content://com.android.providers.media.documents/document/image%3A919</code></li>
+<li>系统版本低于19:<code>content://media/external/images/media/919</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>关于返回Uri格式的说明：</p>
+<ol>
+<li><p><code>content://media/external/images/media/919</code>格式的Uri，可以通过以下函数获取真实路径：</p>
+<pre><code><span class="keyword">private</span> <span class="keyword">String</span> getRealPathFromURI(Context context,Uri contentUri) {
+    <span class="keyword">String</span>[] proj = {MediaStore.Images.Media.DATA};
+    Cursor <span class="built_in">cursor</span> = context.getContentResolver().query(contentUri, proj, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);
+    <span class="keyword">if</span> (<span class="built_in">cursor</span> == <span class="keyword">null</span>)
+        <span class="keyword">return</span> <span class="keyword">null</span>;
+    <span class="built_in">cursor</span>.moveToFirst();
+    <span class="built_in">int</span> columnIndex = <span class="built_in">cursor</span>.getColumnIndex(proj[<span class="number">0</span>]);
+    <span class="keyword">String</span> path = <span class="built_in">cursor</span>.getString(columnIndex);
+    <span class="built_in">cursor</span>.close();
+    <span class="keyword">return</span> path;
+}
+</code></pre></li>
+<li>Uri获取bitmap的方法可以参考<a href="http://niorgai.github.io/2015/02/22/Bitmap%E7%9B%B8%E5%85%B3-%E8%AF%BB%E5%8F%96%E5%A4%A7%E5%9B%BE%E7%89%87/">Bitmap相关:读取大图片</a>.</li>
+</ol>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/01/26/Git小技巧/">
                 Git小技巧
               </a>
@@ -391,154 +507,11 @@ myTask.cancel(<span class="keyword">boolean</span> mayInterruptIfRunning);
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/01/14/Android线程相关/">
-                Android线程相关
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Jan 14
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/01/14/Android线程相关/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/14/Android线程相关/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>Android经常会需要处理一些耗时操作(比如下载，上传等)，执行这些耗时操作的时候，UI是没有反应的，如果时间很久会报ANR，所以需要开启新线程来执行耗时操作。</p>
-<p><strong>正确的开启新线程的方法：</strong></p>
-<pre><code><span class="tag">new</span> <span class="tag">Thread</span>(new <span class="function">Runnable</span>() {
-    <span class="variable">@Override</span>
-    public void <span class="function">run</span>() {
-        <span class="comment">//此处进行耗时操作</span>
-    }
-})<span class="class">.start</span>();
-</code></pre><hr>
-<p>Android中Activity所在窗口的线程叫做主线程(Main Thread),因此所有在窗口上显示的控件(UI控件)都是在主线程中创建的，而在主线程创建的新线程中是不允许访问非当前线程(主要是主线程)创建的控件的。所以才会有很多Android坑是<strong>不能在非UI线程中访问UI控件。</strong></p>
-<p>通常会有以下几种解决方法：</p>
-<ol>
-<li><p>View.post方法</p>
-<pre><code>view.post(<span class="keyword">new</span> Runnable() {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
-        <span class="comment">//对该view进行操作</span>
-    }
-});
-</code></pre></li>
-<li><p>Activity.runOnUiThread方法</p>
-<pre><code>MainActivity.<span class="keyword">this</span>.runOnUiThread(<span class="keyword">new</span> Runnable() {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
-        <span class="comment">//该方法如果在UI线程中执行，Runnale.run方法会立即执行</span>
-        <span class="comment">//如果在非UI线程中执行，系统会将该方法的引用加入UI线程的任务队列中</span>
-    }
-});
-</code></pre></li>
-<li><p>使用android.os.handler对象，handler将访问UI线程的代码的引用压入UI线程的处理队列，在其他代码执行完后执行handleMessage方法。</p>
-<pre><code><span class="keyword">Message</span> <span class="keyword">message</span> = new <span class="keyword">Message</span>();  <span class="comment">//Message对象可以放一些参数</span>
-handler.sendMessage(<span class="keyword">message</span>);    <span class="comment">//sendMessage方法通知handle</span>
-</code></pre></li>
-</ol>
-<pre><code>Handler <span class="keyword">handler</span> = <span class="keyword">new</span> Handler(){
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>{
-        <span class="comment">//可以在这里进行UI操作</span>
-        <span class="keyword">super</span>.handleMessage(msg);
-    }
-
-};
-</code></pre><hr>
-<h4 id="以上总结了开启新线程的方法和进行UI操作的方法，那么综合起来比较好的解决方法是：">以上总结了开启新线程的方法和进行UI操作的方法，那么综合起来比较好的解决方法是：</h4><ol>
-<li><p>先定义Handler对象</p>
-<pre><code>private <span class="operator"><span class="keyword">Handler</span> <span class="keyword">handler</span> = <span class="literal">null</span>;</span>
-</code></pre></li>
-<li><p>然后创建新线程，并在线程结束时进行调用hanlder.sendMessage方法。</p>
-<pre><code><span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
-        <span class="comment">//此处进行耗时操作</span>
-        <span class="keyword">handler</span>.sendMessage(msg);
-    }
-}).start(); 
-</code></pre></li>
-<li><p>在handler.handleMessage方法中进行UI操作。</p>
-<pre><code><span class="keyword">handler</span> = <span class="keyword">new</span> Handler(){
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>{
-        <span class="comment">//可以在这里进行UI操作</span>
-        <span class="keyword">super</span>.handleMessage(msg);
-    }
-
-};
-</code></pre></li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
   <div class="pagination">
-    <a class="extend prev" rel="prev" href="/page/8/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/10/">&raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/8/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="extend next" rel="next" href="/page/10/">&raquo;</a>
   </div>
 
 
@@ -572,7 +545,7 @@ handler.sendMessage(<span class="keyword">message</span>);    <span class="comme
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">54</span>
+              <span class="site-state-item-count">55</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

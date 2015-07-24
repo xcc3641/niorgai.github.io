@@ -144,6 +144,147 @@
           
           
             
+              <a class="post-title-link" href="/2014/12/06/Android壁纸设置/">
+                Android壁纸设置
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2014 Dec 6
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/12/06/Android壁纸设置/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/06/Android壁纸设置/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <ol>
+<li><h4 id="设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下：">设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下：</h4><p> WallpaperManager wallpaperManager = WallpaperManager.getInstance(DisplayPicture.this);</p>
+<pre><code><span class="tag">wallpaperManager</span><span class="class">.suggestDesiredDimensions</span>(<span class="tag">bitmap</span><span class="class">.getWidth</span>(),<span class="tag">bitmap</span><span class="class">.getHeight</span>());
+</code></pre><p> wallpaperManager.setBitmap(bitmap);</p>
+</li>
+</ol>
+<p>注意这里的</p>
+<pre><code><span class="tag">wallpaperManager</span><span class="class">.suggestDesiredDimensions</span>(<span class="tag">bitmap</span><span class="class">.getWidth</span>(),<span class="tag">bitmap</span><span class="class">.getHeight</span>());
+</code></pre><p>是表示设置目前的像素是图片的像素，最好先获取手机屏幕像素大小，然后传递宽度和高度作为参数。</p>
+<pre><code>WallpaperManager wallpaperManager = WallpaperManager.getInstance<span class="params">(DisplayPicture.this)</span>;
+        wallpaperManager.suggestDesiredDimensions<span class="params">(Utils.getDisplayWidth<span class="params">()</span>,Utils.getDisplayHeight<span class="params">()</span>)</span>;
+</code></pre><p>因为某些手机是可以设置壁纸跟桌面一起滑动的，这样所需的壁纸长宽跟手机屏幕的长宽是不一样的，所以需要这样设置。</p>
+<h3 id="但是问题来了，这样加载的bitmap需要裁减，并且加载后非常容易out_of_memory。所以尝试以下的解决方法：">但是问题来了，这样加载的bitmap需要裁减，并且加载后非常容易out of memory。所以尝试以下的解决方法：</h3><ol>
+<li><h4 id="通过系统intent来设置，即传递一个image对象，系统luancher选择相应的程序来处理，这种方法还可以设置锁屏壁纸~~">通过系统intent来设置，即传递一个image对象，系统luancher选择相应的程序来处理，这种方法还可以设置锁屏壁纸~~</h4></li>
+</ol>
+<p>传递的sendUri为图片的Uri，代码如下：</p>
+<pre><code>Intent setAs = new Intent<span class="params">(Intent.ACTION_ATTACH_DATA)</span>;
+        setAs.setDataAndType<span class="params">(sendUri, <span class="string">"image/jpg"</span>)</span>;
+        setAs.putExtra<span class="params">(<span class="string">"mimeType"</span>,<span class="string">"image/jpg"</span>)</span>;
+        startActivity<span class="params">(Intent.createChooser<span class="params">(setAs, <span class="string">"set As"</span>)</span>)</span>;
+</code></pre><p>其中</p>
+<pre><code>setAs.<span class="function"><span class="title">putExtra</span><span class="params">(<span class="string">"mineType"</span>,<span class="string">"image/jpg"</span>)</span></span>
+</code></pre><p>非常重要，通过这句告诉intent的Filter当前intent的data传递的是什么内容，不加这一句会导致某些机型的相册程序崩溃。如vivo。。</p>
+<p>另外关于mineType的其他可以参考<a href="http://www.apkbus.com/blog-56077-44963.html" target="_blank" rel="external">这里</a></p>
+<ol>
+<li><h4 id="将bitmap传入系统裁减intent，裁减至手机屏幕大小，然后在onActivitiyResult中捕捉bitmap并设置壁纸（强行避免OOM）">将bitmap传入系统裁减intent，裁减至手机屏幕大小，然后在onActivitiyResult中捕捉bitmap并设置壁纸（强行避免OOM）</h4><pre><code>Intent intent = new Intent<span class="params">(<span class="string">"com.android.camera.action.CROP"</span>)</span>;
+    intent.setDataAndType<span class="params">(sendUri, <span class="string">"image/*"</span>)</span>;
+    intent.putExtra<span class="params">(<span class="string">"crop"</span>, <span class="string">"true"</span>)</span>;
+    <span class="comment">//裁剪框的比例，1：1</span>
+    DisplayMetrics dm = new DisplayMetrics<span class="params">()</span>;
+    dm = getResources<span class="params">()</span>.getDisplayMetrics<span class="params">()</span>;
+    <span class="comment">// float scale = (float)dm.heightPixels / (float)dm.widthPixels;</span>
+    intent.putExtra<span class="params">(<span class="string">"aspectX"</span>, dm.widthPixels)</span>;
+    intent.putExtra<span class="params">(<span class="string">"aspectY"</span>, dm.heightPixels)</span>;
+    intent.putExtra<span class="params">(<span class="string">"scale"</span>,<span class="literal">true</span>)</span>;
+    <span class="comment">//裁剪后输出图片的尺寸大小</span>
+    intent.putExtra<span class="params">(<span class="string">"outputX"</span>, dm.widthPixels)</span>;
+    intent.putExtra<span class="params">(<span class="string">"outputY"</span>, dm.heightPixels)</span>;
+    Uri uri = Uri.fromFile<span class="params">(file)</span>;
+    intent.putExtra<span class="params">(MediaStore.EXTRA_OUTPUT,uri)</span>;
+    <span class="comment">//图片格式</span>
+    intent.putExtra<span class="params">(<span class="string">"outputFormat"</span>, <span class="string">"JPEG"</span>)</span>;
+    intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</span>, <span class="literal">true</span>)</span>;
+    intent.putExtra<span class="params">(<span class="string">"return-data"</span>,<span class="literal">false</span>)</span>;
+    startActivityForResult<span class="params">(intent, <span class="number">1</span>)</span>;
+</code></pre></li>
+</ol>
+<p>返回这里(file是通过sendUri new出来的)：</p>
+<pre><code>@Override
+protected void onActivityResult<span class="params">(int requestCode, int resultCode, Intent data)</span> {
+    <span class="keyword">if</span><span class="params">(requestCode == <span class="number">1</span>)</span>{
+        Uri uri = Uri.fromFile<span class="params">(file)</span>;
+         Bitmap bitmap = null;
+        <span class="keyword">if</span><span class="params">(uri != null)</span>{
+            try {
+                bitmap= imgLoader.getBitmapByPath<span class="params">(uri.getPath<span class="params">()</span>)</span>;
+                WallpaperManager wallpaperManager = WallpaperManager.getInstance<span class="params">(DisplayPicture.this)</span>;
+                wallpaperManager.suggestDesiredDimensions<span class="params">(bitmap.getWidth<span class="params">()</span>,bitmap.getHeight<span class="params">()</span>)</span>;
+                wallpaperManager.setBitmap<span class="params">(bitmap)</span>;
+            }catch <span class="params">(Exception e)</span>{
+                e.printStackTrace<span class="params">()</span>;
+            }
+        }
+    super.onActivityResult<span class="params">(requestCode, resultCode, data)</span>;
+}
+</code></pre>
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2014/12/06/Android-shape使用相关/">
                 Android shape使用相关
               </a>
@@ -350,145 +491,11 @@ drawable-xxhdpi     <span class="list">(<span class="keyword">dpi=480</span> , d
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/12/06/Intellij-IDEA开发Android遇到的各种问题-不定时更新。。/">
-                Intellij IDEA开发Android遇到的各种问题(不定时更新。。)
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2014 Dec 6
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/方便开发/">方便开发</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/12/06/Intellij-IDEA开发Android遇到的各种问题-不定时更新。。/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/06/Intellij-IDEA开发Android遇到的各种问题-不定时更新。。/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <ol>
-<li><p>adb连接不到手机</p>
-<p> 以魅族mx4为例，直接连接手机的话其实是识别不到的，adb连接需要添加机器的Vender ID。</p>
-<ul>
-<li><p>连接电脑，打开终端，输入</p>
-<pre><code><span class="title">system_profiler</span> SPUSBDataType
-</code></pre></li>
-<li><p>找到手机(mx4)，复制Vender ID（我的是0x2a45）,注意只复制内容，然后进入adb_usb.ini文件。</p>
-<pre><code>sudo vim ~<span class="regexp">/.android/adb</span>_usb.ini
-</code></pre></li>
-<li><p>将Vender ID直接复制在下面就好。然后依次输入</p>
-<pre><code>adb <span class="operator"><span class="keyword">kill</span>-<span class="keyword">server</span>    
-adb <span class="keyword">start</span>-<span class="keyword">server</span></span>
-</code></pre><p><strong>注意adb_usb.ini这个文件不能有错误的行，或者vim打开产生的缓存文件没有删除，这样会导致无法运行adb</strong></p>
-<p>顺便说一下环境变量的配置</p>
-<p>首先进入.bashrc(使用bash的话是~/.bashrc,使用zsh的话是~/.zshrc)文件：</p>
-<p>  vim ~/.bashrc</p>
-<p>然后添加格式为：</p>
-<p>  export PATH=”/Users/qiu/Documents/adt-bundle-mac-x86_64-20140702/sdk/tools:$PATH”</p>
-<p>这样环境变量便是append进去了，不会覆盖PATH。<br>最后记得更新一下环境变量：</p>
-<p>  source ~/.bashrc</p>
-</li>
-</ul>
-</li>
-</ol>
-<ol>
-<li><p>xml文件没有显示预览图。</p>
-<p> 这是因为工程的sdk版本太低而sdk的版本太高了，下一个特别低的sdk版本然后在预览中选中这个sdk就好了=。=</p>
-</li>
-<li><p>添加library</p>
-<p> 直接import module即可。<br>其实从eclipse导入工程也会默认添加dependency~</p>
-</li>
-<li><p>一些tips</p>
-<ul>
-<li><p>自动导入</p>
-<p>  在Preference中搜索auto import，把java的全部勾上，然后复制代码就妥妥的少了很多导入过程了。</p>
-</li>
-<li><p>显示行号</p>
-<p>  在Preference中搜索appearance，勾上右边的show line number。</p>
-</li>
-<li><p>莫名其妙的问题</p>
-<p>  <strong>最重要的特征就是在eclipse中没有问题！用IDE编译或者运行就不行！</strong></p>
-<p>  这时候需要将工程删除，首先cmd+w退出程序，然后在选择工程界面将鼠标移到工程上并按delete删除，重新import一般都能解决问题。。。(记得clean)</p>
-</li>
-</ul>
-</li>
-<li><p>工程不在根目录下，比如在Test工程下又添加了Test1工程，就像这样:<img src="http://7sbqys.com1.z0.glb.clouddn.com/intelTest.jpg" alt=""></p>
-<p> 然后因为找不到AndroidManifest.xml文件导致无法运行。</p>
-<p> <strong>解决方法如下：</strong></p>
-<ul>
-<li>File-&gt;Project Structure</li>
-<li>在左边点击Facets</li>
-<li>找到你的项目，没有就添加一个</li>
-<li>把Structure里面的路径全部替换为当前实际工程的项目。</li>
-<li>顺利运行。</li>
-</ul>
-</li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
   <div class="pagination">
-    <a class="extend prev" rel="prev" href="/page/16/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/18/">&raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/16/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><a class="extend next" rel="next" href="/page/18/">&raquo;</a>
   </div>
 
 
@@ -522,7 +529,7 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">54</span>
+              <span class="site-state-item-count">55</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
