@@ -195,6 +195,13 @@
         <span class="keyword">return</span> mInstance;
     }
 
+    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> MySingleton <span class="title">getInstance</span><span class="params">(Activity activity)</span> </span>{
+        <span class="keyword">if</span> (mInstance == <span class="keyword">null</span>) {
+            mInstance = <span class="keyword">new</span> MySingleton(activity.getApplicationContext());
+        }
+        <span class="keyword">return</span> mInstance;
+    }
+
     <span class="function"><span class="keyword">public</span> RequestQueue <span class="title">getRequestQueue</span><span class="params">()</span> </span>{
         <span class="keyword">if</span> (mRequestQueue == <span class="keyword">null</span>) {
             mRequestQueue = Volley.newRequestQueue(mCtx.getApplicationContext());
@@ -207,9 +214,9 @@
     }
 }
 </code></pre><p>在使用时通过以下方法获取imageLoader或RequestQueue.</p>
-<pre><code>RequestQueue queue = MySingleton.getInstance<span class="params">(this.getApplicationContext<span class="params">()</span>)</span>.getRequestQueue<span class="params">()</span>;
+<pre><code>RequestQueue queue = MySingleton.getInstance<span class="params">(mContext)</span>.getRequestQueue<span class="params">()</span>;
 
-   ImageLoader imageLoader = MySingleton.getInstance<span class="params">(this.getApplicationContext<span class="params">()</span>)</span>.getImageLoader<span class="params">()</span>;    
+   ImageLoader imageLoader = MySingleton.getInstance<span class="params">(mContext)</span>.getImageLoader<span class="params">()</span>;    
 </code></pre>
       
     </div>
