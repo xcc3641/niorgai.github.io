@@ -144,8 +144,8 @@
           
           
             
-              <a class="post-title-link" href="/2015/02/06/Android游戏操控基础相关/">
-                Android游戏操控基础相关
+              <a class="post-title-link" href="/2014/12/16/PopupWindow相关/">
+                PopupWindow相关
               </a>
             
           
@@ -154,7 +154,7 @@
 
       <div class="post-meta">
         <span class="post-time">
-          发表于 2015 Feb 6
+          发表于 2014 Dec 16
         </span>
 
         
@@ -174,8 +174,8 @@
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/02/06/Android游戏操控基础相关/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/02/06/Android游戏操控基础相关/"></span>
+            <a href="/2014/12/16/PopupWindow相关/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/16/PopupWindow相关/"></span>
             </a>
           </span>
           
@@ -190,142 +190,235 @@
 
       
         
-          <ol>
-<li><p>先说明SDK更新方面：</p>
-<ul>
-<li>2.3(SDK9) 支持 D-pad。</li>
-<li>3.1(SDK12) 支持 添加了Gamepad和Joystick。</li>
-<li>4.1(SDK16) 完善了InputDevice的相关API。</li>
-</ul>
-</li>
-<li><p>主要的HIM(Human Interface Device)包括遥控杆(Joystick),手柄(gamepad),而D-pad是指手柄的方向键(下图中的1)。分别在InputDevice中可以判断：</p>
-<pre><code>   int[] devs = InputDevice.getDeviceIds<span class="params">()</span>;
-<span class="keyword">for</span><span class="params">(int id : devs)</span>{
-    InputDevice dev = InputDevice.getDevice<span class="params">(id)</span>;
-    int sources = dev.getSources<span class="params">()</span>;
-
-    <span class="keyword">if</span><span class="params">(<span class="params">(sources &amp; InputDevice.SOURCE_GAMEPAD)</span> == InputDevice.SOURCE_GAMEPAD)</span>{
-           <span class="comment">//is Gamepad</span>
-       }
-
-       <span class="keyword">if</span><span class="params">(<span class="params">(sources &amp; InputDevice.SOURCE_JOYSTICK)</span> == InputDevice.SOURCE_JOYSTICK)</span>{
-           <span class="comment">//is Joystick</span>
-       }
-
-       <span class="keyword">if</span><span class="params">(<span class="params">(sources &amp; InputDevice.SOURCE_DPAD)</span> != InputDevice.SOURCE_DPAD)</span>{
-           <span class="comment">//is Joystick,notice is '!='</span>
-       }
-   }
-</code></pre></li>
-<li><p>官方的训练教程中主要有三篇，<a href="http://developer.android.com/intl/zh-cn/training/game-controllers/controller-input.html" target="_blank" rel="external">第一篇</a>说明怎么检测输入设备。<a href="http://developer.android.com/intl/zh-cn/training/game-controllers/compatibility.html" target="_blank" rel="external">第二篇</a>说明怎么根据SDK兼容不同Android版本。<a href="http://developer.android.com/intl/zh-cn/training/game-controllers/multiple-controllers.html" target="_blank" rel="external">第三篇</a>说明怎么处理多个用户同时操控。</p>
-</li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/01/31/Bitmap相关-基础介绍/">
-                Bitmap相关:基础介绍
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Jan 31
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/01/31/Bitmap相关-基础介绍/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/31/Bitmap相关-基础介绍/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <ol>
-<li><p>查看Bitmap的Config可以看到有如下四种：</p>
-<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Bitmap.Config ALPHA_8
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Bitmap.Config ARGB_4444 
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Bitmap.Config ARGB_8888
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Bitmap.Config RGB_565
-</code></pre><p> 这四种枚举值代表图片的存储方式，A为alpha，R为red，G为green，B为blue。<br> 由此可知每种形式的图片的位数：</p>
-<ul>
-<li><p>public static final Bitmap.Config ALPHA_8</p>
-<p>  每一个像素存放在单一的半透明通道，不存放颜色信息，每个像素1个字节。</p>
-</li>
-<li><p>public static final Bitmap.Config ARGB_4444 ，位数4+4+4+4 = 16</p>
-<p>  该方法在API13中被废弃，每个像素2个字节，ARGB通道均以4位精度存放，KITKAT(API 19)后，以这个Config创建的bitmap会被Config ARGB_8888 代替。            </p>
-</li>
-<li><p>public static final Bitmap.Config ARGB_8888，位数8+8+8+8 = 32</p>
-<p>  每个像素4个字节，ARGB通道均以8位精度存储。</p>
-</li>
-<li><p>public static final Bitmap.Config RGB_565，位数5+6+5 = 16</p>
-<p>  每个像素2个字节，只有RGB通道，R通道5位精度，G通道6位精度，B通道5位精度。</p>
-<p>而加载相应属性的bitmap，所需的内存为图片像素值*Config对应存储像素所需的字节。<br>eg：1920*1080*4/1024 表示1920*1080的存储方式为ARGB_8888的位图所需的内存大小(单位MB)</p>
-</li>
-</ul>
-</li>
-</ol>
+          <p>PopupWindow顾名思义，就是一个弹出窗口。不过特性倒是挺好玩的：</p>
 <ol>
-<li><p>Bitmap重新裁剪图片可以直接调用</p>
-<pre><code>函数原型:
-Bitmap.getScaledBitmap(Bitmap src,<span class="built_in">int</span> <span class="variable">width</span>,<span class="built_in">int</span> <span class="variable">height</span>,<span class="built_in">boolean</span> <span class="built_in">filter</span>);
-eg:            
-bitmap = Bitmap.createScaledBitmap(bitmap,<span class="number">640</span>,<span class="number">480</span>,<span class="keyword">true</span>);
+<li>以弹出窗口的形式展示，可以替代系统的dialog。</li>
+<li>可以在任意位置出现，并且会浮动在当前窗口的顶部(获取焦点)。</li>
+<li>可以用来装载任意的view。</li>
+<li>通过设置背景颜色0xaa000000可以实现半透明效果</li>
+<li><p>关于点击消失：</p>
+<ol>
+<li><p>如果需要点击外部消失，只需设置背景，foucs，outSideTouchable。</p>
+<pre><code><span class="keyword">this</span>.setBackgroundDrawable(<span class="keyword">new</span> ColorDrawable(<span class="number">0xaa000000</span>));
+<span class="keyword">this</span>.setFocusable(<span class="literal">true</span>);
+<span class="keyword">this</span>.setOutsideTouchable(<span class="literal">true</span>);
+</code></pre></li>
+<li><p>如果需要点击自身(非按钮控件)消失，在自身设置onclick就好。</p>
+<pre><code>mWindow.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>{
+        GetExpressAlert.<span class="keyword">this</span>.dismiss();
+    }
+});
+</code></pre></li>
+</ol>
+</li>
+<li><p>因为某些机型是虚拟按键的,所以要加上以下设置防止挡住按键.</p>
+<pre><code><span class="tag">this</span><span class="class">.setSoftInputMode</span>(<span class="tag">WindowManager</span><span class="class">.LayoutParams</span><span class="class">.SOFT_INPUT_ADJUST_RESIZE</span>);
+</code></pre></li>
+</ol>
+<p>整个类也特别简单：</p>
+<pre><code>public <span class="class"><span class="keyword">class</span> <span class="title">GetExpressAlert</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">PopupWindow</span> {</span>
+    <span class="type">Context</span> mContext;
+    <span class="type">View</span> mWindow;
+
+    public <span class="type">GetExpressAlert</span>(<span class="type">Context</span> context) {
+    mContext = context;
+    <span class="type">LayoutInflater</span> inflater = (<span class="type">LayoutInflater</span>) context
+            .getSystemService(<span class="type">Context</span>.<span class="type">LAYOUT_INFLATER_SERVICE</span>);
+    mWindow = inflater.inflate(<span class="type">R</span>.layout.get_express_alert, <span class="literal">null</span>);
+    <span class="keyword">this</span>.setContentView(mWindow);
+    <span class="keyword">this</span>.setWidth(<span class="type">LayoutParams</span>.<span class="type">FILL_PARENT</span>);
+    <span class="keyword">this</span>.setHeight(<span class="type">LayoutParams</span>.<span class="type">FILL_PARENT</span>);
+
+    <span class="keyword">this</span>.setBackgroundDrawable(<span class="keyword">new</span> <span class="type">ColorDrawable</span>(<span class="number">0xaa000000</span>));
+    }
+
+}
+</code></pre><p>显示效果：<br><img src="http://7sbqys.com1.z0.glb.clouddn.com/alert.png" alt=""></p>
+<p>xml代码没有什么特别的，所以不贴了。</p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/12/13/ListView与BaseAdapter优化/">
+                ListView与BaseAdapter优化
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2014 Dec 13
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/12/13/ListView与BaseAdapter优化/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/13/ListView与BaseAdapter优化/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <ol>
+<li><p>ListView使用BaseAdapter作适配器的时候，在初始化获取View或者滚动获取View时，都会调用getView方法返回View添加到ListView中，这也是ListView每一项的item。</p>
+<pre><code><span class="keyword">public</span> View getView(<span class="built_in">int</span> <span class="keyword">position</span>, View convertView, ViewGroup parent)
+</code></pre><p> 所传递的三个参数中，</p>
+<p> position表示所添加的view的位置，parent一般为listview。</p>
+<p> 而convertView参数：</p>
+<ol>
+<li><p>如果listView的layout_height设置为wrap_content时，除了position=0时convertView为null，其他时候convertView都不为空。(因为这样会疯狂调用getView方法，不推荐)</p>
+</li>
+<li><p>如果listView的layout_height设置为fill_parent或者指定高度时，当listView没有填充到所需高度时，每一个convertView都为null，后面都不为null。</p>
+<p>因为listView所需的全部view不可能全部加载到内存中，所以不需要显示的view就需要回收，回收的view即为convertView。<br>以listview的高度为fill_parent为例：</p>
+</li>
+<li>当convertView为null时，每个item的View需要通过LayoutInflater实例化返回。</li>
+<li>当convertView不为null时，如果整个listView的item使用的是一样的布局，那我们可以直接使用这个view，只需更新convertView中的数据即可。</li>
+</ol>
+</li>
+<li><p>ViewHolder</p>
+<p> 经常在文章中看到ViewHolder来优化ListView，但其实ViewHolder不是库函数，而是需要自己定义的类。（<strong>注意viewHolder里面item方法重绘：如invalidate，setVisiblity，requestLayout后，会调用adapter的getView方法</strong>）</p>
+<p> 使用ViewHolder的原因是findViewById方法耗时较大，如果控件个数过多，会严重影响性能，而使用ViewHolder主要是为了可以省去这个时间。通过setTag，getTag直接获取View。</p>
+<pre><code><span class="class"><span class="keyword">class</span>  <span class="type">ViewHolder</span>{
+    <span class="type">ImageView</span> img;
+    <span class="type">TextView</span> name;
+}
+
+public <span class="type">View</span> getView<span class="container">(<span class="title">int</span> <span class="title">position</span>, <span class="type">View</span> <span class="title">convertView</span>, <span class="type">ViewGroup</span> <span class="title">parent</span>)</span> {
+    <span class="type">ViewHolder</span> holder = null;
+    if<span class="container">(<span class="title">convertView</span>==<span class="title">null</span>)</span>{
+        convertView = inflater.inflate<span class="container">(<span class="type">R</span>.<span class="title">layout</span>.<span class="title">list_item</span>, <span class="title">parent</span>, <span class="title">false</span>)</span>;
+        holder.img = <span class="container">(<span class="type">ImageView</span>)</span> convertView.findViewById<span class="container">(<span class="type">R</span>.<span class="title">id</span>.<span class="title">img</span>)</span>;
+        holder.name = <span class="container">(<span class="type">TextView</span>)</span> convertView.findViewById<span class="container">(<span class="type">R</span>.<span class="title">id</span>.<span class="title">name</span>)</span>;
+        holder = new <span class="type">ViewHolder</span><span class="container">()</span>;
+        convertView.setTag<span class="container">(<span class="title">holder</span>)</span>;
+    }else{
+        holder = <span class="container">(<span class="type">ViewHolder</span>)</span> convertView.getTag<span class="container">()</span>;
+    }
+    //设置holder
+    holder.img.setImageResource<span class="container">(<span class="type">R</span>.<span class="title">drawable</span>.<span class="title">ic_launcher</span>)</span>;
+    holder.name.setText<span class="container">(<span class="title">list</span>.<span class="title">get</span>(<span class="title">position</span>)</span>.partname);
+    return convertView;
+}</span>
+</code></pre></li>
+<li><p>OnScrollListener</p>
+<p> ListView经常需要展示图片，如果在滑动时对滑动过的每张图片都要加载，会比较占内存。推荐的优化方法是设置OnScrollListener，在滑动完成后再下载当前页面的图片。</p>
+<pre><code>listView.setOnScrollListener(<span class="keyword">new</span> AbsListView.OnScrollListener() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="typename">void</span> onScrollStateChanged(AbsListView view, <span class="typename">int</span> scrollState) {
+        <span class="keyword">switch</span> (scrollState){
+            <span class="comment">// 用户手指滑动中</span>
+            <span class="keyword">case</span> <span class="string">SCROLL_STATE_TOUCH_SCROLL:</span>
+            <span class="comment">// 用户手指离开，但滑动动画进行中</span>
+            <span class="keyword">case</span> <span class="string">SCROLL_STATE_FLING:</span>
+                <span class="keyword">break</span>;
+            <span class="comment">// 滑动结束</span>
+            <span class="keyword">case</span> <span class="string">SCROLL_STATE_IDLE:</span>
+                <span class="typename">int</span> start = listView.getFirstVisiblePosition();
+                <span class="typename">int</span> end = listView.getLastVisiblePosition();
+                <span class="keyword">if</span>(end &gt;= listView.getCount()){
+                    end = listView.getCount() - <span class="number">1</span>;
+                }
+                <span class="comment">//展示start－end之间的图片</span>
+                <span class="keyword">break</span>;
+        }
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="typename">void</span> onScroll(AbsListView view, <span class="typename">int</span> firstVisibleItem, <span class="typename">int</span> visibleItemCount, <span class="typename">int</span> totalItemCount) {
+
+    }
+});
+</code></pre></li>
+<li><p><code>onClickListener</code>,当ListView的item中有比如button这些子view时，需要对其设置onclickListener，通常的写法是在getView方法中一个个设置，比如</p>
+<pre><code>holder<span class="class">.img</span><span class="class">.setonClickListener</span>(new onClickListenr)...
+</code></pre><p> 但是这种写法每次调用getView时都设置了一个新的onClick事件，效率很低。高效的写法可以直接在ViewHolder中设置一个position，然后viewHolder implements OnClickListenr：</p>
+<pre><code><span class="class"><span class="keyword">class</span>  <span class="title">ViewHolder</span> <span class="keyword">implements</span> <span class="title">OnClickListener</span></span>{
+    <span class="keyword">int</span> position;
+    TextView name;
+
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPosition</span><span class="params">(<span class="keyword">int</span> position)</span></span>{
+        <span class="keyword">this</span>.position = position;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>{
+        <span class="keyword">switch</span> (v.getId()){
+            <span class="comment">//<span class="doctag">XXX</span>X</span>
+        }
+    }
+}
+
+<span class="function"><span class="keyword">public</span> View <span class="title">getView</span><span class="params">(<span class="keyword">int</span> position, View convertView, ViewGroup parent)</span> </span>{
+    ViewHolder holder = <span class="keyword">null</span>;
+    <span class="keyword">if</span>(convertView==<span class="keyword">null</span>){
+        convertView = inflater.inflate(R.layout.list_item, parent, <span class="keyword">false</span>);
+        holder = <span class="keyword">new</span> ViewHolder();
+        holder.name = (TextView) convertView.findViewById(R.id.name);
+        holder.name.setOnClickListener(<span class="keyword">this</span>);
+        convertView.setTag(holder);
+    }<span class="keyword">else</span>{
+        holder = (ViewHolder) convertView.getTag();
+    }
+    <span class="comment">//设置holder</span>
+    holder.name.setText(list.get(position).partname);
+    <span class="comment">//设置position</span>
+    holder.setPosition(position);
+    <span class="keyword">return</span> convertView;
+}
 </code></pre></li>
 </ol>
 
@@ -358,8 +451,8 @@ bitmap = Bitmap.createScaledBitmap(bitmap,<span class="number">640</span>,<span 
           
           
             
-              <a class="post-title-link" href="/2015/01/31/Android拍照选取图片/">
-                Android拍照选取图片
+              <a class="post-title-link" href="/2014/12/13/EditText优化/">
+                EditText优化
               </a>
             
           
@@ -368,7 +461,7 @@ bitmap = Bitmap.createScaledBitmap(bitmap,<span class="number">640</span>,<span 
 
       <div class="post-meta">
         <span class="post-time">
-          发表于 2015 Jan 31
+          发表于 2014 Dec 13
         </span>
 
         
@@ -388,8 +481,8 @@ bitmap = Bitmap.createScaledBitmap(bitmap,<span class="number">640</span>,<span 
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/01/31/Android拍照选取图片/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/31/Android拍照选取图片/"></span>
+            <a href="/2014/12/13/EditText优化/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/13/EditText优化/"></span>
             </a>
           </span>
           
@@ -404,31 +497,251 @@ bitmap = Bitmap.createScaledBitmap(bitmap,<span class="number">640</span>,<span 
 
       
         
-          <p>Android经常会需要拍照、裁剪及图库中选择图片，其实都是通过intent调用系统相机或者系统图册，然后在onActivityResult中捕捉返回即可。</p>
-<h5 id="正常拍照选择图片的代码：">正常拍照选择图片的代码：</h5><pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(MediaStore.ACTION_IMAGE_CAPTURE);
-</code></pre><p>在onActivityResult中通过返回的<code>intent.getExtras().get(&quot;data&quot;)</code>便可以获取图片，但Android默认可用的应用内存大约为16M.所以Android为了不超出内存限制，在拍照返回时通过intent返回的bitmap会被压缩，这样导致一直都是获取的小图。所以在拍照时如果想返回大图需要通过Uri返回。</p>
-<h5 id="拍照选择大图代码(tampUri为路径，开发者文档提供的代码)：">拍照选择大图代码(tampUri为路径，开发者文档提供的代码)：</h5><pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(MediaStore.ACTION_IMAGE_CAPTURE);
-// 指定调用相机拍照后照片的储存路径
-<span class="type">intent</span>.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
-</code></pre><p>在onActivityResult中通过tempUri进行下一步操作。</p>
-<p>说明：</p>
-<p>拍照获取的图片推荐存放在 <code>Activity.this.getExternalCacheDir()</code>返回的<code>/storage/sdcard0/Android/data/&lt;package name&gt;/cache</code>路径，通过<code>new File(path,fileName)</code>新建一个file，然后通过Uri.fromFile(file)即可获取正确的uri，记得fileName需要带后缀。</p>
-<p><strong>为了防止Uri路径不对导致不能保存，使用前必须确保文件路径无误，不然会导致“无法保存剪裁的图片”的错误。或者无提示但不能点击确定保存图片。正确获取的Uri最终以file://开头。</strong>。</p>
-<p><strong>uri获取bitmap对象的方法可以参考<a href="http://niorgai.github.io/2015/02/22/Bitmap%E7%9B%B8%E5%85%B3-%E8%AF%BB%E5%8F%96%E5%A4%A7%E5%9B%BE%E7%89%87/">Bitmap相关:读取大图片</a>。</strong></p>
-<p>代码示例：</p>
-<pre><code><span class="built_in">String</span> fileName ＝ <span class="string">"temp.jpg"</span>;
-File tmpFile = <span class="keyword">new</span> File(<span class="keyword">this</span>.getExternalCacheDir(),fileName);
-<span class="built_in">Uri</span> tmpUri = <span class="built_in">Uri</span>.fromFile(tmpFile);
-</code></pre><ol>
-<li>设置通过Uri返回后，onActivityResult中返回的intent为null。</li>
-<li><p>开发者文档中只说了简单调用的方法，其实可以添加一些其他属性。</p>
-<pre><code>intent.putExtra<span class="params">(<span class="string">"return-data"</span>,<span class="literal">false</span>)</span>;
-intent.putExtra<span class="params">(<span class="string">"outputFormat"</span>,Bitmap.CompressFormat.JPEG.toString<span class="params">()</span>)</span>;
-intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</span>, <span class="literal">true</span>)</span>;
+          <ol>
+<li><p>光标设置</p>
+<p> 如果EditText设置的高度比较大，光标默认会显示在居中的坐标，需要设置android:gravity=”top”。<br>如果光标太贴近边框，只需设置android:paddingLeft即可。</p>
+</li>
+<li><p>多行输入</p>
+<p> 在多行输入后光标会水平往右滚动，为了保持换行输入的习惯，还要设置</p>
+<pre><code><span class="label">android:</span>inputType=<span class="string">"textMultiLine"</span>
+<span class="label">android:</span>singleLine=<span class="string">"false"</span>
+<span class="label">android:</span>scrollHorizontally=<span class="string">"false"</span>    
+</code></pre><p> 为了直观显示，可以设置</p>
+<pre><code><span class="label">android:</span>scrollbars=<span class="string">"vertical"</span>
+<span class="label">android:</span>scrollbarStyle=<span class="string">"insideInset"</span>
+</code></pre><p> 但输入框满了后，如果继续输入，EditText会不断增加高度，这样会隐藏上面的控件，最好设置    android:minLines和 android:maxLines确认最大最小行数。</p>
+</li>
+<li><p>软键盘遮挡<br> 可以在AndroidManifext.xml中设置Activity的软键盘：</p>
+<pre><code>android:windowSoftInputMode=<span class="string">"adjustPan</span>
+</code></pre><p> 最后为了软键盘不挡住下方控件，最好还是全部添加一个scrollView。</p>
+<p> 为了防止ScorllView和EditText(TextView)的滚动相冲突：<br> 除了在xml中设置editText：</p>
+<pre><code><span class="label">android:</span>scrollbars=<span class="string">"vertical"</span>
+<span class="label">android:</span>scrollbarStyle=<span class="string">"insideInset"</span>
+</code></pre><p> 还需要在代码中设置：</p>
+<pre><code>scrollView.setOnTouchListener(<span class="keyword">new</span> View.OnTouchListener() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onTouch</span><span class="params">(View v, MotionEvent event)</span> </span>{
+        textViewExtras.getParent().requestDisallowInterceptTouchEvent(<span class="keyword">false</span>);
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    }
+});
+
+textViewExtras.setOnTouchListener(<span class="keyword">new</span> View.OnTouchListener() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onTouch</span><span class="params">(View v, MotionEvent event)</span> </span>{
+        textViewExtras.getParent().requestDisallowInterceptTouchEvent(<span class="keyword">true</span>);
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    }
+});
+textViewExtras.setMovementMethod(<span class="keyword">new</span> ScrollingMovementMethod());
 </code></pre></li>
-<li>不能添加<code>intent.setType(&quot;image/*&quot;);</code>，会因为找不到intent导致ActivityNotFoundException。</li>
-<li><code>intent.putExtra(&quot;android.intent.extras.CAMERA_FACING&quot;,1);</code>，系统默认开启的是后置摄像头，如果希望选择前置摄像头可以加这句。</li>
+<li><ol>
+<li>中划线 : textview.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG );</li>
+<li>底部横线: textview.getPaint().setFlags(Paint. UNDERLINE_TEXT_FLAG )或者\<u>\</u></li>
 </ol>
+</li>
+<li><p>设置<code>android:imeOptions</code>属性时,有可能会失效.只需要再设置<code>android:singleLine</code>为true或者设置<code>android:inputType</code>为text,就可以修复~</p>
+</li>
+</ol>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/12/13/Android连续点击两次back键退出/">
+                Android连续点击两次back键退出
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2014 Dec 13
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android开发tips/">Android开发tips</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/12/13/Android连续点击两次back键退出/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/13/Android连续点击两次back键退出/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>Android默认的推出就是按下BACK键，但有时候会不小心误触而推出应用=。=这样体验实在太差了，比较好的解决方法是连续点击按下BACK退出。</p>
+<p>实现的基本原理就是，当按下BACK键时，会被onKeyDown捕获，判断是BACK键，则执行exit方法。<br>在exit方法中，会首先判断isExit的值，如果为false的话，则置为true，同时会弹出提示，并在2000毫秒（2秒）后发出一个消息，在Handler中将此值还原成false。如果在发送消息间隔的2秒内，再次按了BACK键，则再次执行exit方法，此时isExit的值已为true，则会执行退出的方法。</p>
+<p>代码：</p>
+<p>先定义一个全局变量 Boolean isExit = false;</p>
+<pre><code><span class="annotation">@Override</span>
+<span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onKeyDown</span><span class="params">(<span class="keyword">int</span> keyCode, KeyEvent event)</span> </span>{
+     <span class="keyword">if</span> (keyCode == KeyEvent.KEYCODE_BACK) {
+          <span class="keyword">if</span>(!isExit) {
+               isExit = <span class="keyword">true</span>; 
+           Toast.makeText(getApplicationContext(),<span class="string">"再按一次返回键退出"</span>,Toast.LENGTH_SHORT).show();
+               <span class="keyword">new</span> Handler().postDelayed(<span class="keyword">new</span> Runnable(){
+                    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>{
+                         isExit = <span class="keyword">false</span>;
+                    }
+               }, <span class="number">2000</span>);;
+               <span class="keyword">return</span> <span class="keyword">false</span>;
+          }
+     }
+     <span class="function"><span class="keyword">return</span> <span class="keyword">super</span>.<span class="title">onKeyDown</span><span class="params">(keyCode, event)</span></span>;
+}
+</code></pre>
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/12/08/Activity中launchMode的值/">
+                Activity中launchMode的值
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2014 Dec 8
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/12/08/Activity中launchMode的值/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/08/Activity中launchMode的值/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>Activity ： A,B,C,D。<br>回退栈： s1,s2.</p>
+<p>正常的生命周期：<br>开始－退出 ： onCreate -&gt; onStart -&gt; onResume -&gt; onPause -&gt; onStop -&gt; onDestroy</p>
+<p>启动Activity时，都会将Activity压入当前Application的回退栈中。</p>
+<h4 id="四种启动模式:standard，singleTop，singleTask，singleInstance。">四种启动模式:standard，singleTop，singleTask，singleInstance。</h4><h5 id="standard模式">standard模式</h5><p>launchMode属性的默认值，每次通过startActivity调用该Activity时都会new一个新对象。例如A1-&gt;A2.</p>
+<p>生命周期(点击时)： A1 onPause -&gt; A2 onCreate -&gt; A2 onStart -&gt; A2 onResume -&gt; A1 onSaveInstanceState -&gt; A1 onStop.</p>
+<h5 id="singleTop模式">singleTop模式</h5><ol>
+<li><p>如果当前Activity在回退栈的栈顶，则直接使用该Activity，同时调用该Activity的onNewIntent方法。</p>
+<p> 生命周期(点击时)：A1 onPause -&gt; A1 onNewIntent -&gt; A1 onResume.</p>
+</li>
+<li><p>如果不在栈顶，则与standard模式相同。</p>
+</li>
+</ol>
+<h5 id="singleTask模式">singleTask模式</h5><p>保证同一个窗口类在多个回退栈中只能有一个实例。</p>
+<ol>
+<li><p>调用同一应用程序内的Activity：</p>
+<ol>
+<li>如果Activity在栈顶，则直接使用并调用onNewIntent方法。</li>
+<li><p>如果Activity不在栈顶，则将该Activity之上的Activity全部出栈，并调用onNewIntent方法。</p>
+<p>生命周期(点击时)：A1 onPause -&gt; A1 onNewIntent -&gt; A1 onResume.</p>
+</li>
+</ol>
+</li>
+<li><p>调用不同应用程序内的Activity：<br> 同上，但是此时涉及到其他应用程序的切换，而不是单纯的出入栈操作。</p>
+</li>
+</ol>
+<h5 id="singleInstance模式">singleInstance模式</h5><p>同singleTask模式，但是新建立的任务只能有一个Activity对象。不能在该任务栈中启动其他Activity。</p>
+<p>生命周期(点击时)：A1 onPause -&gt; A1 onNewIntent -&gt; A1 onResume.</p>
 
         
       
@@ -452,7 +765,7 @@ intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</spa
 
   
   <div class="pagination">
-    <a class="extend prev" rel="prev" href="/page/7/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="extend next" rel="next" href="/page/9/">&raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/7/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/9/">&raquo;</a>
   </div>
 
 
@@ -486,7 +799,7 @@ intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</spa
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-count">45</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

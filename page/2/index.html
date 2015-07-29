@@ -144,276 +144,7 @@
           
           
             
-              <a class="post-title-link" href="/2015/04/25/ListView的一些坑/">
-                ListView的一些坑
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Apr 25
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/04/25/ListView的一些坑/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/04/25/ListView的一些坑/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <ol>
-<li>setEmptyView需要listView与emptyView在一个Layout下，所以需要这样加入（获取ViewParent加入emptyView）：</li>
-</ol>
-<pre><code>View view = <span class="params">(LayoutInflater.from<span class="params">(context)</span>.inflate<span class="params">(R.layout.empty_goods,null,<span class="literal">false</span>)</span>)</span>;
-<span class="params">(<span class="params">(ViewGroup)</span>gridView.getParent<span class="params">()</span>)</span>.addView<span class="params">(view, new ViewGroup.LayoutParams<span class="params">(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)</span>)</span>;
-gridView.setEmptyView<span class="params">(view)</span>;
-</code></pre><ol>
-<li><p>ListView <code>setSelection</code>方法有时候可能会失效,原因一个是没有焦点,一个是没有在主线程中执行.解决方法是:</p>
-<pre><code>listView.<span class="params">(new Runnable<span class="params">()</span> {
-    @Override
-    public void run<span class="params">()</span> {
-        listView.requestFocusFromTouch<span class="params">()</span>;
-        listView.setItemChecked<span class="params">(i, <span class="literal">true</span>)</span>;
-        listView.setSelection<span class="params">(i)</span>;
-    }
-})</span>;
-</code></pre></li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/03/23/Android文件存储/">
-                Android文件存储
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Mar 23
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/03/23/Android文件存储/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/23/Android文件存储/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>文件存储分内部文件存储和外部存储。</p>
-<p>默认情况下应用安装到内部存储，可以通过<code>AndroidMainfest.xml</code>文件下<code>application</code>的<code>android:installLocation</code>属性设置安装位置。</p>
-<table>
-<thead>
-<tr>
-<th>类别</th>
-<th>内部存储</th>
-<th>外部存储</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>可用</td>
-<td>一直可用</td>
-<td>没有挂载时不可用</td>
-</tr>
-<tr>
-<td>可访问性</td>
-<td>只能被自己的APP访问</td>
-<td>全部可读</td>
-</tr>
-<tr>
-<td>删除</td>
-<td>卸载应用时清除</td>
-<td>只有通过<code>getExternalFilesDir()</code>方法返回的路径的文件才会被删除</td>
-</tr>
-<tr>
-<td>权限</td>
-<td>无</td>
-<td><code>android.permission.WRITE_EXTERNAL_STORAGE</code> <code>android.permission.READ_EXTERNAL_STORAGE</code></td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>内部存储</p>
-<ol>
-<li><p><code>getFilesDir()</code> </p>
-<p> 返回app可用的内部存储文件地址。</p>
-</li>
-<li><p><code>getCacheDir()</code> </p>
-<p> 返回app可用的缓存文件地址。当缓存较大并且系统空间不足时会删除其中的文件。</p>
-</li>
-</ol>
-<p>内部存储保存文件：</p>
-<pre><code><span class="type">File</span> file = <span class="keyword">new</span> <span class="type">File</span>(context.getFilesDir<span class="literal">()</span>, filename);
-<span class="type">String</span> filename = <span class="string">"myfile"</span>;
-<span class="type">String</span> <span class="built_in">string</span> = <span class="string">"Hello world!"</span>;
-<span class="type">FileOutputStream</span> outputStream;
-
-<span class="keyword">try</span> {
-      outputStream = openFileOutput(filename, <span class="type">Context</span>.<span class="type">MODE_PRIVATE</span>);
-      outputStream.write(<span class="built_in">string</span>.getBytes<span class="literal">()</span>);
-      outputStream.close<span class="literal">()</span>;
-    } catch (<span class="type">Exception</span> e) {
-          e.printStackTrace<span class="literal">()</span>;
-}
-</code></pre><p>设置<code>MODE_PRIVATE</code>可以使其他应用无法访问文件。</p>
-<p>内部存储保存缓存文件：</p>
-<pre><code><span class="keyword">public</span> <span class="keyword">File</span> getTempFile(Context context, String url) {
-    <span class="keyword">File</span> <span class="keyword">file</span>;
-    <span class="keyword">try</span> {
-        String fileName = Uri.parse(url).getLastPathSegment();
-        <span class="keyword">file</span> = <span class="keyword">File</span>.createTempFile(fileName, <span class="keyword">null</span>, context.getCacheDir());
-    <span class="keyword">catch</span> (IOException e) {
-        <span class="comment">// Error while creating file</span>
-    }
-    <span class="keyword">return</span> <span class="keyword">file</span>;
-}
-</code></pre><hr>
-<p>外部存储</p>
-<p>因为外部存储可能没有被挂载，所以需要先判断是否可用：</p>
-<pre><code>/* Checks if external storage is available <span class="keyword">for</span> read and write */
-public boolean isExternalStorageWritable() {
-    String <span class="keyword">state</span> = Environment.getExternalStorageState();
-    if (Environment.MEDIA_MOUNTED.equals(<span class="keyword">state</span>)) {
-        return true;
-    }
-    return false;
-}
-
-/* Checks if external storage is available <span class="keyword">to</span> at least read */
-public boolean isExternalStorageReadable() {
-    String <span class="keyword">state</span> = Environment.getExternalStorageState();
-    if (Environment.MEDIA_MOUNTED.equals(<span class="keyword">state</span>) ||
-        Environment.MEDIA_MOUNTED_READ_ONLY.equals(<span class="keyword">state</span>)) {
-        return true;
-    }
-    return false;
-}
-</code></pre><ol>
-<li><p><code>getExternalStoragePublicDirectory()</code></p>
-<p> 返回可以任意访问的外部存储路径，删除应用时不会清除该路径。</p>
-</li>
-<li><p><code>getExternalFilesDir()</code></p>
-<p> 返回只能自己访问的外部存储路径，删除应用时该目录下的文件会被删除。</p>
-</li>
-</ol>
-<hr>
-<p><code>getFreeSpace ()</code>和<code>getTotalSpace ()</code>会返回路径下的可用空间和全部空间的字节。</p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/03/20/Handler原理浅析/">
+              <a class="post-title-link" href="/2015/03/19/Handler原理浅析/">
                 Handler原理浅析
               </a>
             
@@ -423,7 +154,7 @@ public boolean isExternalStorageReadable() {
 
       <div class="post-meta">
         <span class="post-time">
-          发表于 2015 Mar 20
+          发表于 2015 Mar 19
         </span>
 
         
@@ -443,8 +174,8 @@ public boolean isExternalStorageReadable() {
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/03/20/Handler原理浅析/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/20/Handler原理浅析/"></span>
+            <a href="/2015/03/19/Handler原理浅析/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/19/Handler原理浅析/"></span>
             </a>
           </span>
           
@@ -682,11 +413,576 @@ mAsynchronous = async;
 
 
     
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/03/19/Android-Studio开发遇到的问题/">
+                Android Studio开发遇到的问题
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Mar 19
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/03/19/Android-Studio开发遇到的问题/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/19/Android-Studio开发遇到的问题/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <ol>
+<li><p>Android studio卡顿优化</p>
+<p> 除了机器配置之外,也可以给Android Studio分配更多内存.<br> 打开Android Studio的安装目录,Mac下进入bin目录,打开studio.vmoptions文件,<br> 修改以下配置</p>
+<ol>
+<li>-Xms:JVM堆内存,默认是物理内存的1/64.</li>
+<li>-Xmx:JVM最大内存,默认是物理内存的1/4.</li>
+<li>-XX:MaxPermSize:最大非堆内存,默认是物理内存的1/4.</li>
+<li><p>-XX:ReservedCodeCacheSize:缓存大小.</p>
+<p>把这些调大就好了~</p>
+</li>
+</ol>
+</li>
+</ol>
+<ol>
+<li><p>Gradle运行失败：</p>
+<pre><code><span class="string">Error:</span>Execution failed <span class="keyword">for</span> task <span class="string">':app:dexDebug'</span>.
+com.android.ide.common.internal.<span class="string">LoggedErrorException:</span> Failed to run <span class="string">command:</span>
+      <span class="regexp">/Users/</span>qiu<span class="regexp">/Library/</span>Android<span class="regexp">/sdk/</span>build-tools<span class="regexp">/21.1.1/</span>dx --dex --no-optimize --output <span class="regexp">/Users/</span>qiu<span class="regexp">/svn/</span>mam<span class="regexp">/trunk/</span>app<span class="regexp">/build/</span>intermediates<span class="regexp">/dex/</span>debug --input-list=<span class="regexp">/Users/</span>qiu<span class="regexp">/svn/</span>mam<span class="regexp">/trunk/</span>app<span class="regexp">/build/</span>intermediates<span class="regexp">/tmp/</span>dex<span class="regexp">/debug/</span>inputList.txt
+      Error <span class="string">Code:</span>
+          <span class="number">2</span>
+<span class="label">      Output:</span>
+  UNEXPECTED TOP-LEVEL <span class="string">EXCEPTION:</span>
+  com.android.dex.<span class="string">DexException:</span> Multiple dex files define Landroid<span class="regexp">/support/</span>v4<span class="regexp">/accessibilityservice/</span>AccessibilityServiceInfoCompatIcs;
+      at com.android.dx.merge.DexMerger.readSortableTypes(DexMerger.<span class="string">java:</span><span class="number">596</span>)
+      at com.android.dx.merge.DexMerger.getSortedTypes(DexMerger.<span class="string">java:</span><span class="number">554</span>)
+      at com.android.dx.merge.DexMerger.mergeClassDefs(DexMerger.<span class="string">java:</span><span class="number">535</span>)
+      at com.android.dx.merge.DexMerger.mergeDexes(DexMerger.<span class="string">java:</span><span class="number">171</span>)
+      at com.android.dx.merge.DexMerger.merge(DexMerger.<span class="string">java:</span><span class="number">189</span>)
+      at com.android.dx.command.dexer.Main.mergeLibraryDexBuffers(Main.<span class="string">java:</span><span class="number">454</span>)
+      at com.android.dx.command.dexer.Main.runMonoDex(Main.<span class="string">java:</span><span class="number">302</span>)
+      at com.android.dx.command.dexer.Main.run(Main.<span class="string">java:</span><span class="number">245</span>)
+      at com.android.dx.command.dexer.Main.main(Main.<span class="string">java:</span><span class="number">214</span>)
+      at com.android.dx.command.Main.main(Main.<span class="string">java:</span><span class="number">106</span>)
+</code></pre><p>   此时删除<code>app/build</code>目录下的全部文件,然后重新gradle即可。</p>
+</li>
+<li><p>Gradle没有自动下载dependence包。</p>
+<p> 解决方法：</p>
+<ol>
+<li>检查gradle环境。<ol>
+<li>在工程目录下依次运行<code>gradle clean</code> , <code>gradle assemble</code></li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p><code>Executor Singleton not started</code></p>
+<p> 升级一下gradle到最新版本,然后在project的build.gradle中修改gradle版本即可.</p>
+</li>
+<li><p>java <code>finished with non-zero exit value 2</code></p>
+<p> 这是libs里面有包重复了,找出来删掉就好了</p>
+</li>
+<li><p>adb连接不到手机</p>
+<p> 以魅族mx4为例，直接连接手机的话其实是识别不到的，adb连接需要添加机器的Vender ID。</p>
+<ul>
+<li><p>连接电脑，打开终端，输入</p>
+<pre><code><span class="title">system_profiler</span> SPUSBDataType
+</code></pre></li>
+<li><p>找到手机(mx4)，复制Vender ID（我的是0x2a45）,注意只复制内容，然后进入adb_usb.ini文件。</p>
+<pre><code>sudo vim ~<span class="regexp">/.android/adb</span>_usb.ini
+</code></pre></li>
+<li><p>将Vender ID直接复制在下面就好。然后依次输入</p>
+<pre><code>adb <span class="operator"><span class="keyword">kill</span>-<span class="keyword">server</span>    
+adb <span class="keyword">start</span>-<span class="keyword">server</span></span>
+</code></pre><p><strong>注意adb_usb.ini这个文件不能有错误的行，或者vim打开产生的缓存文件没有删除，这样会导致无法运行adb</strong></p>
+<p>顺便说一下环境变量的配置</p>
+<p>首先进入.bashrc(使用bash的话是~/.bashrc,使用zsh的话是~/.zshrc)文件：</p>
+<p>  vim ~/.bashrc</p>
+<p>然后添加格式为：</p>
+<p>  export PATH=”/Users/qiu/Documents/adt-bundle-mac-x86_64-20140702/sdk/tools:$PATH”</p>
+<p>这样环境变量便是append进去了，不会覆盖PATH。<br>最后记得更新一下环境变量：</p>
+<p>  source ~/.bashrc</p>
+</li>
+</ul>
+</li>
+</ol>
+<ol>
+<li><p>工程不在根目录下，比如在Test工程下又添加了Test1工程，就像这样:<img src="http://7sbqys.com1.z0.glb.clouddn.com/intelTest.jpg" alt=""></p>
+<p> 然后因为找不到AndroidManifest.xml文件导致无法运行。</p>
+<p> <strong>解决方法如下：</strong></p>
+<ul>
+<li>File-&gt;Project Structure</li>
+<li>在左边点击Facets</li>
+<li>找到你的项目，没有就添加一个</li>
+<li>把Structure里面的路径全部替换为当前实际工程的项目。</li>
+<li>顺利运行。</li>
+</ul>
+</li>
+</ol>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/03/14/ScrollView中放置ListView/">
+                ScrollView中放置ListView
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Mar 14
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/03/14/ScrollView中放置ListView/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/14/ScrollView中放置ListView/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>最近有个需求是需要在ScrollView中放置一个ListView，如果不做处理的话，直接放置控件会导致：</p>
+<ol>
+<li>ListView的高度设置为wrap_content时，每个item的高度无法控制，可能导致item高度为0而不显示。</li>
+<li>ListView的高度设置为wrap_content时，疯狂调用getView方法导致卡顿。</li>
+<li>ListView的高度设置了合适的高度后，ListView无法滑动。</li>
+</ol>
+<p>其对应的解决方法：</p>
+<ol>
+<li><p>在ListView调用了<code>setAdapter</code>或者<code>notifyDataChange</code>后，使用该方法重新设置ListView的高度。</p>
+<pre><code>public static void setListViewHeightBasedOnChildren<span class="params">(ListView listView)</span> {
+    ListAdapter listAdapter = listView.getAdapter<span class="params">()</span>;
+    <span class="keyword">if</span> <span class="params">(listAdapter == null)</span>
+        return;
+
+    int desiredWidth = View.MeasureSpec.makeMeasureSpec<span class="params">(listView.getWidth<span class="params">()</span>, View.MeasureSpec.UNSPECIFIED)</span>;
+    int totalHeight = <span class="number">0</span>;
+    View view = null;
+    <span class="keyword">for</span> <span class="params">(int i = <span class="number">0</span>; i &lt; listAdapter.getCount<span class="params">()</span>; i++)</span> {
+        <span class="comment">//获取每个item的view</span>
+        view = listAdapter.getView<span class="params">(i, view, listView)</span>;
+        <span class="keyword">if</span> <span class="params">(i == <span class="number">0</span>)</span>
+            view.setLayoutParams<span class="params">(new AbsListView.LayoutParams<span class="params">(desiredWidth, AbsListView.LayoutParams.WRAP_CONTENT)</span>)</span>;
+
+        view.measure<span class="params">(desiredWidth, View.MeasureSpec.UNSPECIFIED)</span>;
+        <span class="comment">//计算总高度</span>
+        totalHeight += view.getMeasuredHeight<span class="params">()</span>;
+    }
+    ViewGroup.LayoutParams params = listView.getLayoutParams<span class="params">()</span>;
+    <span class="comment">//加上divider的高度</span>
+    params.height = totalHeight + <span class="params">(listView.getDividerHeight<span class="params">()</span> * <span class="params">(listAdapter.getCount<span class="params">()</span> - <span class="number">1</span>)</span>)</span>;
+    listView.setLayoutParams<span class="params">(params)</span>;
+    listView.requestLayout<span class="params">()</span>;
+}
+</code></pre><p> 该方法原理就是通过adapter的getView方法返回item的view，计算每个item的高度height乘以item的个数，最后加上divider的高度。(如果知道每个item的高度，可以直接获取adapter的count乘以高度即可，省区调用getView方法的时间)</p>
+<pre><code>使用该方法需要注意：
+<span class="number">1</span>. item的根布局是必须是LinearLayout等重写了<span class="escape">`o</span>nMeasure<span class="escape">`方</span>法的layout，因为获取高度时用到了<span class="escape">`v</span>iew.getMeasuredHeight()<span class="escape">`方</span>法.
+<span class="number">2</span>. 该方法会在Adapter的getView方法前被调用。
+</code></pre></li>
+<li><p>在ListView外部放置一层单独的FrameLayout(性能最高)，设置Layout的高度为wrap_content,然后设置ListView的高度为fill_parent,最后在<code>setAdapter</code>或<code>notifyDataChange</code>后修改<code>setListViewHeightBasedOnChildren</code>方法，通过该方法返回带有正确高度的LinearLayout.LayoutParams(你没有看错，用LinearLayout.LayoutParams来设置FrameLayout)，以此来设置FrameLayout的高度。这样不会疯狂调用getView方法了。</p>
+</li>
+<li><p>在onTouch事件中取消父布局的touch劫持。</p>
+<pre><code>listView.setOnTouchListener(<span class="keyword">new</span> OnTouchListener() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onTouch</span><span class="params">(View v, MotionEvent event)</span> </span>{
+        v.getParent().requestDisallowInterceptTouchEvent(<span class="keyword">true</span>);
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    }
+});
+</code></pre></li>
+</ol>
+<hr>
+<p>如果使用了<a href="https://github.com/chrisbanes/Android-PullToRefresh" target="_blank" rel="external">Github开源项目-PullToRefreshListView</a>，它有一个headView和一个BottomView，所以它计算高度的方法会不同：</p>
+<pre><code>public static void setListViewHeightBasedOnChildren<span class="params">(PullToRefreshListView listView)</span> {
+    ListAdapter listAdapter = listView.getRefreshableView<span class="params">()</span>.getAdapter<span class="params">()</span>;
+    <span class="keyword">if</span> <span class="params">(listAdapter == null)</span>
+        return;
+
+    int totalHeight = <span class="number">0</span>;
+    View view = null;
+    <span class="comment">//去掉头尾两个view</span>
+    <span class="keyword">for</span> <span class="params">(int i = <span class="number">1</span>; i &lt; listAdapter.getCount<span class="params">()</span>-<span class="number">1</span>; i++)</span> {
+        view = listAdapter.getView<span class="params">(i, view, listView)</span>;
+        totalHeight += view.getLayoutParams<span class="params">()</span>.height;
+    }
+    ViewGroup.LayoutParams params = listView.getLayoutParams<span class="params">()</span>;
+    params.height = totalHeight + <span class="params">(listView.getRefreshableView<span class="params">()</span>.getDividerHeight<span class="params">()</span> * <span class="params">(listAdapter.getCount<span class="params">()</span> - <span class="number">1</span>)</span>)</span>;
+    listView.setLayoutParams<span class="params">(params)</span>;
+    listView.requestLayout<span class="params">()</span>;
+}
+</code></pre><p>这里使用的是LayoutParams的height作为item的高度，所以在adapter的getView方法中，应该这样初始化：</p>
+<pre><code><span class="keyword">public</span> <span class="function">View <span class="title">getView</span><span class="params">(<span class="keyword">int</span> position, View convertView, ViewGroup parent)</span> </span>{
+    convertView = inflater.inflate(R.layout.parenting_listview_item,parent,<span class="keyword">false</span>);
+}
+</code></pre>
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/03/11/Android复用Layout/">
+                Android复用Layout
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Mar 11
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/03/11/Android复用Layout/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/11/Android复用Layout/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <hr>
+<h4 id="&lt;include&gt;标签复用布局"><code>&lt;include&gt;</code>标签复用布局</h4><p>Android布局中经常可以发现能够重用的layout，如果每次都复制粘贴，第一是不方便，第二是可维护性不高，改动一个地方要改好几处，所以最直接的方法是复用layout。</p>
+<p>如果原布局为：</p>
+<pre><code><span class="tag">&lt;LinearLayout..&gt;</span>
+    <span class="tag">&lt;LinearLayout..&gt;</span>
+        <span class="tag">&lt;TextView..&gt;</span>
+        <span class="tag">&lt;TextView..&gt;</span>
+    <span class="tag">&lt;/LinearLayout&gt;</span>
+    <span class="tag">&lt;LinearLayout..&gt;</span>
+        <span class="tag">&lt;TextView..&gt;</span>
+        <span class="tag">&lt;TextView..&gt;</span>
+    <span class="tag">&lt;/LinearLayout&gt;</span>
+<span class="tag">&lt;/LinearLayout&gt;</span>
+</code></pre><p>那么可以抽取出复用布局reuse.xml：</p>
+<pre><code><span class="tag">&lt;LinearLayout..&gt;</span>
+    <span class="tag">&lt;TextView..&gt;</span>
+    <span class="tag">&lt;TextView..&gt;</span>
+<span class="tag">&lt;/LinearLayout&gt;</span>
+</code></pre><p>复用时使用<code>&lt;layout&gt;</code>标签，设置<code>layout=&quot;@layout/layoutId&quot;</code>即可。</p>
+<pre><code>&lt;include
+    android:<span class="variable">layout_width=</span><span class="string">"fill_parent"</span>
+    android:<span class="variable">layout_height=</span><span class="string">"0dp"</span>
+    android:<span class="variable">layout_weight=</span><span class="string">"1"</span>
+    <span class="variable">layout=</span><span class="string">"@layout/reuse.xml"</span>/&gt;
+</code></pre><p><strong>注意如果需要设置width或height一定要两个一起设置才会生效</strong></p>
+<p>如果希望减少reuse.xml中的LinearLayout嵌套(即在include时去掉根布局)，可以使用<code>&lt;merge&gt;</code>标签，即：</p>
+<pre><code><span class="tag">&lt;Merge..&gt;</span>
+    <span class="tag">&lt;TextView..&gt;</span>
+    <span class="tag">&lt;TextView..&gt;</span>
+<span class="tag">&lt;/Merge..&gt;</span>
+</code></pre><hr>
+<h4 id="抽取通用layout作为View">抽取通用layout作为View</h4><p>可以新建一个ReuseView</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReuseView</span> <span class="keyword">extends</span> <span class="title">LinearLayout</span></span>{
+    <span class="keyword">private</span> Context context;
+
+    <span class="function"><span class="keyword">public</span> <span class="title">MainPageInterface</span><span class="params">(Context context)</span> </span>{
+        <span class="keyword">super</span>(context);
+    }
+
+    <span class="function"><span class="keyword">public</span> <span class="title">MainPageInterface</span><span class="params">(Context context, AttributeSet attrs)</span> </span>{
+        <span class="keyword">super</span>(context, attrs);
+    }
+
+    <span class="function"><span class="keyword">public</span> <span class="title">MainPageInterface</span><span class="params">(Context context, AttributeSet attrs, <span class="keyword">int</span> defStyleAttr)</span> </span>{
+        <span class="keyword">super</span>(context, attrs, defStyleAttr);
+    }
+
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>{
+        inflate(getContext(), R.layout.reuse, ReuseView.<span class="keyword">this</span>);
+    }
+}
+</code></pre><p>这样主布局便变成</p>
+<pre><code><span class="tag">&lt;LinearLayout..&gt;</span>
+    <span class="tag">&lt;ReuseView ../&gt;</span>
+<span class="tag">&lt;/LinearLayout&gt;</span>
+</code></pre><p>这样的好处便是可以在View中实现功能，模块分离方便业务调整。</p>
+<p>LayoutInflater的inflate方法原型为：<code>View inflate (Context context, int resource, ViewGroup root)</code></p>
+<p>注意：</p>
+<ol>
+<li>inflate方法返回的view的默认layoutParams为null。</li>
+<li>返回值为The root View of the inflated hierarchy。</li>
+<li>如果设置了第二个参数root <ol>
+<li>attachToRoot为false，则只会返回设置了LayoutParams的view的root。</li>
+<li>attachToRoot为true，则会返回将该view作为root返回。</li>
+</ol>
+</li>
+<li>这样当R.layout.reuse为<merge>时,会少掉一层layout.</merge></li>
+</ol>
+<hr>
+<p>惰性布局ViewStub</p>
+<p>ViewStub用于显示本来不需要显示，只有特殊情况下才会显示的布局。虽然inflate一个布局的内存耗费较大，ViewStub会相对少一点。</p>
+<pre><code>&lt;ViewStub
+    android:<span class="variable">id=</span><span class="string">"@+id/stub_import"</span>
+    android:<span class="variable">inflatedId=</span><span class="string">"@+id/panel_import"</span>
+    android:<span class="variable">layout=</span><span class="string">"@layout/progress_overlay"</span>
+    android:<span class="variable">layout_width=</span><span class="string">"fill_parent"</span>
+    android:<span class="variable">layout_height=</span><span class="string">"wrap_content"</span>/&gt;
+</code></pre><p>使用时设置visible或者inflate布局。</p>
+<pre><code><span class="params">(<span class="params">(ViewStub)</span> findViewById<span class="params">(R.id.stub_import)</span>)</span>.setVisibility<span class="params">(View.VISIBLE)</span>;
+<span class="comment">// or</span>
+View importPanel = <span class="params">(<span class="params">(ViewStub)</span> findViewById<span class="params">(R.id.stub_import)</span>)</span>.inflate<span class="params">()</span>;
+</code></pre><p>一旦ViewStub被显示或inflate，ViewStub将不再属于该布局，会被其inflate的layout取代。此时可以通过inflatedId去寻找该View。</p>
+<p><strong>注意viewStub不支持</strong><code>&lt;merge&gt;</code><strong>标签</strong></p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/03/03/Android内存泄漏/">
+                Android内存泄漏
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Mar 3
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/03/03/Android内存泄漏/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/03/Android内存泄漏/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>以下内容提取于<a href="http://blog.csdn.net/gemmem/article/details/8920039" target="_blank" rel="external">Android进程的内存管理分析</a>及<a href="http://blog.csdn.net/gemmem/article/details/13017999" target="_blank" rel="external">Android内存泄漏分析及调试</a>.</p>
+<p>Android中的内存分为：</p>
+<ol>
+<li>native进程：采用C/C++实现，不包含dalvik实例的进程。</li>
+<li>java进程：Android中运行于dalvik虚拟机之上的进程。每一个java进程都是存在于一个native进程中。</li>
+</ol>
+<p>内存空间是一定的，所以在对象无用时就要回收一些对象来留出空间。当Java Garbage Collection开始运行时，它会从他了解还存活的对象作为内存遍历的根节点(GC Root)，遍历heap内存空间，没有直接或间接引用到GC Root的对象便会被回收。</p>
+<p>而Android内存泄漏便是指进程中的对象，虽然没有使用价值了，但它仍然有直接或间接的引用到GC Root，那么该对象便不会被GC回收，导致内存持续被占用，使可用内存变小。</p>
+<hr>
+<p><strong>常见的内存泄漏</strong></p>
+<ol>
+<li>查询数据库没有关闭Cursor。</li>
+<li>使用BaseAdapter作为适配器时没有复用convertView。可以参考<a href="http://niorgai.github.io/2014/12/13/ListView%E4%B8%8EBaseAdapter%E4%BC%98%E5%8C%96/">ListView与BaseAdapter优化</a>.</li>
+<li>bitmap没有回收，可以参考<a href="http://niorgai.github.io/2015/02/27/Bitmap%E7%9B%B8%E5%85%B3-%E7%AE%A1%E7%90%86Bitmap%E5%86%85%E5%AD%98/">Bitmap相关:管理Bitmap内存</a>.</li>
+<li>注册对象后没有反注册，比如Broadcast Receiver等。</li>
+<li>handler问题，如果handler是非静态的，会导致Activity或者Service不被回收，所以应当注册为静态内部类，同时在onDestroy时停止线程:<code>mThread.getLooper().quit();</code></li>
+<li>Activity被静态引用，特别是缓存bitmap时，解决方法可以考虑使用Application的context代替Activity的context。</li>
+</ol>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
   </div>
 
   
   <div class="pagination">
-    <a class="extend prev" rel="prev" href="/">&laquo;</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="extend next" rel="next" href="/page/3/">&raquo;</a>
+    <a class="extend prev" rel="prev" href="/">&laquo;</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/3/">&raquo;</a>
   </div>
 
 
@@ -720,7 +1016,7 @@ mAsynchronous = async;
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-count">45</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

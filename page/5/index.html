@@ -144,8 +144,8 @@
           
           
             
-              <a class="post-title-link" href="/2015/03/02/Loading界面简单实现/">
-                Loading界面简单实现
+              <a class="post-title-link" href="/2015/01/31/Android相册选取图片/">
+                Android相册选取图片
               </a>
             
           
@@ -154,14 +154,14 @@
 
       <div class="post-meta">
         <span class="post-time">
-          发表于 2015 Mar 2
+          发表于 2015 Jan 31
         </span>
 
         
           <span class="post-category">
             &nbsp; | &nbsp; 分类于
             
-              <a href="/categories/Android开发tips/">Android开发tips</a>
+              <a href="/categories/Android/">Android</a>
 
               
               
@@ -174,8 +174,8 @@
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/03/02/Loading界面简单实现/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/02/Loading界面简单实现/"></span>
+            <a href="/2015/01/31/Android相册选取图片/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/31/Android相册选取图片/"></span>
             </a>
           </span>
           
@@ -190,177 +190,304 @@
 
       
         
-          <p>应用经常会涉及一些耗时操作，尽管经常会开新线程去处理，但总是会耗时。所以就希望有一个loading界面,<br>想来想去觉得使用自定义的Dialog比较好。</p>
-<p>思路：</p>
+          <p>目前从图库选择图片可以有两种方法：</p>
+<p><strong>以下结果属于vivo Xplay,Android Version 4.4.4测试结果，如果有其他机型测试我会补充</strong><br>1.<strong>Intent.ACTION_PICK：</strong></p>
+<pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(<span class="type">Intent</span>.ACTION_PICK,
+            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
+</code></pre><p> onActivityResult返回的Intent中：</p>
+<ul>
+<li><code>intent.getData()</code>会返回所选图片的Uri，格式为<code>content://media/external/images/media/919</code></li>
+<li><code>intent.getExtras()</code>返回的bundle中包含一个boolean变量，通过<code>data.getExtras().get(&quot;isFinishGallery&quot;)</code>获取,应该是指是否获取完毕，查询文档没有官方结果。</li>
+<li><code>intent.putExtra(&quot;return-data&quot;,false)</code>对返回值没有影响。</li>
+</ul>
+<p>2.<strong>Intent.ACTION_GET_CONTENT</strong></p>
+<pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(<span class="type">Intent</span>.ACTION_GET_CONTENT);
+<span class="type">intent</span>.setType(<span class="string">"image/*"</span>);//不加会导致crash
+</code></pre><p>  onActivityResult返回的Intent中：</p>
+<ul>
+<li><code>intent.getData()</code>返回所选图片的Uri，格式如下：<ul>
+<li>系统版本大于等于19(KitKat):<code>content://com.android.providers.media.documents/document/image%3A919</code></li>
+<li>系统版本低于19:<code>content://media/external/images/media/919</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>关于返回Uri格式的说明：</p>
 <ol>
-<li>使用Dialog，自定义其布局。</li>
-<li>布局中使用ProgressBar实现旋转的Loading。</li>
-<li>通过setText方法可以设置文字</li>
-</ol>
-<p><strong>LoadingDialog类</strong></p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoadingDialog</span> <span class="keyword">extends</span> <span class="title">Dialog</span></span>{
-    <span class="keyword">private</span> LinearLayout parentLayout;
-    <span class="keyword">private</span> TextView loadingText;
-
-    <span class="function"><span class="keyword">public</span> <span class="title">LoadingDialog</span><span class="params">(Context context)</span> </span>{
-        <span class="keyword">super</span>(context,R.style.loading_dialog);
-        init(context);
-    }
-
-    <span class="function"><span class="keyword">public</span> <span class="title">LoadingDialog</span><span class="params">(Context context, <span class="keyword">int</span> theme)</span> </span>{
-        <span class="keyword">super</span>(context, R.style.loading_dialog);
-        init(context);
-    }
-
-    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(Context context)</span></span>{
-        <span class="keyword">this</span>.setContentView(LayoutInflater.from(context).inflate(R.layout.loading_dialog, <span class="keyword">null</span>));
-        parentLayout = (LinearLayout) findViewById(R.id.dialog_view);
-        loadingText = (TextView) findViewById(R.id.text);
-        <span class="keyword">this</span>.setCancelable(<span class="keyword">true</span>);
-    }
-
-    <span class="comment">//设置名字和外层背景色</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setText</span><span class="params">(String text, <span class="keyword">int</span> color)</span></span>{
-        <span class="keyword">if</span>(!TextUtils.isEmpty(text)) {
-            parentLayout.setBackgroundColor(color);
-            loadingText.setText(text);
-            loadingText.setVisibility(View.VISIBLE);
-        }<span class="keyword">else</span> {
-            loadingText.setVisibility(View.GONE);
-        }
-    }
+<li><p><code>content://media/external/images/media/919</code>格式的Uri，可以通过以下函数获取真实路径：</p>
+<pre><code><span class="keyword">private</span> <span class="keyword">String</span> getRealPathFromURI(Context context,Uri contentUri) {
+    <span class="keyword">String</span>[] proj = {MediaStore.Images.Media.DATA};
+    Cursor <span class="built_in">cursor</span> = context.getContentResolver().query(contentUri, proj, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);
+    <span class="keyword">if</span> (<span class="built_in">cursor</span> == <span class="keyword">null</span>)
+        <span class="keyword">return</span> <span class="keyword">null</span>;
+    <span class="built_in">cursor</span>.moveToFirst();
+    <span class="built_in">int</span> columnIndex = <span class="built_in">cursor</span>.getColumnIndex(proj[<span class="number">0</span>]);
+    <span class="keyword">String</span> path = <span class="built_in">cursor</span>.getString(columnIndex);
+    <span class="built_in">cursor</span>.close();
+    <span class="keyword">return</span> path;
 }
-</code></pre><p><strong>自定义样式R.style.loading_dialog(bg颜色值为#00000000全透明)</strong></p>
-<pre><code>&lt;style <span class="property">name</span>=<span class="string">"loading_dialog"</span> parent=<span class="string">"android:style/Theme.Dialog"</span>&gt;
-    &lt;<span class="property">item</span> <span class="property">name</span>=<span class="string">"android:windowFrame"</span>&gt;@null&lt;/<span class="property">item</span>&gt;
-    &lt;<span class="property">item</span> <span class="property">name</span>=<span class="string">"android:windowNoTitle"</span>&gt;<span class="constant">true</span>&lt;/<span class="property">item</span>&gt;
-    &lt;<span class="property">item</span> <span class="property">name</span>=<span class="string">"android:windowBackground"</span>&gt;@color/bg&lt;/<span class="property">item</span>&gt;
-    &lt;<span class="property">item</span> <span class="property">name</span>=<span class="string">"android:windowIsFloating"</span>&gt;<span class="constant">true</span>&lt;/<span class="property">item</span>&gt;
-    &lt;<span class="property">item</span> <span class="property">name</span>=<span class="string">"android:windowContentOverlay"</span>&gt;@null&lt;/<span class="property">item</span>&gt;
-&lt;/style&gt;
-</code></pre><p><strong>自定义布局loading_dialog.xml</strong></p>
-<pre><code>&lt;?xml <span class="variable">version=</span><span class="string">"1.0"</span> <span class="variable">encoding=</span><span class="string">"utf-8"</span>?&gt;
-&lt;LinearLayout xmlns:<span class="variable">android=</span><span class="string">"http://schemas.android.com/apk/res/android"</span>
-    android:<span class="variable">id=</span><span class="string">"@+id/dialog_view"</span>
-    android:<span class="variable">orientation=</span><span class="string">"vertical"</span>
-    android:<span class="variable">paddingTop=</span><span class="string">"20dp"</span>
-    android:<span class="variable">paddingBottom=</span><span class="string">"20dp"</span>
-    android:<span class="variable">paddingLeft=</span><span class="string">"10dp"</span>
-    android:<span class="variable">paddingRight=</span><span class="string">"10dp"</span>
-    android:<span class="variable">layout_width=</span><span class="string">"wrap_content"</span>
-    android:<span class="variable">layout_height=</span><span class="string">"wrap_content"</span>&gt;
-    &lt;ProgressBar
-        android:<span class="variable">layout_gravity=</span><span class="string">"center"</span>
-        android:<span class="variable">indeterminateDrawable=</span><span class="string">"@drawable/loading_drawable"</span>
-        android:<span class="variable">layout_width=</span><span class="string">"20dp"</span>
-        android:<span class="variable">layout_height=</span><span class="string">"20dp"</span> /&gt;
-    &lt;TextView
-        android:<span class="variable">id=</span><span class="string">"@+id/text"</span>
-        android:<span class="variable">layout_gravity=</span><span class="string">"center"</span>
-        android:<span class="variable">layout_marginTop=</span><span class="string">"10dp"</span>
-        android:<span class="variable">layout_width=</span><span class="string">"wrap_content"</span>
-        android:<span class="variable">layout_height=</span><span class="string">"wrap_content"</span>/&gt;
-&lt;/LinearLayout&gt;
-</code></pre><p><strong>ProgressBar的drawable文件loading_drawable.xml</strong></p>
-<pre><code>&lt;?xml <span class="variable">version=</span><span class="string">"1.0"</span> <span class="variable">encoding=</span><span class="string">"UTF-8"</span>?&gt;
-&lt;animation-list xmlns:<span class="variable">android=</span><span class="string">"http://schemas.android.com/apk/res/android"</span>
-    android:<span class="variable">oneshot=</span><span class="string">"false"</span> &gt;
+</code></pre></li>
+<li>Uri获取bitmap的方法可以参考<a href="http://niorgai.github.io/2015/02/22/Bitmap%E7%9B%B8%E5%85%B3-%E8%AF%BB%E5%8F%96%E5%A4%A7%E5%9B%BE%E7%89%87/">Bitmap相关:读取大图片</a>.</li>
+</ol>
 
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading1"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading2"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading3"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading4"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading5"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading6"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading7"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading8"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading9"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading10"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading11"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading12"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
+        
+      
+    </div>
 
-&lt;/animation-list&gt;
-</code></pre><p>其实这些资源图片就是Loading菊花图按帧分割，效果还是不错的。</p>
-<p>下载地址：</p>
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/01/26/Git小技巧/">
+                Git小技巧
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Jan 26
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/方便开发/">方便开发</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/01/26/Git小技巧/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/26/Git小技巧/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <hr>
+<p><strong>add：</strong></p>
 <ol>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading1.png" target="_blank" rel="external">loading1</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading2.png" target="_blank" rel="external">loading2</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading3.png" target="_blank" rel="external">loading3</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading4.png" target="_blank" rel="external">loading4</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading5.png" target="_blank" rel="external">loading5</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading6.png" target="_blank" rel="external">loading6</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading7.png" target="_blank" rel="external">loading7</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading8.png" target="_blank" rel="external">loading8</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading9.png" target="_blank" rel="external">loading9</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading10.png" target="_blank" rel="external">loading10</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading11.png" target="_blank" rel="external">loading11</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading12.png" target="_blank" rel="external">loading12</a></li>
+<li>git add -u 只添加更新了的文件</li>
 </ol>
 <hr>
-<p>使用方式因为其实这只是一个Dialog，所以使用方式一样：</p>
-<pre><code>LoadingDialog dialog = new LoadingDialog(this)<span class="comment">;</span>
-dialog.show()<span class="comment">;</span>
-dialog.dismiss()<span class="comment">;</span>
+<p><strong>commit：</strong></p>
+<ol>
+<li>commit —amend会修正上次的提交(包括description)</li>
+<li>直接<code>git commit</code>会通过vim打开，可以编辑详细的commit信息。</li>
+<li><p><code>git rebase</code> 可以理解为重新定位base。</p>
+<p> 比如现在从master的A点开了一个分支branch，branch改动了，但是master也改动到了B。那么可以这样做：</p>
+<pre><code>git checkout master<span class="comment">; </span>
+git pull origin master<span class="comment">; </span>
+git checkout branch<span class="comment">; </span>
+git rebase master<span class="comment">; </span>
+</code></pre><p> 这样branch也是从master的B点为base了。可能会遇到冲突，打开相应文件更改为正确的内容然后重新add修改后的文件，继续执行<code>git rebase --continue</code>即可。</p>
+</li>
+<li><p>git rebase -i <tag> 从某一个tag开始重新整理commit点。</tag></p>
+<p> eg：如果当前commit是A -&gt; B -&gt;C -&gt;D,想调整为A-&gt;C-&gt;B-&gt;D.</p>
+<ol>
+<li><code>git rebase -i A</code>,即从B点开始调整，这时候会用自带的编辑器打开<code>.git/rebase-merge/git-rebase-todo</code>文件，内容如下：<strong>(如果遇到提示:</strong><code>Could not execute editor</code><strong>,表示没有找到文本编辑器，因为我用的是vim，所以直接添加vim路径到git的config中：</strong><code>git config --global core.editor &quot;/usr/bin/vim&quot;</code><strong>,然后重新运行rebase命令即可)</strong></li>
+<li><p>打开后文件前部分内容大致如下：</p>
+<pre><code>pick <span class="number">2</span>c97b26 A
+pick fd19f8e B
+pick <span class="number">02849</span>bf C
+pick bd73d4d D
+
+<span class="preprocessor"># Rebase 0580eab..74d8a3d onto 0580eab</span>
+<span class="preprocessor"># ...[chunked]</span>
+</code></pre><p> 文件中第一列表示操作指令：</p>
+<pre><code>pick = 使用这个<span class="operator"><span class="keyword">commit</span> ，不改动
+reword = 使用这个<span class="keyword">commit</span> ，但改动<span class="keyword">commit</span> message
+edit = 使用这个<span class="keyword">commit</span>，但改动<span class="keyword">commit</span> 的內容
+squash = 使用这个<span class="keyword">commit</span>，但会与上面的<span class="keyword">commit</span>合并，<span class="keyword">commit</span>的message也会合并
+fixup = squash + 只使用上面<span class="keyword">commit</span>的message
+<span class="keyword">exec</span> = 执行一条命令</span>
+</code></pre><p> 上面四条commit信息可以随意移动位置，复制粘贴即可。</p>
+<p>3.<code>:wq</code>退出编辑器,会自动继续rebase操作，最后成功整理commit信息。</p>
+</li>
+</ol>
+</li>
+</ol>
+<hr>
+<p><strong>push：</strong></p>
+<ol>
+<li>push -f强制推送本地代码</li>
+</ol>
+<hr>
+<p><strong>merge: </strong></p>
+<ol>
+<li>git merge —squash，merge but do not commit</li>
+</ol>
+<hr>
+<p><strong>撤销</strong></p>
+<ol>
+<li>git rm —cache file会将已经提交的file从git仓库删除，并重置文件为untracked状态</li>
+<li>git clean -f 删除 untracked files</li>
+<li>git clean -fd 连 untracked 的目录也一起删掉</li>
+<li><p>git clean -xfd 连 gitignore 的untrack 文件/目录也一起删掉 （慎用，一般这个是用来删掉编译出来的 .class之类的文件用的）</p>
+<p>  <strong>在用上述 git clean 前，加上 -n 参数来先看看会删掉哪些文件，防止重要文件被误删</strong></p>
+<ol>
+<li>git clean -nxfd</li>
+<li>git clean -nf</li>
+<li>git clean -nfd</li>
+</ol>
+</li>
+</ol>
+<hr>
+<p><strong>branch</strong></p>
+<ol>
+<li><code>git push origin :branch-name</code>，推一个空的分支到server上，即删除该分支。</li>
+<li><code>git branch -r -d origin/branch-name</code>删除本地分支</li>
+</ol>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/01/16/AsyncTask实现异步执行任务/">
+                简单使用AsyncTask实现异步执行任务
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Jan 16
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/01/16/AsyncTask实现异步执行任务/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/16/AsyncTask实现异步执行任务/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>包android.os.AsyncTask用于执行异步任务，使用AsyncTask必须继承AsyncTask类，并传入三个泛型参数：</p>
+<pre><code><span class="attribute">Params</span>: <span class="string">新建任务时的参数。</span>
+<span class="attribute">Progress</span>: <span class="string">任务在后台执行的进度值类型，一般是Integer。</span>
+<span class="attribute">Result</span>: <span class="string">任务执行后的返回值类型。</span>
+</code></pre><p>同时必须实现doInBackground方法，顾名思义执行后台任务。</p>
+<p>AsyncTask还有一些方法：</p>
+<pre><code><span class="comment">//任务开始前调用</span>
+protected void <span class="function"><span class="title">onPreExecute</span><span class="params">()</span></span>
+
+<span class="comment">//后台任务执行,Params泛型数组作为参数传入，Result泛型作为返回值。</span>
+protected Result <span class="function"><span class="title">doInBackground</span><span class="params">(Params... params)</span></span>
+
+<span class="comment">//通过AsyncTask.publishProgress调用，Progress泛型数组会当做参数传入。</span>
+protected void <span class="function"><span class="title">onProgressUpdate</span><span class="params">(Progress... values)</span></span> 
+
+<span class="comment">//任务运行后(doInBackground方法结束后)调用，doInBackground方法的返回值作为参数。</span>
+protected void <span class="function"><span class="title">onPostExecute</span><span class="params">(Result result)</span></span>
+
+<span class="comment">//通过AsyncTask.cancel方法调用，doInBackground方法的返回值作为参数。</span>
+<span class="comment">//先调用cancel方法1，再调用cancel方法2.</span>
+<span class="number">1</span><span class="class">.protected</span> void <span class="function"><span class="title">onCancelled</span><span class="params">(Result result)</span></span>
+<span class="number">2</span><span class="class">.protected</span> void <span class="function"><span class="title">onCancelled</span><span class="params">()</span></span>
+</code></pre><p>在使用AsyncTask时，<strong>除了doInBackground方法</strong>，其他方法<strong>都可以访问UI控件</strong>。</p>
+<p>使用AsyncTask：</p>
+<pre><code><span class="comment">//AsyncTask定义</span>
+<span class="class"><span class="keyword">class</span> <span class="title">MyTask</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">AsyncTask&lt;String</span>,<span class="title">Integer</span>,<span class="title">Long&gt;</span>
+</span><span class="comment">//新建AsyncTask</span>
+<span class="type">MyTask</span> myTask = <span class="keyword">new</span> <span class="type">MyTask</span>();
+myTask.execute(<span class="string">"task1"</span>,<span class="string">"task2"</span>);
+</code></pre><p>取消AsyncTask：</p>
+<pre><code><span class="comment">//通过mayInterruptIfRunning参数决定是否会在任务运行时结束任务。</span>
+myTask.cancel(<span class="keyword">boolean</span> mayInterruptIfRunning);
 </code></pre>
         
       
@@ -391,8 +518,8 @@ dialog.dismiss()<span class="comment">;</span>
           
           
             
-              <a class="post-title-link" href="/2015/02/27/Bitmap相关-管理Bitmap内存/">
-                Bitmap相关:管理Bitmap内存
+              <a class="post-title-link" href="/2015/01/14/Android线程相关/">
+                Android线程相关
               </a>
             
           
@@ -401,7 +528,7 @@ dialog.dismiss()<span class="comment">;</span>
 
       <div class="post-meta">
         <span class="post-time">
-          发表于 2015 Feb 27
+          发表于 2015 Jan 14
         </span>
 
         
@@ -421,8 +548,8 @@ dialog.dismiss()<span class="comment">;</span>
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/02/27/Bitmap相关-管理Bitmap内存/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/02/27/Bitmap相关-管理Bitmap内存/"></span>
+            <a href="/2015/01/14/Android线程相关/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/14/Android线程相关/"></span>
             </a>
           </span>
           
@@ -437,222 +564,71 @@ dialog.dismiss()<span class="comment">;</span>
 
       
         
-          <p>先说一下Android版本的不同：</p>
+          <p>Android经常会需要处理一些耗时操作(比如下载，上传等)，执行这些耗时操作的时候，UI是没有反应的，如果时间很久会报ANR，所以需要开启新线程来执行耗时操作。</p>
+<p><strong>正确的开启新线程的方法：</strong></p>
+<pre><code><span class="tag">new</span> <span class="tag">Thread</span>(new <span class="function">Runnable</span>() {
+    <span class="variable">@Override</span>
+    public void <span class="function">run</span>() {
+        <span class="comment">//此处进行耗时操作</span>
+    }
+})<span class="class">.start</span>();
+</code></pre><hr>
+<p>Android中Activity所在窗口的线程叫做主线程(Main Thread),因此所有在窗口上显示的控件(UI控件)都是在主线程中创建的，而在主线程创建的新线程中是不允许访问非当前线程(主要是主线程)创建的控件的。所以才会有很多Android坑是<strong>不能在非UI线程中访问UI控件。</strong></p>
+<p>通常会有以下几种解决方法：</p>
 <ol>
-<li>Android 2.2(API 8)以前，当垃圾回收进行时，程序线程会停止。</li>
-<li>Android 2.3添加了同步GC，使得bitmap不被引用时很快释放内存。</li>
-<li>Android 2.3.3(API 10)以前，bitmap的像素数据存放在本地内存中，而bitmap本身存放在Dalvik堆中，这使得无法预测像素数据的释放方式，增大了程序内存超出限制崩溃的潜在可能。</li>
-<li>从Android 3.0(API 11)开始，像素数据和其对应的bitmap都存放在Dalvik堆中。</li>
-</ol>
-<p>而不同版本管理bitmap的方式也不同。</p>
-<hr>
-<h5 id="Android_2-3-3以前，推荐使用cecycle()来回收bitmap。不过要确保该bitmap不会再被使用，否则会报错：&quot;Canvas:_trying_to_use_a_recycled_bitmap&quot;-">Android 2.3.3以前，推荐使用<code>cecycle()</code>来回收bitmap。不过要确保该bitmap不会再被使用，否则会报错：<code>&quot;Canvas: trying to use a recycled bitmap&quot;</code>.</h5><p>下面给了一个使用<code>cecycle()</code>的例子，使用时注意：</p>
-<ol>
-<li>bitmap不为null。</li>
-<li>bitmap没有被引用。</li>
-<li><p>bitmap没有被回收。</p>
-<pre><code><span class="keyword">private</span> <span class="keyword">int</span> mCacheRefCount = <span class="number">0</span>;
-<span class="keyword">private</span> <span class="keyword">int</span> mDisplayRefCount = <span class="number">0</span>;
-...
-<span class="comment">// Notify the drawable that the displayed state has changed.</span>
-<span class="comment">// Keep a count to determine when the drawable is no longer displayed.</span>
-<span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">setIsDisplayed</span><span class="params">(<span class="keyword">boolean</span> isDisplayed)</span> </span>{
-    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) {
-        <span class="keyword">if</span> (isDisplayed) {
-            mDisplayRefCount++;
-            mHasBeenDisplayed = <span class="keyword">true</span>;
-        } <span class="keyword">else</span> {
-            mDisplayRefCount--;
-        }
+<li><p>View.post方法</p>
+<pre><code>view.post(<span class="keyword">new</span> Runnable() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
+        <span class="comment">//对该view进行操作</span>
     }
-    <span class="comment">// Check to see if recycle() can be called.</span>
-    checkState();
-}
-
-<span class="comment">// Notify the drawable that the cache state has changed.</span>
-<span class="comment">// Keep a count to determine when the drawable is no longer being cached.</span>
-<span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">setIsCached</span><span class="params">(<span class="keyword">boolean</span> isCached)</span> </span>{
-    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) {
-        <span class="keyword">if</span> (isCached) {
-            mCacheRefCount++;
-        } <span class="keyword">else</span> {
-            mCacheRefCount--;
-        }
+});
+</code></pre></li>
+<li><p>Activity.runOnUiThread方法</p>
+<pre><code>MainActivity.<span class="keyword">this</span>.runOnUiThread(<span class="keyword">new</span> Runnable() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
+        <span class="comment">//该方法如果在UI线程中执行，Runnale.run方法会立即执行</span>
+        <span class="comment">//如果在非UI线程中执行，系统会将该方法的引用加入UI线程的任务队列中</span>
     }
-    <span class="comment">// Check to see if recycle() can be called.</span>
-    checkState();
-}
-
-<span class="keyword">private</span> <span class="keyword">synchronized</span> <span class="function"><span class="keyword">void</span> <span class="title">checkState</span><span class="params">()</span> </span>{
-    <span class="comment">// If the drawable cache and display ref counts = 0, and this drawable</span>
-    <span class="comment">// has been displayed, then recycle.</span>
-    <span class="keyword">if</span> (mCacheRefCount &lt;= <span class="number">0</span> &amp;&amp; mDisplayRefCount &lt;= <span class="number">0</span> &amp;&amp; mHasBeenDisplayed
-            &amp;&amp; hasValidBitmap()) {
-        getBitmap().recycle();
-    }
-}
-
-<span class="keyword">private</span> <span class="keyword">synchronized</span> <span class="function"><span class="keyword">boolean</span> <span class="title">hasValidBitmap</span><span class="params">()</span> </span>{
-    Bitmap bitmap = getBitmap();
-    <span class="keyword">return</span> bitmap != <span class="keyword">null</span> &amp;&amp; !bitmap.isRecycled();
-}
+});
+</code></pre></li>
+<li><p>使用android.os.handler对象，handler将访问UI线程的代码的引用压入UI线程的处理队列，在其他代码执行完后执行handleMessage方法。</p>
+<pre><code><span class="keyword">Message</span> <span class="keyword">message</span> = new <span class="keyword">Message</span>();  <span class="comment">//Message对象可以放一些参数</span>
+handler.sendMessage(<span class="keyword">message</span>);    <span class="comment">//sendMessage方法通知handle</span>
 </code></pre></li>
 </ol>
-<hr>
-<h5 id="Android_3-0开始，推荐使用BitmapFactory-Options-inBitmap来设置可重用的bitmap。">Android 3.0开始，推荐使用<code>BitmapFactory.Options.inBitmap</code>来设置可重用的bitmap。</h5><p>设置了<code>BitmapFactory.Options.inBitmap</code>后，decode方法在载入数据时会尝试重用该bitmap。此方法<strong>需要被重用的bitmap是可变的(isMutable返回true)</strong>。如果decode方法不能重用该bitmap，会抛出<code>IllegalArgumentException</code>并返回<code>null</code>.正常情况下只需要继续使用decode方法返回的bitmap即可。</p>
-<ol>
-<li>Android 4.4以前，使用<code>BitmapFactory.Options.inBitmap</code>需要被decode的图像为jpeg或者png格式，并且需要设置<code>inSampleSize</code>为1，且bitmap的大小完全一致。另外，被重用的bitmap的configuration会覆盖<code>BitmapFactory.Options.inPreferredConfig</code>.</li>
-<li>Android 4.4以后，只需要被decode的图像的<code>getByteCount()</code>方法返回的字节大于被重用的bitmap的<code>getAllocationByteCount()</code>方法返回的字节，既可以使用<code>BitmapFactory.Options.inBitmap</code>方法。</li>
-</ol>
-<p>使用时应该按照以下步骤：</p>
-<ol>
-<li>检查是否Android 3.0以后。</li>
-<li>先通过设置<code>inJustDecodeBounds</code>获取被decode图片的长宽大小。</li>
-<li>检查SDK是否大于Android 4.4,然后设置不同的判断可重用的条件。</li>
-<li>使用该bitmap设置<code>inBitmap</code>属性并保存进缓存。</li>
-</ol>
-<p><strong>保存图片</strong></p>
-<pre><code>Set&lt;SoftReference&lt;Bitmap&gt;&gt; mReusableBitmaps;
-private LruCache&lt;String, BitmapDrawable&gt; mMemoryCache;
-
-<span class="comment">// If you're running on Honeycomb or newer, create a</span>
-<span class="comment">// synchronized HashSet of references to reusable bitmaps.</span>
-<span class="keyword">if</span> <span class="params">(Utils.hasHoneycomb<span class="params">()</span>)</span> {
-    mReusableBitmaps =
-            Collections.synchronizedSet<span class="params">(new HashSet&lt;SoftReference&lt;Bitmap&gt;&gt;<span class="params">()</span>)</span>;
-}
-
-mMemoryCache = new LruCache&lt;String, BitmapDrawable&gt;<span class="params">(mCacheParams.memCacheSize)</span> {
-
-    <span class="comment">// Notify the removed entry that is no longer being cached.</span>
-    @Override
-    protected void entryRemoved<span class="params">(boolean evicted, String key,
-            BitmapDrawable oldValue, BitmapDrawable newValue)</span> {
-        <span class="keyword">if</span> <span class="params">(RecyclingBitmapDrawable.class.isInstance<span class="params">(oldValue)</span>)</span> {
-            <span class="comment">// The removed entry is a recycling drawable, so notify it</span>
-            <span class="comment">// that it has been removed from the memory cache.</span>
-            <span class="params">(<span class="params">(RecyclingBitmapDrawable)</span> oldValue)</span>.setIsCached<span class="params">(<span class="literal">false</span>)</span>;
-        } <span class="keyword">else</span> {
-            <span class="comment">// The removed entry is a standard BitmapDrawable.</span>
-            <span class="keyword">if</span> <span class="params">(Utils.hasHoneycomb<span class="params">()</span>)</span> {
-                <span class="comment">// We're running on Honeycomb or later, so add the bitmap</span>
-                <span class="comment">// to a SoftReference set for possible use with inBitmap later.</span>
-                mReusableBitmaps.add
-                        <span class="params">(new SoftReference&lt;Bitmap&gt;<span class="params">(oldValue.getBitmap<span class="params">()</span>)</span>)</span>;
-            }
-        }
+<pre><code>Handler <span class="keyword">handler</span> = <span class="keyword">new</span> Handler(){
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>{
+        <span class="comment">//可以在这里进行UI操作</span>
+        <span class="keyword">super</span>.handleMessage(msg);
     }
-....
-}
-</code></pre><p><strong>设置重用图片</strong></p>
-<ol>
-<li><p>decode目标文件获取其大小。</p>
-<pre><code><span class="keyword">public</span> <span class="keyword">static</span> Bitmap decodeSampledBitmapFromFile(String filename,
-        <span class="keyword">int</span> reqWidth, <span class="keyword">int</span> reqHeight, ImageCache cache) {
 
-    <span class="keyword">final</span> BitmapFactory.<span class="keyword">Options</span> <span class="keyword">options</span> = <span class="keyword">new</span> BitmapFactory.<span class="keyword">Options</span>();
-    ...
-    <span class="keyword">options</span>.inJustDecodeBounds = <span class="keyword">true</span>;
-    BitmapFactory.decodeFile(filename, <span class="keyword">options</span>);
-    ...
-
-    <span class="comment">// If we're running on Honeycomb or newer, try to use inBitmap.</span>
-    <span class="keyword">if</span> (Utils.hasHoneycomb()) {
-        addInBitmapOptions(<span class="keyword">options</span>, cache);
-    }
-    ...
-    <span class="keyword">return</span> BitmapFactory.decodeFile(filename, <span class="keyword">options</span>);
-}
+};
+</code></pre><hr>
+<h4 id="以上总结了开启新线程的方法和进行UI操作的方法，那么综合起来比较好的解决方法是：">以上总结了开启新线程的方法和进行UI操作的方法，那么综合起来比较好的解决方法是：</h4><ol>
+<li><p>先定义Handler对象</p>
+<pre><code>private <span class="operator"><span class="keyword">Handler</span> <span class="keyword">handler</span> = <span class="literal">null</span>;</span>
 </code></pre></li>
-<li><p>尝试根据大小获取重用bitmap</p>
-<pre><code>private <span class="keyword">static</span> <span class="type">void</span> addInBitmapOptions(<span class="type">BitmapFactory</span>.<span class="type">Options</span> options,
-        <span class="type">ImageCache</span> cache) {
-    // inBitmap only works <span class="keyword">with</span> mutable bitmaps, so force the decoder to
-    // <span class="keyword">return</span> mutable bitmaps.
-    options.inMutable = <span class="literal">true</span>;
-
-    <span class="keyword">if</span> (cache != null) {
-        // <span class="type">Try</span> to find a bitmap to use <span class="keyword">for</span> inBitmap.
-        <span class="type">Bitmap</span> inBitmap = cache.getBitmapFromReusableSet(options);
-
-        <span class="keyword">if</span> (inBitmap != null) {
-            // <span class="type">If</span> a suitable bitmap has been found, <span class="type">set</span> it <span class="keyword">as</span> the value <span class="keyword">of</span>
-            // inBitmap.
-            options.inBitmap = inBitmap;
-        }
+<li><p>然后创建新线程，并在线程结束时进行调用hanlder.sendMessage方法。</p>
+<pre><code><span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
+        <span class="comment">//此处进行耗时操作</span>
+        <span class="keyword">handler</span>.sendMessage(msg);
     }
-}
-
-// <span class="type">This</span> <span class="keyword">method</span> iterates through the reusable bitmaps, looking <span class="keyword">for</span> one 
-// to use <span class="keyword">for</span> inBitmap:
-protected <span class="type">Bitmap</span> getBitmapFromReusableSet(<span class="type">BitmapFactory</span>.<span class="type">Options</span> options) {
-        <span class="type">Bitmap</span> bitmap = null;
-
-    <span class="keyword">if</span> (mReusableBitmaps != null &amp;&amp; !mReusableBitmaps.isEmpty()) {
-        synchronized (mReusableBitmaps) {
-            final <span class="type">Iterator</span>&lt;<span class="type">SoftReference</span>&lt;<span class="type">Bitmap</span>&gt;&gt; <span class="keyword">iterator</span>
-                    = mReusableBitmaps.<span class="keyword">iterator</span>();
-            <span class="type">Bitmap</span> item;
-
-            <span class="keyword">while</span> (<span class="keyword">iterator</span>.hasNext()) {
-                item = <span class="keyword">iterator</span>.next().get();
-
-                <span class="keyword">if</span> (null != item &amp;&amp; item.isMutable()) {
-                    // <span class="type">Check</span> to see it the item can be used <span class="keyword">for</span> inBitmap.
-                    <span class="keyword">if</span> (canUseForInBitmap(item, options)) {
-                        bitmap = item;
-
-                        // <span class="type">Remove</span> <span class="keyword">from</span> reusable <span class="type">set</span> so it can't be used again.
-                        <span class="keyword">iterator</span>.remove();
-                        <span class="keyword">break</span>;
-                    }
-                } <span class="keyword">else</span> {
-                    // <span class="type">Remove</span> <span class="keyword">from</span> the <span class="type">set</span> <span class="keyword">if</span> the reference has been cleared.
-                    <span class="keyword">iterator</span>.remove();
-                }
-            }
-        }
-    }
-    <span class="keyword">return</span> bitmap;
-}
+}).start(); 
 </code></pre></li>
-</ol>
-<ol>
-<li><p>根据大小及SDK版本检查是否可以重用。</p>
-<pre><code><span class="keyword">static</span> <span class="built_in">boolean</span> canUseForInBitmap(
-        Bitmap candidate, BitmapFactory.Options targetOptions) {
-
-    <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.KITKAT) {
-        <span class="comment">// From Android 4.4 (KitKat) onward we can re-use if the byte size of</span>
-        <span class="comment">// the new bitmap is smaller than the reusable bitmap candidate</span>
-        <span class="comment">// allocation byte count.</span>
-        <span class="built_in">int</span> <span class="variable">width</span> = targetOptions.outWidth / targetOptions.inSampleSize;
-        <span class="built_in">int</span> <span class="variable">height</span> = targetOptions.outHeight / targetOptions.inSampleSize;
-        <span class="built_in">int</span> byteCount = <span class="variable">width</span> * <span class="variable">height</span> * getBytesPerPixel(candidate.getConfig());
-        <span class="keyword">return</span> byteCount &lt;= candidate.getAllocationByteCount();
+<li><p>在handler.handleMessage方法中进行UI操作。</p>
+<pre><code><span class="keyword">handler</span> = <span class="keyword">new</span> Handler(){
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>{
+        <span class="comment">//可以在这里进行UI操作</span>
+        <span class="keyword">super</span>.handleMessage(msg);
     }
 
-    <span class="comment">// On earlier versions, the dimensions must match exactly and the inSampleSize must be 1</span>
-    <span class="keyword">return</span> candidate.getWidth() == targetOptions.outWidth
-            &amp;&amp; candidate.getHeight() == targetOptions.outHeight
-            &amp;&amp; targetOptions.inSampleSize == <span class="number">1</span>;
-}
-
-<span class="comment">/**
- * A helper function to return the byte usage per pixel of a bitmap based on         its configuration.
- */</span>
-<span class="keyword">static</span> <span class="built_in">int</span> getBytesPerPixel(Config config) {
-    <span class="keyword">if</span> (config == Config.ARGB_8888) {
-        <span class="keyword">return</span> <span class="number">4</span>;
-    } <span class="keyword">else</span> <span class="keyword">if</span> (config == Config.RGB_565) {
-        <span class="keyword">return</span> <span class="number">2</span>;
-    } <span class="keyword">else</span> <span class="keyword">if</span> (config == Config.ARGB_4444) {
-        <span class="keyword">return</span> <span class="number">2</span>;
-    } <span class="keyword">else</span> <span class="keyword">if</span> (config == Config.ALPHA_8) {
-        <span class="keyword">return</span> <span class="number">1</span>;
-    }
-    <span class="keyword">return</span> <span class="number">1</span>;
-}
+};
 </code></pre></li>
 </ol>
 
@@ -685,8 +661,8 @@ protected <span class="type">Bitmap</span> getBitmapFromReusableSet(<span class=
           
           
             
-              <a class="post-title-link" href="/2015/02/25/Bitmap相关-缓存Bitmap/">
-                Bitmap相关:缓存Bitmap
+              <a class="post-title-link" href="/2015/01/12/Android序列化对象/">
+                Android序列化对象
               </a>
             
           
@@ -695,7 +671,7 @@ protected <span class="type">Bitmap</span> getBitmapFromReusableSet(<span class=
 
       <div class="post-meta">
         <span class="post-time">
-          发表于 2015 Feb 25
+          发表于 2015 Jan 12
         </span>
 
         
@@ -715,8 +691,8 @@ protected <span class="type">Bitmap</span> getBitmapFromReusableSet(<span class=
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/02/25/Bitmap相关-缓存Bitmap/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/02/25/Bitmap相关-缓存Bitmap/"></span>
+            <a href="/2015/01/12/Android序列化对象/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/12/Android序列化对象/"></span>
             </a>
           </span>
           
@@ -731,85 +707,82 @@ protected <span class="type">Bitmap</span> getBitmapFromReusableSet(<span class=
 
       
         
-          <p>缓存Bitmap从总体思路来说，<strong>先使用内存缓存，再使用硬盘缓存。</strong></p>
+          <p>默认情况下，Activity之间只能传递基本数据类型，如果需要传递某个对象，则需要将其序列化，Android中序列化便是实现Serializable或则Parcelable接口。</p>
+<p>序列化:永久性保存对象,即保存对象的字节序列到本地文件中。</p>
+<p>Serializable的作用是<strong>将对象的属性保存到本地文件、数据库、网络流以方便传输</strong>。Parcelable的设计初衷是因为Serializable的效率太慢，为了**在程序内不同组件间及不同Android程序间(AIDL)高效传输而设计。</p>
+<p>使用的选择：</p>
 <ol>
-<li><p><strong>内存缓存</strong></p>
-<p> 内存缓存推荐使用<strong>LruCache</strong>(使用Support Library可以支持到API 4)。注意<strong>使用强引用。</strong></p>
-<p> <strong>不推荐</strong>使用SoftReference或者WeakReference缓存Bitmap，从Android 2.3起，GC更倾向于回收SoftReference和SoftReference的对象，这使得缓存意义变小。</p>
-<p> 以下是一个使用<strong>LruCache</strong>的例子：</p>
-<pre><code><span class="keyword">private</span> LruCache&lt;<span class="keyword">String</span>, Bitmap&gt; mMemoryCache;
-
-@Override
-<span class="keyword">protected</span> <span class="keyword">void</span> onCreate(Bundle savedInstanceState) {
-    ...
-    <span class="comment">// 先获取最大的可用内存</span>
-    <span class="keyword">final</span> <span class="built_in">int</span> maxMemory = (<span class="built_in">int</span>) (Runtime.getRuntime().maxMemory() / <span class="number">1024</span>);
-
-    <span class="comment">// 利用1/8的内存作为缓存</span>
-    <span class="keyword">final</span> <span class="built_in">int</span> cacheSize = maxMemory / <span class="number">8</span>;
-
-    mMemoryCache = <span class="keyword">new</span> LruCache&lt;<span class="keyword">String</span>, Bitmap&gt;(cacheSize) {
-    @Override
-    <span class="keyword">protected</span> <span class="built_in">int</span> sizeOf(<span class="keyword">String</span> <span class="variable">key</span>, Bitmap bitmap) {
-        <span class="comment">//计算每个图片的大小</span>
-        <span class="keyword">return</span> bitmap.getByteCount() / <span class="number">1024</span>;
-        }
-    };
-    ...
+<li>在内存间传递数据时，推荐使用Parcelable，因为其内存开销小，性能高。</li>
+<li>在需要保存时，推荐使用Serializable，因为Parcelable不适合做持久化存储。</li>
+<li>Serializable使用IO读写存储在硬盘上，而Parcelable是直接在内存中读写，很明显内存的读写速度通常大于IO读写，所以在Android中通常优先选择Parcelable。</li>
+</ol>
+<p>接下来利用一个例子说明如何实现这些接口。首先是初始对象：</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Test</span> {
+    <span class="keyword">int</span> num;
+    String <span class="keyword">string</span>;
 }
+</code></pre><hr>
+<p>如果实现Serializable接口，只需要继承java.io.Serializable，并提供一个serialVersionUID即可。</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>{
 
-<span class="keyword">public</span> <span class="keyword">void</span> addBitmapToMemoryCache(<span class="keyword">String</span> <span class="variable">key</span>, Bitmap bitmap) {
-<span class="keyword">if</span> (getBitmapFromMemCache(<span class="variable">key</span>) == <span class="keyword">null</span>) {
-    mMemoryCache.put(<span class="variable">key</span>, bitmap);
-    }
+    <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">12345678</span>l;
+    <span class="keyword">int</span> num;
+    String string;
 }
-
-<span class="keyword">public</span> Bitmap getBitmapFromMemCache(<span class="keyword">String</span> <span class="variable">key</span>) {
-    <span class="keyword">return</span> mMemoryCache.<span class="built_in">get</span>(<span class="variable">key</span>);
-}
-</code></pre><p> <strong>LruCache的大小是需要按需求设置的，</strong>上面的例子中，正常hdpi设备的最大内存为32MB，则缓存大小为4MB。如果以800*480的图片为例，每张图片需要1.5MB(800*400*4).所以大约可以缓存2.5张图片。</p>
-<p> <strong>但内存缓存在configuration变化(比如屏幕方向变化)时，内存缓存容易被破坏，为了解决这种办法，可以使用Fragment来保存。</strong></p>
-<pre><code><span class="keyword">private</span> LruCache&lt;String, Bitmap&gt; mMemoryCache;
-
-<span class="annotation">@Override</span>
-<span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>{
-...
-    RetainFragment retainFragment =
-        RetainFragment.findOrCreateRetainFragment(getFragmentManager());
-    mMemoryCache = retainFragment.mRetainedCache;
-    <span class="keyword">if</span> (mMemoryCache == <span class="keyword">null</span>) {
-        mMemoryCache = <span class="keyword">new</span> LruCache&lt;String, Bitmap&gt;(cacheSize) {
-            <span class="comment">//和上面一样正常初始化</span>
-        }
-        retainFragment.mRetainedCache = mMemoryCache;
-    }
-...
-}
-
-<span class="class"><span class="keyword">class</span> <span class="title">RetainFragment</span> <span class="keyword">extends</span> <span class="title">Fragment</span> </span>{
-    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"RetainFragment"</span>;
-    <span class="keyword">public</span> LruCache&lt;String, Bitmap&gt; mRetainedCache;
-
-    <span class="function"><span class="keyword">public</span> <span class="title">RetainFragment</span><span class="params">()</span> </span>{}
-
-    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> RetainFragment <span class="title">findOrCreateRetainFragment</span><span class="params">(FragmentManager fm)</span> </span>{
-    RetainFragment fragment = (RetainFragment) fm.findFragmentByTag(TAG);
-        <span class="keyword">if</span> (fragment == <span class="keyword">null</span>) {
-            fragment = <span class="keyword">new</span> RetainFragment();
-            fm.beginTransaction().add(fragment, TAG).commit();
-        }
-        <span class="keyword">return</span> fragment;
-    }
+</code></pre><hr>
+<p>如果实现Parcelable,需要继承android.os.Parcelable，重写describeContents方法和writeToParcel方法，并定义一个Parcelable.Creator类型的静态变量，在该静态变量中实现readFromParcel方法(自己定义的名字)。</p>
+<p><strong>注意：</strong></p>
+<ol>
+<li>writeToParcel方法中将变量<strong>按顺序</strong>写入Parcel</li>
+<li><p>Parcelable.Creator的createFromParcel方法，从Parcel读入变量时<strong>必须按照writeToParcel方法中的顺序</strong>读入。</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">implements</span> <span class="title">Parcelable</span></span>{
+    <span class="keyword">int</span> num;
+    String string;
 
     <span class="annotation">@Override</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>{
-        <span class="keyword">super</span>.onCreate(savedInstanceState);
-        setRetainInstance(<span class="keyword">true</span>);
+    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">describeContents</span><span class="params">()</span> </span>{
+            <span class="keyword">return</span> <span class="number">0</span>;
+        }
+
+        <span class="annotation">@Override</span>
+        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeToParcel</span><span class="params">(Parcel dest, <span class="keyword">int</span> flags)</span> </span>{
+            dest.writeInt(num);
+             dest.writeString(string);
+        }
+
+    <span class="keyword">public</span> <span class="keyword">static</span> Creator&lt;Test&gt; creator = <span class="keyword">new</span> Creator&lt;Test&gt;() {
+            <span class="annotation">@Override</span>
+        <span class="function"><span class="keyword">public</span> Test <span class="title">createFromParcel</span><span class="params">(Parcel source)</span> </span>{
+            <span class="keyword">return</span> <span class="keyword">new</span> Test(source);
+        }
+
+        <span class="annotation">@Override</span>
+        <span class="keyword">public</span> Test[] newArray(<span class="keyword">int</span> size) {
+            <span class="keyword">return</span> <span class="keyword">new</span> Test[size];
+        }
+    };
+
+    Test(){}
+
+    Test(Parcel source){
+                readFromParcel(source);
+        }
+
+    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readFromParcel</span><span class="params">(Parcel source)</span></span>{
+        <span class="comment">//读取对象数据，必须按照writeToParcel方法中</span>
+        <span class="comment">//写入数据的顺序依次读取数据</span>
+        num = source.readInt();
+        string = source.readString();
     }
+
 }
 </code></pre></li>
-<li><p><strong>硬盘缓存</strong></p>
-<p> 硬盘缓存官方文档用到了一个<a href="https://android.googlesource.com/platform/libcore/+/jb-mr2-release/luni/src/main/java/libcore/io/DiskLruCache.java" target="_blank" rel="external">DiskLruCache类</a>，感觉没有提供SDK的直接解决办法不是很好，有兴趣可以参考<a href="https://developer.android.com/intl/zh-cn/training/displaying-bitmaps/cache-bitmap.html#disk-cache" target="_blank" rel="external">这里</a>.    </p>
+<li><p>如果需要序列化自定义的数据，该数据也需要实现Parcelable接口。</p>
+<p> 例如希望通过序列化类TestA，类TestA中有一个List存放类TestB。</p>
+<pre><code><span class="class"><span class="keyword">class</span> <span class="title">TestA</span></span>{
+    <span class="keyword">List</span>&lt;TestB&gt; <span class="keyword">list</span>;
+}
+</code></pre><p> 那么TestA与TestB都需要实现Parcelable接口。且类TestA通过<code>parcel.writeTypedList</code>写入list，通过<code>parcel.readTypedList(list,TestB.creator)</code>读取list。</p>
 </li>
 </ol>
 
@@ -835,7 +808,7 @@ protected <span class="type">Bitmap</span> getBitmapFromReusableSet(<span class=
 
   
   <div class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="extend next" rel="next" href="/page/6/">&raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/4/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/6/">&raquo;</a>
   </div>
 
 
@@ -869,7 +842,7 @@ protected <span class="type">Bitmap</span> getBitmapFromReusableSet(<span class=
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-count">45</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

@@ -258,43 +258,39 @@ public <span class="type">View</span> getView<span class="container">(<span clas
 <li><p><code>onClickListener</code>,当ListView的item中有比如button这些子view时，需要对其设置onclickListener，通常的写法是在getView方法中一个个设置，比如</p>
 <pre><code>holder<span class="class">.img</span><span class="class">.setonClickListener</span>(new onClickListenr)...
 </code></pre><p> 但是这种写法每次调用getView时都设置了一个新的onClick事件，效率很低。高效的写法可以直接在ViewHolder中设置一个position，然后viewHolder implements OnClickListenr：</p>
-<pre><code><span class="class"><span class="keyword">class</span>  <span class="type">ViewHolder</span> implements <span class="type">OnClickListener</span>{
-    int position;
-    <span class="type">ImageView</span> img;
-    <span class="type">TextView</span> name;
+<pre><code><span class="class"><span class="keyword">class</span>  <span class="title">ViewHolder</span> <span class="keyword">implements</span> <span class="title">OnClickListener</span></span>{
+    <span class="keyword">int</span> position;
+    TextView name;
 
-    public void setPosition<span class="container">(<span class="title">int</span> <span class="title">position</span>)</span>{
-        this.position = position;
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPosition</span><span class="params">(<span class="keyword">int</span> position)</span></span>{
+        <span class="keyword">this</span>.position = position;
     }
 
-    @<span class="type">Override</span>
-    public void onClick<span class="container">(<span class="type">View</span> <span class="title">v</span>)</span> {
-        switch <span class="container">(<span class="title">v</span>.<span class="title">getId</span>()</span>){
-            //<span class="type">XXXX</span>
+    <span class="annotation">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>{
+        <span class="keyword">switch</span> (v.getId()){
+            <span class="comment">//<span class="doctag">XXX</span>X</span>
         }
     }
 }
 
-public <span class="type">View</span> getView<span class="container">(<span class="title">int</span> <span class="title">position</span>, <span class="type">View</span> <span class="title">convertView</span>, <span class="type">ViewGroup</span> <span class="title">parent</span>)</span> {
-    <span class="type">ViewHolder</span> holder = null;
-    if<span class="container">(<span class="title">convertView</span>==<span class="title">null</span>)</span>{
-        convertView = inflater.inflate<span class="container">(<span class="type">R</span>.<span class="title">layout</span>.<span class="title">list_item</span>, <span class="title">parent</span>, <span class="title">false</span>)</span>;
-        holder = new <span class="type">ViewHolder</span><span class="container">()</span>;
-        holder.img = <span class="container">(<span class="type">ImageView</span>)</span> convertView.findViewById<span class="container">(<span class="type">R</span>.<span class="title">id</span>.<span class="title">img</span>)</span>;
-        holder.name = <span class="container">(<span class="type">TextView</span>)</span> convertView.findViewById<span class="container">(<span class="type">R</span>.<span class="title">id</span>.<span class="title">name</span>)</span>;
-        holder.img.setOnClickListener<span class="container">(<span class="title">this</span>)</span>;
-        holder.name.setOnClickListener<span class="container">(<span class="title">this</span>)</span>;
-        convertView.setTag<span class="container">(<span class="title">holder</span>)</span>;
-    }else{
-        holder = <span class="container">(<span class="type">ViewHolder</span>)</span> convertView.getTag<span class="container">()</span>;
+<span class="function"><span class="keyword">public</span> View <span class="title">getView</span><span class="params">(<span class="keyword">int</span> position, View convertView, ViewGroup parent)</span> </span>{
+    ViewHolder holder = <span class="keyword">null</span>;
+    <span class="keyword">if</span>(convertView==<span class="keyword">null</span>){
+        convertView = inflater.inflate(R.layout.list_item, parent, <span class="keyword">false</span>);
+        holder = <span class="keyword">new</span> ViewHolder();
+        holder.name = (TextView) convertView.findViewById(R.id.name);
+        holder.name.setOnClickListener(<span class="keyword">this</span>);
+        convertView.setTag(holder);
+    }<span class="keyword">else</span>{
+        holder = (ViewHolder) convertView.getTag();
     }
-    //设置holder
-    holder.img.setImageResource<span class="container">(<span class="type">R</span>.<span class="title">drawable</span>.<span class="title">ic_launcher</span>)</span>;
-    holder.name.setText<span class="container">(<span class="title">list</span>.<span class="title">get</span>(<span class="title">position</span>)</span>.partname);
-    //设置position
-    holder.setPosition<span class="container">(<span class="title">position</span>)</span>;
-    return convertView;
-}</span>
+    <span class="comment">//设置holder</span>
+    holder.name.setText(list.get(position).partname);
+    <span class="comment">//设置position</span>
+    holder.setPosition(position);
+    <span class="keyword">return</span> convertView;
+}
 </code></pre></li>
 </ol>
 
@@ -316,7 +312,7 @@ public <span class="type">View</span> getView<span class="container">(<span clas
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2014/12/16/Java初学者/">Android中Java相关</a>
+              <a href="/2014/12/16/PopupWindow相关/">PopupWindow相关</a>
             
           </div>
 
@@ -390,7 +386,7 @@ public <span class="type">View</span> getView<span class="container">(<span clas
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-count">45</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
