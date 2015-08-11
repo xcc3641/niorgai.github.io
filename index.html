@@ -145,7 +145,7 @@
           
             
               <a class="post-title-link" href="/2015/07/25/高效使用ImageLoader及Volley/">
-                高效使用ImageLoader及Volley
+                高效使用Volley
               </a>
             
           
@@ -179,18 +179,16 @@
 
       
         
-          <p>ImageLoader或者Volley,在使用时都是通过<code>ImageLoader.getInstance()</code>或者<code>Volley.newRequestQueue(mContext)</code>来初始化,但其实这些方法都是导致其内部类的重复初始化,更高效的方法是使用单例模式来实现~这样最大的好处是使ImageLoader和RequestQueue维持在整个Application的生命周期.</p>
+          <p>Volley,在使用时是通过<code>Volley.newRequestQueue(mContext)</code>来初始化,但其实这些方法都是导致其内部类的重复初始化,更高效的方法是使用单例模式来实现~这样最大的好处是使RequestQueue维持在整个Application的生命周期.</p>
 <p>比如Google给出的例子:</p>
 <pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MySingleton</span> </span>{
     <span class="keyword">private</span> <span class="keyword">static</span> MySingleton mInstance;
     <span class="keyword">private</span> RequestQueue mRequestQueue;
-    <span class="keyword">private</span> ImageLoader mImageLoader;
     <span class="keyword">private</span> <span class="keyword">static</span> Context mCtx;
 
     <span class="function"><span class="keyword">private</span> <span class="title">MySingleton</span><span class="params">(Context context)</span> </span>{
         mCtx = context;
         mRequestQueue = getRequestQueue();
-        mImageLoader = ImageLoader.getInstance();
     }
 
     <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> MySingleton <span class="title">getInstance</span><span class="params">(Context context)</span> </span>{
@@ -214,15 +212,11 @@
         <span class="keyword">return</span> mRequestQueue;
     }
 
-    <span class="function"><span class="keyword">public</span> ImageLoader <span class="title">getImageLoader</span><span class="params">()</span> </span>{
-        <span class="keyword">return</span> mImageLoader;
-    }
 }
-</code></pre><p>在使用时通过以下方法获取imageLoader或RequestQueue.</p>
+</code></pre><p>在使用时通过以下方法获取RequestQueue.</p>
 <pre><code>RequestQueue queue = MySingleton.getInstance<span class="params">(mContext)</span>.getRequestQueue<span class="params">()</span>;
+</code></pre><p><strong>Google的例子中还包含了ImageLoader,但是ImageLoader的getInstance()方法已经是单例模式了~</strong></p>
 
-   ImageLoader imageLoader = MySingleton.getInstance<span class="params">(mContext)</span>.getImageLoader<span class="params">()</span>;    
-</code></pre>
         
       
     </div>
