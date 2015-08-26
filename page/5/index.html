@@ -206,16 +206,17 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
 <span class="type">intent</span>.setType(<span class="string">"image/*"</span>);//不加会导致crash
 </code></pre><p>  onActivityResult返回的Intent中：</p>
 <ul>
-<li><code>intent.getData()</code>返回所选图片的Uri，格式如下：<ul>
-<li>系统版本大于等于19(KitKat):<code>content://com.android.providers.media.documents/document/image%3A919</code></li>
-<li>系统版本低于19:<code>content://media/external/images/media/919</code></li>
-</ul>
-</li>
+<li><code>intent.getData()</code>返回所选图片的Uri：</li>
 </ul>
 <hr>
 <p>关于返回Uri格式的说明：</p>
-<ol>
-<li><p><code>content://media/external/images/media/919</code>格式的Uri，可以通过以下函数获取真实路径：</p>
+<ul>
+<li><p>系统版本大于等于19(KitKat):<code>content://com.android.providers.media.documents/document/image%3A919</code></p>
+</li>
+<li><p>系统版本低于19:<code>content://media/external/images/media/919</code></p>
+</li>
+</ul>
+<p>可以通过以下函数获取真实路径：</p>
 <pre><code><span class="keyword">private</span> <span class="keyword">String</span> getRealPathFromURI(Context context,Uri contentUri) {
     <span class="keyword">String</span>[] proj = {MediaStore.Images.Media.DATA};
     Cursor <span class="built_in">cursor</span> = context.getContentResolver().query(contentUri, proj, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);
@@ -227,7 +228,7 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
     <span class="built_in">cursor</span>.close();
     <span class="keyword">return</span> path;
 }
-</code></pre></li>
+</code></pre><ol>
 <li>Uri获取bitmap的方法可以参考<a href="http://niorgai.github.io/2015/02/22/Bitmap%E7%9B%B8%E5%85%B3-%E8%AF%BB%E5%8F%96%E5%A4%A7%E5%9B%BE%E7%89%87/">Bitmap相关:读取大图片</a>.</li>
 </ol>
 
