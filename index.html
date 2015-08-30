@@ -626,14 +626,15 @@ gridView.setEmptyView<span class="params">(view)</span>;
 <td>卸载应用时清除</td>
 <td>只有通过<code>getExternalFilesDir()</code>方法返回的路径的文件才会被删除</td>
 </tr>
-<tr>
-<td>权限</td>
-<td>无</td>
-<td><code>android.permission.WRITE_EXTERNAL_STORAGE</code> <code>android.permission.READ_EXTERNAL_STORAGE</code></td>
-</tr>
 </tbody>
 </table>
-<hr>
+<p>读取外部存储时,需要添加以下权限:</p>
+<pre><code>写入的权限已经在SDK&gt;<span class="number">18</span>的版本中默认拥有了
+&lt;uses-permission android:<span class="variable">name=</span><span class="string">"android.permission.WRITE_EXTERNAL_STORAGE"</span>
+                 android:<span class="variable">maxSdkVersion=</span><span class="string">"18"</span> /&gt;
+
+&lt;uses-permission android:<span class="variable">name=</span><span class="string">"android.permission.READ_EXTERNAL_STORAGE"</span> /&gt;
+</code></pre><hr>
 <p>内部存储</p>
 <ol>
 <li><p><code>getFilesDir()</code> </p>
