@@ -674,6 +674,11 @@ drawable-xxhdpi     <span class="list">(<span class="keyword">dpi=480</span> , d
 </code></pre><p>注意不要把Title加到ScrollView里面了~~</p>
 <hr>
 <p>style里面<code>android:windowBackground</code>可以设置全局的背景颜色, 也不用担心过度渲染.</p>
+<hr>
+<ol>
+<li>ImageView的<code>android:adjustViewBounds</code>属性可以使图片正好贴合边框.</li>
+<li>如果希望在RelativeLayout中放置一个背景图, 同时RelativeLayout的高度已背景图为准.如果简单地将图片设置RelativeLayout的背景,会导致RelativeLayout上下都有padding(暂时不知道为什么…).<br>同时如果设置了RelativeLayout的高度为wrap_content后会导致below和above属性失效…..<br>目前想到的解决方法是外层包一个wrap_content的FrameLayout, 里面同时放置一个ImageView和fill_parent的RelativeLayout.</li>
+</ol>
 
         
       
