@@ -144,132 +144,6 @@
           
           
             
-              <a class="post-title-link" href="/2015/09/03/SwipeRefreshLayout源码小细节/">
-                SwipeRefreshLayout源码小细节
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Sep 3
-        </span>
-
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/09/03/SwipeRefreshLayout源码小细节/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/09/03/SwipeRefreshLayout源码小细节/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <ol>
-<li>第二个手指放下会激活刷新位置的重定义</li>
-<li>转动的Drawable一开始就出来了,只是被隐藏了</li>
-<li>CircleView是后面的白色, 但是只有下拉过程中才会有背景效果</li>
-<li>下拉过程中才有箭头,  放开手指刷新的过程中没有箭头</li>
-<li>mScale标志位标记是否根据移动的位置放大缩小</li>
-</ol>
-<table>
-<thead>
-<tr>
-<th>类型</th>
-<th>引用商品</th>
-<th>时间</th>
-<th>赞</th>
-<th>我想团</th>
-<th>子评论</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>动作</td>
-<td>有</td>
-<td>有</td>
-<td>有</td>
-<td>无</td>
-<td>有</td>
-</tr>
-<tr>
-<td>帖子</td>
-<td>有</td>
-<td>有</td>
-<td>有</td>
-<td>有</td>
-<td>有</td>
-</tr>
-<tr>
-<td>五人成团</td>
-<td>有</td>
-<td>有</td>
-<td>无</td>
-<td>无</td>
-<td>无</td>
-</tr>
-<tr>
-<td>官方</td>
-<td>无</td>
-<td>无</td>
-<td>无</td>
-<td>无</td>
-<td>无</td>
-</tr>
-<tr>
-<td>专题</td>
-<td>无</td>
-<td>有</td>
-<td>无</td>
-<td>无</td>
-<td>无</td>
-</tr>
-</tbody>
-</table>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
               <a class="post-title-link" href="/2015/07/25/高效使用Volley/">
                 高效使用Volley
               </a>
@@ -669,11 +543,187 @@ gridView.setEmptyView<span class="params">(view)</span>;
 
 
     
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/03/23/Android文件存储/">
+                Android文件存储
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Mar 23
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/03/23/Android文件存储/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/23/Android文件存储/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>文件存储分内部文件存储和外部存储。</p>
+<p>默认情况下应用安装到内部存储，可以通过<code>AndroidMainfest.xml</code>文件下<code>application</code>的<code>android:installLocation</code>属性设置安装位置。</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>内部存储</th>
+<th>外部存储</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>可用</td>
+<td>一直可用</td>
+<td>没有挂载时不可用</td>
+</tr>
+<tr>
+<td>可访问性</td>
+<td>只能被自己的APP访问</td>
+<td>全部可读</td>
+</tr>
+<tr>
+<td>删除</td>
+<td>卸载应用时清除</td>
+<td>只有通过<code>getExternalFilesDir()</code>方法返回的路径的文件才会被删除</td>
+</tr>
+</tbody>
+</table>
+<p>读取外部存储时,需要添加以下权限:</p>
+<pre><code>写入的权限已经在SDK&gt;<span class="number">18</span>的版本中默认拥有了
+&lt;uses-permission android:<span class="variable">name=</span><span class="string">"android.permission.WRITE_EXTERNAL_STORAGE"</span>
+                 android:<span class="variable">maxSdkVersion=</span><span class="string">"18"</span> /&gt;
+
+&lt;uses-permission android:<span class="variable">name=</span><span class="string">"android.permission.READ_EXTERNAL_STORAGE"</span> /&gt;
+</code></pre><hr>
+<p>内部存储</p>
+<ol>
+<li><p><code>getFilesDir()</code> </p>
+<p> 返回app可用的内部存储文件地址。</p>
+</li>
+<li><p><code>getCacheDir()</code> </p>
+<p> 返回app可用的缓存文件地址。当缓存较大并且系统空间不足时会删除其中的文件。</p>
+</li>
+</ol>
+<p>内部存储保存文件：</p>
+<pre><code><span class="type">File</span> file = <span class="keyword">new</span> <span class="type">File</span>(context.getFilesDir<span class="literal">()</span>, filename);
+<span class="type">String</span> filename = <span class="string">"myfile"</span>;
+<span class="type">String</span> <span class="built_in">string</span> = <span class="string">"Hello world!"</span>;
+<span class="type">FileOutputStream</span> outputStream;
+
+<span class="keyword">try</span> {
+      outputStream = openFileOutput(filename, <span class="type">Context</span>.<span class="type">MODE_PRIVATE</span>);
+      outputStream.write(<span class="built_in">string</span>.getBytes<span class="literal">()</span>);
+      outputStream.close<span class="literal">()</span>;
+    } catch (<span class="type">Exception</span> e) {
+          e.printStackTrace<span class="literal">()</span>;
+}
+</code></pre><p>设置<code>MODE_PRIVATE</code>可以使其他应用无法访问文件。</p>
+<p>内部存储保存缓存文件：</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">File</span> getTempFile(Context context, String url) {
+    <span class="keyword">File</span> <span class="keyword">file</span>;
+    <span class="keyword">try</span> {
+        String fileName = Uri.parse(url).getLastPathSegment();
+        <span class="keyword">file</span> = <span class="keyword">File</span>.createTempFile(fileName, <span class="keyword">null</span>, context.getCacheDir());
+    <span class="keyword">catch</span> (IOException e) {
+        <span class="comment">// Error while creating file</span>
+    }
+    <span class="keyword">return</span> <span class="keyword">file</span>;
+}
+</code></pre><hr>
+<p>外部存储</p>
+<p>因为外部存储可能没有被挂载，所以需要先判断是否可用：</p>
+<pre><code>/* Checks if external storage is available <span class="keyword">for</span> read and write */
+public boolean isExternalStorageWritable() {
+    String <span class="keyword">state</span> = Environment.getExternalStorageState();
+    if (Environment.MEDIA_MOUNTED.equals(<span class="keyword">state</span>)) {
+        return true;
+    }
+    return false;
+}
+
+/* Checks if external storage is available <span class="keyword">to</span> at least read */
+public boolean isExternalStorageReadable() {
+    String <span class="keyword">state</span> = Environment.getExternalStorageState();
+    if (Environment.MEDIA_MOUNTED.equals(<span class="keyword">state</span>) ||
+        Environment.MEDIA_MOUNTED_READ_ONLY.equals(<span class="keyword">state</span>)) {
+        return true;
+    }
+    return false;
+}
+</code></pre><ol>
+<li><p><code>getExternalStoragePublicDirectory()</code></p>
+<p> 返回可以任意访问的外部存储路径，删除应用时不会清除该路径。</p>
+</li>
+<li><p><code>getExternalFilesDir()</code></p>
+<p> 返回只能自己访问的外部存储路径，删除应用时该目录下的文件会被删除。</p>
+</li>
+</ol>
+<hr>
+<p><code>getFreeSpace ()</code>和<code>getTotalSpace ()</code>会返回路径下的可用空间和全部空间的字节。</p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
   </div>
 
   
   <div class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/2/">&raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/">&raquo;</a>
   </div>
 
 
@@ -707,7 +757,7 @@ gridView.setEmptyView<span class="params">(view)</span>;
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">46</span>
+              <span class="site-state-item-count">45</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
