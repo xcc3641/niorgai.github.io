@@ -144,6 +144,137 @@
           
           
             
+              <a class="post-title-link" href="/2015/01/05/Content-Provider介绍/">
+                Content Provider介绍
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Jan 5
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/01/05/Content-Provider介绍/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/05/Content-Provider介绍/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>Content Provider顾名思义，表示内容提供者，提供了对外部数据进行增、删、查、改的功能。</p>
+<ol>
+<li>通过Context.getContentResolver获取ContentResolver对象，并通过ContentResolver.insert、ContentResolver.delete、ContentResolver.query、ContentResolver.update进行操作。</li>
+<li>通过设置<user-permission>可以对特定的内容设置相应的读写权限。</user-permission></li>
+<li><p>不需要打开应用即可通过Content Provider对象访问应用的数据。</p>
+<h4 id="方法原型：">方法原型：</h4><p> public Cursor query(Uri uri, String[] projection,</p>
+<pre><code><span class="keyword">String </span><span class="keyword">selection, </span><span class="keyword">String[] </span><span class="keyword">selectionArgs, </span><span class="keyword">String </span>sortOrder)<span class="comment">;</span>
+</code></pre></li>
+</ol>
+<ul>
+<li>uri表示Content Provider的Uri，必须以”content://“开头。</li>
+<li>projection表示所查询的字段，即SQL中select和from的中间部分,传null时表示查询全部。</li>
+<li>selection表示查询条件，即SQL中where后的部分。</li>
+<li>selectionArgs表示查询条件的参数值。</li>
+<li>sortOrder表示需要排序的字段，即SQL中order by的部分。</li>
+</ul>
+<p>eg:</p>
+<pre><code>contentProvider.query(<span class="built_in">Uri</span>.parse(<span class="string">"content://sms/inbox"</span>),<span class="keyword">null</span>,
+                        <span class="string">"address like ?"</span>,<span class="keyword">new</span> <span class="built_in">String</span>[]{<span class="string">"1%"</span>},<span class="keyword">null</span>);
+</code></pre><p>表示从收到的短信中查询所有1开头的电话号码所发送的短信。</p>
+<ul>
+<li><p>插入方法：</p>
+<pre><code>public Uri <span class="operator"><span class="keyword">insert</span>(Uri uri, ContentValues <span class="keyword">values</span>);</span>
+</code></pre></li>
+<li><p>删除方法：</p>
+<pre><code>public <span class="built_in">int</span> delete(<span class="built_in">Uri</span> uri, <span class="built_in">String</span> selection, <span class="built_in">String</span>[] selectionArgs);
+</code></pre></li>
+<li><p>修改方法：</p>
+<pre><code>public int <span class="operator"><span class="keyword">update</span>(Uri uri, ContentValues <span class="keyword">values</span>, <span class="keyword">String</span> selection,
+    <span class="keyword">String</span>[] selectionArgs);</span>
+</code></pre></li>
+</ul>
+<h4 id="如果希望自定义Content_Provider，需要注意：">如果希望自定义Content Provider，需要注意：</h4><ol>
+<li>定义Content Provider的URI，URI包括authority和path两部分，完整的URI可以表示分content://authority/path</li>
+<li><p>通过UriMatcher映射Uri与返回代码，eg：</p>
+<pre><code>String AUTHORITY = <span class="string">"mobile.android.myprovider"</span>;
+<span class="keyword">int</span> <span class="built_in">CITIES</span> = <span class="number">1</span>;
+<span class="keyword">int</span> <span class="built_in">CITY_CODE</span> = <span class="number">2</span>;
+
+<span class="comment">//开始映射</span>
+UriMatcher uriMatcher = new UriMatcher(UriMatcher<span class="variable">.NO_MATCH</span>);
+uriMatcher<span class="variable">.addURI</span>(AUTHORITY,<span class="string">"cities"</span>,<span class="built_in">CITIES</span>);
+uriMatcher<span class="variable">.addURI</span>(AUTHORITY,<span class="string">"code/#"</span>,<span class="built_in">CITY_CODE</span>);
+</code></pre></li>
+<li><p>根据对增、删、查、改功能的需求实现相应的insert、delete、query、update方法，如果不需要的话可以使相应的方法直接返回null。</p>
+<pre><code><span class="comment">//解析Uri</span>
+<span class="keyword">switch</span>(uriMatcher.match(uri)){
+    <span class="keyword">case</span> <span class="string">CITIES:</span>
+            <span class="comment">//</span>
+    <span class="keyword">case</span> <span class="string">CITY_CODE:</span>
+            <span class="comment">//code为uri中content://authority/code/后的内容</span>
+            <span class="typename">int</span> code = uri.getPathSegments().get(<span class="number">1</span>);
+}
+</code></pre></li>
+</ol>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/01/03/Android-SQLite数据库/">
                 Android SQLite数据库
               </a>
@@ -573,182 +704,11 @@ int byteCount = <span class="keyword">is</span>.read(<span class="keyword">buffe
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/12/18/Android裁剪图片/">
-                Android裁剪图片
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2014 Dec 18
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/12/18/Android裁剪图片/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/18/Android裁剪图片/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>使用Intent：</p>
-<p>注意点：</p>
-<ol>
-<li><strong>非官方提供的代码，该方法并不通用，不是所有机器都支持这个intent，不推荐</strong></li>
-<li>裁剪时putExtra设置crop为true即可。</li>
-<li><strong>Uri必须以file://开头，不然会导致“无法保存剪裁的图片”的错误。</strong></li>
-</ol>
-<p>可以封装这样一段代码：</p>
-<pre><code>private void cropImageUri<span class="params">(Uri uri, int outputX, int outputY, int requestCode,Uri outputUri)</span>{
-    Intent intent = new Intent<span class="params">(<span class="string">"com.android.camera.action.CROP"</span>)</span>;
-    intent.setDataAndType<span class="params">(uri, <span class="string">"image/*"</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"crop"</span>, <span class="string">"true"</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"aspectX"</span>, <span class="number">2</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"aspectY"</span>, <span class="number">1</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"outputX"</span>, outputX)</span>;
-    intent.putExtra<span class="params">(<span class="string">"outputY"</span>, outputY)</span>;
-    intent.putExtra<span class="params">(<span class="string">"scale"</span>, <span class="literal">true</span>)</span>;
-    intent.putExtra<span class="params">(MediaStore.EXTRA_OUTPUT, outputUri)</span>;
-    intent.putExtra<span class="params">(<span class="string">"return-data"</span>, <span class="literal">false</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"outputFormat"</span>, Bitmap.CompressFormat.JPEG.toString<span class="params">()</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</span>, <span class="literal">true</span>)</span>; <span class="comment">// no face detection</span>
-    startActivityForResult<span class="params">(intent, requestCode)</span>;
-}
-</code></pre><p>另外关于putExtra的信号：</p>
-<table>
-<thead>
-<tr>
-<th>附加选项</th>
-<th>数据类型</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>crop</td>
-<td>String</td>
-<td>发送裁剪信号</td>
-</tr>
-<tr>
-<td>aspectX</td>
-<td>int</td>
-<td>X方向上的比例</td>
-</tr>
-<tr>
-<td>aspectY</td>
-<td>int</td>
-<td>Y方向上的比例</td>
-</tr>
-<tr>
-<td>outputX</td>
-<td>int</td>
-<td>裁剪区的宽</td>
-</tr>
-<tr>
-<td>outputY</td>
-<td>int</td>
-<td>裁剪区的高</td>
-</tr>
-<tr>
-<td>scale</td>
-<td>boolean</td>
-<td>是否保留比例</td>
-</tr>
-<tr>
-<td>return-data</td>
-<td>boolean</td>
-<td>是否将数据保留在Bitmap中返回</td>
-</tr>
-<tr>
-<td>data</td>
-<td>Parcelable</td>
-<td>相应的Bitmap数据</td>
-</tr>
-<tr>
-<td>circleCrop</td>
-<td>String</td>
-<td>圆形裁剪区域？</td>
-</tr>
-<tr>
-<td>MediaStore.EXTRA_OUTPUT (“output”)</td>
-<td>URI</td>
-<td>将URI指向相应的file:///…</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>使用Github lib,<br>以下是一些star比较高的lib：</p>
-<ul>
-<li><p><a href="https://github.com/lvillani/android-cropimage" target="_blank" rel="external">https://github.com/lvillani/android-cropimage</a></p>
-<p>  这是基于Gradle的，可以收到加上com.android.camera这个包里面的代码，加上resource即可使用，example里面有使用示例。</p>
-</li>
-<li><p><a href="https://github.com/biokys/cropimage" target="_blank" rel="external">https://github.com/biokys/cropimage</a></p>
-<p>  提供ant及gradle的lib，但在我机器(vivo Xplay)上crash了。。</p>
-</li>
-</ul>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
   <div class="pagination">
-    <a class="extend prev" rel="prev" href="/page/6/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/8/">&raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/6/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/8/">&raquo;</a>
   </div>
 
 
@@ -782,7 +742,7 @@ int byteCount = <span class="keyword">is</span>.read(<span class="keyword">buffe
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">45</span>
+              <span class="site-state-item-count">46</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

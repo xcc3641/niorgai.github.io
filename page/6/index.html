@@ -144,6 +144,160 @@
           
           
             
+              <a class="post-title-link" href="/2015/01/12/Android序列化对象/">
+                Android序列化对象
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Jan 12
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/01/12/Android序列化对象/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/12/Android序列化对象/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>默认情况下，Activity之间只能传递基本数据类型，如果需要传递某个对象，则需要将其序列化，Android中序列化便是实现Serializable或则Parcelable接口。</p>
+<p>序列化:永久性保存对象,即保存对象的字节序列到本地文件中。</p>
+<p>Serializable的作用是<strong>将对象的属性保存到本地文件、数据库、网络流以方便传输</strong>。Parcelable的设计初衷是因为Serializable的效率太慢，为了**在程序内不同组件间及不同Android程序间(AIDL)高效传输而设计。</p>
+<p>使用的选择：</p>
+<ol>
+<li>在内存间传递数据时，推荐使用Parcelable，因为其内存开销小，性能高。</li>
+<li>在需要保存时，推荐使用Serializable，因为Parcelable不适合做持久化存储。</li>
+<li>Serializable使用IO读写存储在硬盘上，而Parcelable是直接在内存中读写，很明显内存的读写速度通常大于IO读写，所以在Android中通常优先选择Parcelable。</li>
+</ol>
+<p>接下来利用一个例子说明如何实现这些接口。首先是初始对象：</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Test</span> {
+    <span class="keyword">int</span> num;
+    String <span class="keyword">string</span>;
+}
+</code></pre><hr>
+<p>如果实现Serializable接口，只需要继承java.io.Serializable，并提供一个serialVersionUID即可。</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>{
+
+    <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">12345678</span>l;
+    <span class="keyword">int</span> num;
+    String string;
+}
+</code></pre><hr>
+<p>如果实现Parcelable,需要继承android.os.Parcelable，重写describeContents方法和writeToParcel方法，并定义一个Parcelable.Creator类型的静态变量，在该静态变量中实现readFromParcel方法(自己定义的名字)。</p>
+<p><strong>注意：</strong></p>
+<ol>
+<li>writeToParcel方法中将变量<strong>按顺序</strong>写入Parcel</li>
+<li><p>Parcelable.Creator的createFromParcel方法，从Parcel读入变量时<strong>必须按照writeToParcel方法中的顺序</strong>读入。</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">implements</span> <span class="title">Parcelable</span></span>{
+    <span class="keyword">int</span> num;
+    String string;
+
+    <span class="annotation">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">describeContents</span><span class="params">()</span> </span>{
+            <span class="keyword">return</span> <span class="number">0</span>;
+        }
+
+        <span class="annotation">@Override</span>
+        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeToParcel</span><span class="params">(Parcel dest, <span class="keyword">int</span> flags)</span> </span>{
+            dest.writeInt(num);
+             dest.writeString(string);
+        }
+
+    <span class="keyword">public</span> <span class="keyword">static</span> Creator&lt;Test&gt; creator = <span class="keyword">new</span> Creator&lt;Test&gt;() {
+            <span class="annotation">@Override</span>
+        <span class="function"><span class="keyword">public</span> Test <span class="title">createFromParcel</span><span class="params">(Parcel source)</span> </span>{
+            <span class="keyword">return</span> <span class="keyword">new</span> Test(source);
+        }
+
+        <span class="annotation">@Override</span>
+        <span class="keyword">public</span> Test[] newArray(<span class="keyword">int</span> size) {
+            <span class="keyword">return</span> <span class="keyword">new</span> Test[size];
+        }
+    };
+
+    Test(){}
+
+    Test(Parcel source){
+                readFromParcel(source);
+        }
+
+    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readFromParcel</span><span class="params">(Parcel source)</span></span>{
+        <span class="comment">//读取对象数据，必须按照writeToParcel方法中</span>
+        <span class="comment">//写入数据的顺序依次读取数据</span>
+        num = source.readInt();
+        string = source.readString();
+    }
+
+}
+</code></pre></li>
+<li><p>如果需要序列化自定义的数据，该数据也需要实现Parcelable接口。</p>
+<p> 例如希望通过序列化类TestA，类TestA中有一个List存放类TestB。</p>
+<pre><code><span class="class"><span class="keyword">class</span> <span class="title">TestA</span></span>{
+    <span class="keyword">List</span>&lt;TestB&gt; <span class="keyword">list</span>;
+}
+</code></pre><p> 那么TestA与TestB都需要实现Parcelable接口。且类TestA通过<code>parcel.writeTypedList</code>写入list，通过<code>parcel.readTypedList(list,TestB.creator)</code>读取list。</p>
+</li>
+</ol>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/01/10/Android-Service-三/">
                 Android Service (三)
               </a>
@@ -640,142 +794,11 @@ unbindService<span class="params">(serviceIntent)</span>;
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/01/05/Content-Provider介绍/">
-                Content Provider介绍
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Jan 5
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/01/05/Content-Provider介绍/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/05/Content-Provider介绍/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>Content Provider顾名思义，表示内容提供者，提供了对外部数据进行增、删、查、改的功能。</p>
-<ol>
-<li>通过Context.getContentResolver获取ContentResolver对象，并通过ContentResolver.insert、ContentResolver.delete、ContentResolver.query、ContentResolver.update进行操作。</li>
-<li>通过设置<user-permission>可以对特定的内容设置相应的读写权限。</user-permission></li>
-<li><p>不需要打开应用即可通过Content Provider对象访问应用的数据。</p>
-<h4 id="方法原型：">方法原型：</h4><p> public Cursor query(Uri uri, String[] projection,</p>
-<pre><code><span class="keyword">String </span><span class="keyword">selection, </span><span class="keyword">String[] </span><span class="keyword">selectionArgs, </span><span class="keyword">String </span>sortOrder)<span class="comment">;</span>
-</code></pre></li>
-</ol>
-<ul>
-<li>uri表示Content Provider的Uri，必须以”content://“开头。</li>
-<li>projection表示所查询的字段，即SQL中select和from的中间部分,传null时表示查询全部。</li>
-<li>selection表示查询条件，即SQL中where后的部分。</li>
-<li>selectionArgs表示查询条件的参数值。</li>
-<li>sortOrder表示需要排序的字段，即SQL中order by的部分。</li>
-</ul>
-<p>eg:</p>
-<pre><code>contentProvider.query(<span class="built_in">Uri</span>.parse(<span class="string">"content://sms/inbox"</span>),<span class="keyword">null</span>,
-                        <span class="string">"address like ?"</span>,<span class="keyword">new</span> <span class="built_in">String</span>[]{<span class="string">"1%"</span>},<span class="keyword">null</span>);
-</code></pre><p>表示从收到的短信中查询所有1开头的电话号码所发送的短信。</p>
-<ul>
-<li><p>插入方法：</p>
-<pre><code>public Uri <span class="operator"><span class="keyword">insert</span>(Uri uri, ContentValues <span class="keyword">values</span>);</span>
-</code></pre></li>
-<li><p>删除方法：</p>
-<pre><code>public <span class="built_in">int</span> delete(<span class="built_in">Uri</span> uri, <span class="built_in">String</span> selection, <span class="built_in">String</span>[] selectionArgs);
-</code></pre></li>
-<li><p>修改方法：</p>
-<pre><code>public int <span class="operator"><span class="keyword">update</span>(Uri uri, ContentValues <span class="keyword">values</span>, <span class="keyword">String</span> selection,
-    <span class="keyword">String</span>[] selectionArgs);</span>
-</code></pre></li>
-</ul>
-<h4 id="如果希望自定义Content_Provider，需要注意：">如果希望自定义Content Provider，需要注意：</h4><ol>
-<li>定义Content Provider的URI，URI包括authority和path两部分，完整的URI可以表示分content://authority/path</li>
-<li><p>通过UriMatcher映射Uri与返回代码，eg：</p>
-<pre><code>String AUTHORITY = <span class="string">"mobile.android.myprovider"</span>;
-<span class="keyword">int</span> <span class="built_in">CITIES</span> = <span class="number">1</span>;
-<span class="keyword">int</span> <span class="built_in">CITY_CODE</span> = <span class="number">2</span>;
-
-<span class="comment">//开始映射</span>
-UriMatcher uriMatcher = new UriMatcher(UriMatcher<span class="variable">.NO_MATCH</span>);
-uriMatcher<span class="variable">.addURI</span>(AUTHORITY,<span class="string">"cities"</span>,<span class="built_in">CITIES</span>);
-uriMatcher<span class="variable">.addURI</span>(AUTHORITY,<span class="string">"code/#"</span>,<span class="built_in">CITY_CODE</span>);
-</code></pre></li>
-<li><p>根据对增、删、查、改功能的需求实现相应的insert、delete、query、update方法，如果不需要的话可以使相应的方法直接返回null。</p>
-<pre><code><span class="comment">//解析Uri</span>
-<span class="keyword">switch</span>(uriMatcher.match(uri)){
-    <span class="keyword">case</span> <span class="string">CITIES:</span>
-            <span class="comment">//</span>
-    <span class="keyword">case</span> <span class="string">CITY_CODE:</span>
-            <span class="comment">//code为uri中content://authority/code/后的内容</span>
-            <span class="typename">int</span> code = uri.getPathSegments().get(<span class="number">1</span>);
-}
-</code></pre></li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
   <div class="pagination">
-    <a class="extend prev" rel="prev" href="/page/5/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/7/">&raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/5/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/7/">&raquo;</a>
   </div>
 
 
@@ -809,7 +832,7 @@ uriMatcher<span class="variable">.addURI</span>(AUTHORITY,<span class="string">"
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">45</span>
+              <span class="site-state-item-count">46</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
