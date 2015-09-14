@@ -144,6 +144,107 @@
           
           
             
+              <a class="post-title-link" href="/2015/01/31/Android拍照选取图片/">
+                Android拍照选取图片
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Jan 31
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/01/31/Android拍照选取图片/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/31/Android拍照选取图片/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>Android经常会需要拍照、裁剪及图库中选择图片，其实都是通过intent调用系统相机或者系统图册，然后在onActivityResult中捕捉返回即可。</p>
+<h5 id="正常拍照选择图片的代码：">正常拍照选择图片的代码：</h5><pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(MediaStore.ACTION_IMAGE_CAPTURE);
+</code></pre><p>在onActivityResult中通过返回的<code>intent.getExtras().get(&quot;data&quot;)</code>便可以获取图片，但Android默认可用的应用内存大约为16M.所以Android为了不超出内存限制，在拍照返回时通过intent返回的bitmap会被压缩，这样导致一直都是获取的小图。所以在拍照时如果想返回大图需要通过Uri返回。</p>
+<h5 id="拍照选择大图代码(tampUri为路径，开发者文档提供的代码)：">拍照选择大图代码(tampUri为路径，开发者文档提供的代码)：</h5><pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(MediaStore.ACTION_IMAGE_CAPTURE);
+// 指定调用相机拍照后照片的储存路径
+<span class="type">intent</span>.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
+</code></pre><p>在onActivityResult中通过tempUri进行下一步操作。</p>
+<p>说明：</p>
+<p>拍照获取的图片推荐存放在 <code>Activity.this.getExternalCacheDir()</code>返回的<code>/storage/sdcard0/Android/data/&lt;package name&gt;/cache</code>路径，通过<code>new File(path,fileName)</code>新建一个file，然后通过Uri.fromFile(file)即可获取正确的uri，记得fileName需要带后缀。</p>
+<p><strong>为了防止Uri路径不对导致不能保存，使用前必须确保文件路径无误，不然会导致“无法保存剪裁的图片”的错误。或者无提示但不能点击确定保存图片。正确获取的Uri最终以file://开头。</strong>。</p>
+<p><strong>uri获取bitmap对象的方法可以参考<a href="http://niorgai.github.io/2015/02/22/Bitmap%E7%9B%B8%E5%85%B3-%E8%AF%BB%E5%8F%96%E5%A4%A7%E5%9B%BE%E7%89%87/">Bitmap相关:读取大图片</a>。</strong></p>
+<p>代码示例：</p>
+<pre><code><span class="built_in">String</span> fileName ＝ <span class="string">"temp.jpg"</span>;
+File tmpFile = <span class="keyword">new</span> File(<span class="keyword">this</span>.getExternalCacheDir(),fileName);
+<span class="built_in">Uri</span> tmpUri = <span class="built_in">Uri</span>.fromFile(tmpFile);
+</code></pre><ol>
+<li>设置通过Uri返回后，onActivityResult中返回的intent为null。</li>
+<li><p>开发者文档中只说了简单调用的方法，其实可以添加一些其他属性。</p>
+<pre><code>intent.putExtra<span class="params">(<span class="string">"return-data"</span>,<span class="literal">false</span>)</span>;
+intent.putExtra<span class="params">(<span class="string">"outputFormat"</span>,Bitmap.CompressFormat.JPEG.toString<span class="params">()</span>)</span>;
+intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</span>, <span class="literal">true</span>)</span>;
+</code></pre></li>
+<li>不能添加<code>intent.setType(&quot;image/*&quot;);</code>，会因为找不到intent导致ActivityNotFoundException。</li>
+<li><code>intent.putExtra(&quot;android.intent.extras.CAMERA_FACING&quot;,1);</code>，系统默认开启的是后置摄像头，如果希望选择前置摄像头可以加这句。</li>
+</ol>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/01/31/Android相册选取图片/">
                 Android相册选取图片
               </a>
@@ -651,165 +752,11 @@ handler.sendMessage(<span class="keyword">message</span>);    <span class="comme
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/01/12/Android序列化对象/">
-                Android序列化对象
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Jan 12
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/01/12/Android序列化对象/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/12/Android序列化对象/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>默认情况下，Activity之间只能传递基本数据类型，如果需要传递某个对象，则需要将其序列化，Android中序列化便是实现Serializable或则Parcelable接口。</p>
-<p>序列化:永久性保存对象,即保存对象的字节序列到本地文件中。</p>
-<p>Serializable的作用是<strong>将对象的属性保存到本地文件、数据库、网络流以方便传输</strong>。Parcelable的设计初衷是因为Serializable的效率太慢，为了**在程序内不同组件间及不同Android程序间(AIDL)高效传输而设计。</p>
-<p>使用的选择：</p>
-<ol>
-<li>在内存间传递数据时，推荐使用Parcelable，因为其内存开销小，性能高。</li>
-<li>在需要保存时，推荐使用Serializable，因为Parcelable不适合做持久化存储。</li>
-<li>Serializable使用IO读写存储在硬盘上，而Parcelable是直接在内存中读写，很明显内存的读写速度通常大于IO读写，所以在Android中通常优先选择Parcelable。</li>
-</ol>
-<p>接下来利用一个例子说明如何实现这些接口。首先是初始对象：</p>
-<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Test</span> {
-    <span class="keyword">int</span> num;
-    String <span class="keyword">string</span>;
-}
-</code></pre><hr>
-<p>如果实现Serializable接口，只需要继承java.io.Serializable，并提供一个serialVersionUID即可。</p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>{
-
-    <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">12345678</span>l;
-    <span class="keyword">int</span> num;
-    String string;
-}
-</code></pre><hr>
-<p>如果实现Parcelable,需要继承android.os.Parcelable，重写describeContents方法和writeToParcel方法，并定义一个Parcelable.Creator类型的静态变量，在该静态变量中实现readFromParcel方法(自己定义的名字)。</p>
-<p><strong>注意：</strong></p>
-<ol>
-<li>writeToParcel方法中将变量<strong>按顺序</strong>写入Parcel</li>
-<li><p>Parcelable.Creator的createFromParcel方法，从Parcel读入变量时<strong>必须按照writeToParcel方法中的顺序</strong>读入。</p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">implements</span> <span class="title">Parcelable</span></span>{
-    <span class="keyword">int</span> num;
-    String string;
-
-    <span class="annotation">@Override</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">describeContents</span><span class="params">()</span> </span>{
-            <span class="keyword">return</span> <span class="number">0</span>;
-        }
-
-        <span class="annotation">@Override</span>
-        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeToParcel</span><span class="params">(Parcel dest, <span class="keyword">int</span> flags)</span> </span>{
-            dest.writeInt(num);
-             dest.writeString(string);
-        }
-
-    <span class="keyword">public</span> <span class="keyword">static</span> Creator&lt;Test&gt; creator = <span class="keyword">new</span> Creator&lt;Test&gt;() {
-            <span class="annotation">@Override</span>
-        <span class="function"><span class="keyword">public</span> Test <span class="title">createFromParcel</span><span class="params">(Parcel source)</span> </span>{
-            <span class="keyword">return</span> <span class="keyword">new</span> Test(source);
-        }
-
-        <span class="annotation">@Override</span>
-        <span class="keyword">public</span> Test[] newArray(<span class="keyword">int</span> size) {
-            <span class="keyword">return</span> <span class="keyword">new</span> Test[size];
-        }
-    };
-
-    Test(){}
-
-    Test(Parcel source){
-                readFromParcel(source);
-        }
-
-    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readFromParcel</span><span class="params">(Parcel source)</span></span>{
-        <span class="comment">//读取对象数据，必须按照writeToParcel方法中</span>
-        <span class="comment">//写入数据的顺序依次读取数据</span>
-        num = source.readInt();
-        string = source.readString();
-    }
-
-}
-</code></pre></li>
-<li><p>如果需要序列化自定义的数据，该数据也需要实现Parcelable接口。</p>
-<p> 例如希望通过序列化类TestA，类TestA中有一个List存放类TestB。</p>
-<pre><code><span class="class"><span class="keyword">class</span> <span class="title">TestA</span></span>{
-    <span class="keyword">List</span>&lt;TestB&gt; <span class="keyword">list</span>;
-}
-</code></pre><p> 那么TestA与TestB都需要实现Parcelable接口。且类TestA通过<code>parcel.writeTypedList</code>写入list，通过<code>parcel.readTypedList(list,TestB.creator)</code>读取list。</p>
-</li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
   <div class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/6/">&raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/4/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/6/">&raquo;</a>
   </div>
 
 
@@ -843,7 +790,7 @@ handler.sendMessage(<span class="keyword">message</span>);    <span class="comme
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">45</span>
+              <span class="site-state-item-count">46</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
