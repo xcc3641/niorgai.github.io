@@ -185,6 +185,12 @@ requestWindowFeature(Window.FEATURE_NO_TITLE);
 </li>
 <li><p><code>dispatchKeyEventPreIme</code>可以预处理键盘事件.</p>
 </li>
+<li><p>ImageView想高度自适应时,可以使用:</p>
+<pre><code>&lt;ImageView
+    android:<span class="variable">layout_width=</span><span class="string">"match_parent"</span>
+    android:<span class="variable">adjustViewBounds=</span><span class="string">"true"</span>
+    android:<span class="variable">layout_height=</span><span class="string">"wrap_content"</span> /&gt;
+</code></pre></li>
 </ol>
 
       
