@@ -196,6 +196,23 @@ requestWindowFeature(Window.FEATURE_NO_TITLE);
     android:<span class="variable">adjustViewBounds=</span><span class="string">"true"</span>
     android:<span class="variable">layout_height=</span><span class="string">"wrap_content"</span> /&gt;
 </code></pre></li>
+<li><p>Android中WebView需要获取地理位置时,需要以下权限:</p>
+<pre><code>&lt;uses-permission android:<span class="property">name</span>=<span class="string">"android.permission.LOCATION_HARDWARE"</span>/&gt;
+&lt;uses-permission android:<span class="property">name</span>=<span class="string">"android.permission.ACCESS_COARSE_LOCATION"</span>/&gt;
+&lt;uses-permission android:<span class="property">name</span>=<span class="string">"android.permission.ACCESS_FINE_LOCATION"</span>/&gt;
+</code></pre><p>另外WebView中也需要设置:</p>
+<pre><code>WebSettings webSettings = webView.getSettings<span class="params">()</span>;
+  <span class="comment">//允许WebView获取位置           </span>
+webSettings.setGeolocationEnabled<span class="params">(<span class="literal">true</span>)</span>;
+   webSettings.setJavaScriptCanOpenWindowsAutomatically<span class="params">(<span class="literal">true</span>)</span>;
+webSettings.setGeolocationDatabasePath<span class="params">(context.getFilesDir<span class="params">()</span>.getPath<span class="params">()</span>)</span>;
+</code></pre><p>最重要重写WebChromeClient中的<code>onGeolocationPermissionsShowPrompt</code>方法:</p>
+<pre><code><span class="annotation">@Override</span>
+ <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onGeolocationPermissionsShowPrompt</span><span class="params">(String origin, GeolocationPermissions.Callback callback)</span> </span>{
+     <span class="comment">//return ture表示允许定位</span>
+     callback.invoke(origin, <span class="keyword">true</span>, <span class="keyword">false</span>);
+ }
+</code></pre></li>
 </ol>
 
         
