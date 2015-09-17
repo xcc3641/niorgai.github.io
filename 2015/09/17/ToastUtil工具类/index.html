@@ -24,7 +24,7 @@
 
 
 
-  <meta name="keywords" content="获取图片," />
+  <meta name="keywords" content="Utils," />
 
 
 
@@ -47,7 +47,7 @@
 
 
 
-  <title> Android裁剪图片 // Jianqiu's blog </title>
+  <title> ToastUtil工具类 // Jianqiu's blog </title>
 </head>
 
 <body>
@@ -142,7 +142,7 @@
           
           
             
-              Android裁剪图片
+              ToastUtil工具类
             
           
         </h1>
@@ -150,28 +150,17 @@
 
       <div class="post-meta">
         <span class="post-time">
-          发表于 2014 Dec 18
+          发表于 2015 Sep 17
         </span>
 
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
         
 
         
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2014/12/18/Android裁剪图片/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/18/Android裁剪图片/"></span>
+            <a href="/2015/09/17/ToastUtil工具类/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/09/17/ToastUtil工具类/"></span>
             </a>
           </span>
           
@@ -185,102 +174,106 @@
       
 
       
-        <p>使用Intent：</p>
-<p>注意点：</p>
-<ol>
-<li><strong>非官方提供的代码，该方法并不通用，不是所有机器都支持这个intent，不推荐</strong></li>
-<li>裁剪时putExtra设置crop为true即可。</li>
-<li><strong>Uri必须以file://开头，不然会导致“无法保存剪裁的图片”的错误。</strong></li>
-</ol>
-<p>可以封装这样一段代码：</p>
-<pre><code>private void cropImageUri<span class="params">(Uri uri, int outputX, int outputY, int requestCode,Uri outputUri)</span>{
-    Intent intent = new Intent<span class="params">(<span class="string">"com.android.camera.action.CROP"</span>)</span>;
-    intent.setDataAndType<span class="params">(uri, <span class="string">"image/*"</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"crop"</span>, <span class="string">"true"</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"aspectX"</span>, <span class="number">2</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"aspectY"</span>, <span class="number">1</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"outputX"</span>, outputX)</span>;
-    intent.putExtra<span class="params">(<span class="string">"outputY"</span>, outputY)</span>;
-    intent.putExtra<span class="params">(<span class="string">"scale"</span>, <span class="literal">true</span>)</span>;
-    intent.putExtra<span class="params">(MediaStore.EXTRA_OUTPUT, outputUri)</span>;
-    intent.putExtra<span class="params">(<span class="string">"return-data"</span>, <span class="literal">false</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"outputFormat"</span>, Bitmap.CompressFormat.JPEG.toString<span class="params">()</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</span>, <span class="literal">true</span>)</span>; <span class="comment">// no face detection</span>
-    startActivityForResult<span class="params">(intent, requestCode)</span>;
-}
-</code></pre><p>另外关于putExtra的信号：</p>
-<table>
-<thead>
-<tr>
-<th>附加选项</th>
-<th>数据类型</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>crop</td>
-<td>String</td>
-<td>发送裁剪信号</td>
-</tr>
-<tr>
-<td>aspectX</td>
-<td>int</td>
-<td>X方向上的比例</td>
-</tr>
-<tr>
-<td>aspectY</td>
-<td>int</td>
-<td>Y方向上的比例</td>
-</tr>
-<tr>
-<td>outputX</td>
-<td>int</td>
-<td>裁剪区的宽</td>
-</tr>
-<tr>
-<td>outputY</td>
-<td>int</td>
-<td>裁剪区的高</td>
-</tr>
-<tr>
-<td>scale</td>
-<td>boolean</td>
-<td>是否保留比例</td>
-</tr>
-<tr>
-<td>return-data</td>
-<td>boolean</td>
-<td>是否将数据保留在Bitmap中返回</td>
-</tr>
-<tr>
-<td>data</td>
-<td>Parcelable</td>
-<td>相应的Bitmap数据</td>
-</tr>
-<tr>
-<td>circleCrop</td>
-<td>String</td>
-<td>圆形裁剪区域？</td>
-</tr>
-<tr>
-<td>MediaStore.EXTRA_OUTPUT (“output”)</td>
-<td>URI</td>
-<td>将URI指向相应的file:///…</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>使用Github lib,<br>以下是一些star比较高的lib：</p>
-<ul>
-<li><p><a href="https://github.com/lvillani/android-cropimage" target="_blank" rel="external">https://github.com/lvillani/android-cropimage</a></p>
-<p>  这是基于Gradle的，可以收到加上com.android.camera这个包里面的代码，加上resource即可使用，example里面有使用示例。</p>
-</li>
-<li><p><a href="https://github.com/biokys/cropimage" target="_blank" rel="external">https://github.com/biokys/cropimage</a></p>
-<p>  提供ant及gradle的lib，但在我机器(vivo Xplay)上crash了。。</p>
-</li>
-</ul>
+        <p>Android开发固然会用到Toast,如果每次都Toast.makeToast来显示Toast的话,一方面写法麻烦,第二是多次调用Toast会使Toast一直浮在界面最上层,影响交互,最好的方式是封装一个ToastUtil:</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ToastUtil</span> </span>{
 
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> ToastUtil sToastUtil = <span class="keyword">null</span>;
+
+    <span class="keyword">private</span> Toast mToast = <span class="keyword">null</span>;
+
+    <span class="comment">/**
+     * 获取实例
+     *
+     * <span class="doctag">@return</span>
+     */</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function">ToastUtil <span class="title">getInstance</span><span class="params">()</span> </span>{
+        <span class="keyword">if</span> (sToastUtil == <span class="keyword">null</span>) {
+            <span class="keyword">synchronized</span> (ToastUtil.class) {
+                <span class="keyword">if</span> (sToastUtil == <span class="keyword">null</span>) {
+                    sToastUtil = <span class="keyword">new</span> ToastUtil();
+                }
+            }
+        }
+        <span class="keyword">return</span> sToastUtil;
+    }
+
+    <span class="keyword">protected</span> Handler <span class="keyword">handler</span> = <span class="keyword">new</span> Handler(Looper.getMainLooper());
+
+    <span class="comment">/**
+     * 显示Toast，多次调用此函数时，Toast显示的时间不会累计，并且显示内容为最后一次调用时传入的内容
+     * 持续时间默认为short
+     * <span class="doctag">@param</span> tips 要显示的内容
+     *            {<span class="doctag">@link</span> Toast#LENGTH_LONG}
+     */</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">showToast</span><span class="params">(<span class="keyword">final</span> String tips)</span></span>{
+        showToast(tips, Toast.LENGTH_SHORT);
+    }
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">showToast</span><span class="params">(<span class="keyword">final</span> <span class="keyword">int</span> tips)</span></span>{
+        showToast(tips, Toast.LENGTH_SHORT);
+    }
+    <span class="comment">/**
+     * 显示Toast，多次调用此函数时，Toast显示的时间不会累计，并且显示内容为最后一次调用时传入的内容
+     *
+     * <span class="doctag">@param</span> tips 要显示的内容
+     * <span class="doctag">@param</span> duration 持续时间，参见{<span class="doctag">@link</span> Toast#LENGTH_SHORT}和
+     *            {<span class="doctag">@link</span> Toast#LENGTH_LONG}
+     */</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">showToast</span><span class="params">(<span class="keyword">final</span> String tips, <span class="keyword">final</span> <span class="keyword">int</span> duration)</span> </span>{
+        <span class="keyword">if</span> (android.text.TextUtils.isEmpty(tips)) {
+            <span class="keyword">return</span>;
+        }
+        <span class="keyword">handler</span>.post(<span class="keyword">new</span> Runnable() {
+            <span class="annotation">@Override</span>
+            <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
+                <span class="keyword">if</span> (mToast == <span class="keyword">null</span>) {
+                    mToast = Toast.makeText(MyApplication.getMyApplicationContext(), tips, duration);
+                    mToast.show();
+                } <span class="keyword">else</span> {
+                    <span class="comment">//mToast.cancel();</span>
+                    <span class="comment">//mToast.setView(mToast.getView());</span>
+                    mToast.setText(tips);
+                    mToast.setDuration(duration);
+                    mToast.show();
+                }
+            }
+        });
+    }
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">showToast</span><span class="params">(<span class="keyword">final</span> <span class="keyword">int</span> tips, <span class="keyword">final</span> <span class="keyword">int</span> duration)</span> </span>{
+        <span class="keyword">handler</span>.post(<span class="keyword">new</span> Runnable() {
+            <span class="annotation">@Override</span>
+            <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
+                <span class="keyword">if</span> (mToast == <span class="keyword">null</span>) {
+                    mToast = Toast.makeText(MyApplication.getMyApplicationContext(), tips, duration);
+                    mToast.show();
+                } <span class="keyword">else</span> {
+                    <span class="comment">//mToast.cancel();</span>
+                    <span class="comment">//mToast.setView(mToast.getView());</span>
+                    mToast.setText(tips);
+                    mToast.setDuration(duration);
+                    mToast.show();
+                }
+            }
+        });
+    }
+}
+</code></pre><p>其实Toast调用的Context为ApplicationContext,在Application中初始化即可.</p>
+<pre><code>public <span class="class"><span class="keyword">class</span> <span class="title">MyApplication</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">Application</span> {</span>
+
+    <span class="keyword">private</span> static <span class="type">Context</span> myContext;
+
+    <span class="annotation">@Override</span>
+    public void onCreate() {
+        <span class="keyword">super</span>.onCreate();
+        myContext = <span class="keyword">this</span>.getApplicationContext();
+    }
+
+    public static <span class="type">Context</span> getMyApplicationContext(){
+        <span class="keyword">return</span> myContext;
+    }
+}
+</code></pre>
       
     </div>
 
@@ -288,7 +281,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/获取图片/"> #获取图片 </a>
+            <a href="/tags/Utils/"> #Utils </a>
           
         </div>
       
@@ -297,13 +290,11 @@
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2014/12/23/Mac下反编译Android-APK/">Mac下反编译Android APK</a>
-            
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2014/12/16/PopupWindow相关/">PopupWindow相关</a>
+              <a href="/2015/09/10/Android-Tips/">Android Tips</a>
             
           </div>
         </div>
@@ -323,8 +314,8 @@
     
       <div class="comments" id="comments">
         
-          <div class="ds-thread" data-thread-key="2014/12/18/Android裁剪图片/"
-               data-title="Android裁剪图片" data-url="http://niorgai.github.io/2014/12/18/Android裁剪图片/">
+          <div class="ds-thread" data-thread-key="2015/09/17/ToastUtil工具类/"
+               data-title="ToastUtil工具类" data-url="http://niorgai.github.io/2015/09/17/ToastUtil工具类/">
           </div>
         
       </div>

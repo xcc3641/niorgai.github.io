@@ -144,6 +144,163 @@
           
           
             
+              <a class="post-title-link" href="/2015/02/24/Bitmap相关-缓存Bitmap/">
+                Bitmap相关:缓存Bitmap
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Feb 24
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/02/24/Bitmap相关-缓存Bitmap/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/02/24/Bitmap相关-缓存Bitmap/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>缓存Bitmap从总体思路来说，<strong>先使用内存缓存，再使用硬盘缓存。</strong></p>
+<ol>
+<li><p><strong>内存缓存</strong></p>
+<p> 内存缓存推荐使用<strong>LruCache</strong>(使用Support Library可以支持到API 4)。注意<strong>使用强引用。</strong></p>
+<p> <strong>不推荐</strong>使用SoftReference或者WeakReference缓存Bitmap，从Android 2.3起，GC更倾向于回收SoftReference和SoftReference的对象，这使得缓存意义变小。</p>
+<p> 以下是一个使用<strong>LruCache</strong>的例子：</p>
+<pre><code><span class="keyword">private</span> LruCache&lt;<span class="keyword">String</span>, Bitmap&gt; mMemoryCache;
+
+@Override
+<span class="keyword">protected</span> <span class="keyword">void</span> onCreate(Bundle savedInstanceState) {
+    ...
+    <span class="comment">// 先获取最大的可用内存</span>
+    <span class="keyword">final</span> <span class="built_in">int</span> maxMemory = (<span class="built_in">int</span>) (Runtime.getRuntime().maxMemory() / <span class="number">1024</span>);
+
+    <span class="comment">// 利用1/8的内存作为缓存</span>
+    <span class="keyword">final</span> <span class="built_in">int</span> cacheSize = maxMemory / <span class="number">8</span>;
+
+    mMemoryCache = <span class="keyword">new</span> LruCache&lt;<span class="keyword">String</span>, Bitmap&gt;(cacheSize) {
+    @Override
+    <span class="keyword">protected</span> <span class="built_in">int</span> sizeOf(<span class="keyword">String</span> <span class="variable">key</span>, Bitmap bitmap) {
+        <span class="comment">//计算每个图片的大小</span>
+        <span class="keyword">return</span> bitmap.getByteCount() / <span class="number">1024</span>;
+        }
+    };
+    ...
+}
+
+<span class="keyword">public</span> <span class="keyword">void</span> addBitmapToMemoryCache(<span class="keyword">String</span> <span class="variable">key</span>, Bitmap bitmap) {
+<span class="keyword">if</span> (getBitmapFromMemCache(<span class="variable">key</span>) == <span class="keyword">null</span>) {
+    mMemoryCache.put(<span class="variable">key</span>, bitmap);
+    }
+}
+
+<span class="keyword">public</span> Bitmap getBitmapFromMemCache(<span class="keyword">String</span> <span class="variable">key</span>) {
+    <span class="keyword">return</span> mMemoryCache.<span class="built_in">get</span>(<span class="variable">key</span>);
+}
+</code></pre><p> <strong>LruCache的大小是需要按需求设置的，</strong>上面的例子中，正常hdpi设备的最大内存为32MB，则缓存大小为4MB。如果以800*480的图片为例，每张图片需要1.5MB(800*400*4).所以大约可以缓存2.5张图片。</p>
+<p> <strong>但内存缓存在configuration变化(比如屏幕方向变化)时，内存缓存容易被破坏，为了解决这种办法，可以使用Fragment来保存。</strong></p>
+<pre><code><span class="keyword">private</span> LruCache&lt;String, Bitmap&gt; mMemoryCache;
+
+<span class="annotation">@Override</span>
+<span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>{
+...
+    RetainFragment retainFragment =
+        RetainFragment.findOrCreateRetainFragment(getFragmentManager());
+    mMemoryCache = retainFragment.mRetainedCache;
+    <span class="keyword">if</span> (mMemoryCache == <span class="keyword">null</span>) {
+        mMemoryCache = <span class="keyword">new</span> LruCache&lt;String, Bitmap&gt;(cacheSize) {
+            <span class="comment">//和上面一样正常初始化</span>
+        }
+        retainFragment.mRetainedCache = mMemoryCache;
+    }
+...
+}
+
+<span class="class"><span class="keyword">class</span> <span class="title">RetainFragment</span> <span class="keyword">extends</span> <span class="title">Fragment</span> </span>{
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"RetainFragment"</span>;
+    <span class="keyword">public</span> LruCache&lt;String, Bitmap&gt; mRetainedCache;
+
+    <span class="function"><span class="keyword">public</span> <span class="title">RetainFragment</span><span class="params">()</span> </span>{}
+
+    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> RetainFragment <span class="title">findOrCreateRetainFragment</span><span class="params">(FragmentManager fm)</span> </span>{
+    RetainFragment fragment = (RetainFragment) fm.findFragmentByTag(TAG);
+        <span class="keyword">if</span> (fragment == <span class="keyword">null</span>) {
+            fragment = <span class="keyword">new</span> RetainFragment();
+            fm.beginTransaction().add(fragment, TAG).commit();
+        }
+        <span class="keyword">return</span> fragment;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>{
+        <span class="keyword">super</span>.onCreate(savedInstanceState);
+        setRetainInstance(<span class="keyword">true</span>);
+    }
+}
+</code></pre></li>
+<li><p><strong>硬盘缓存</strong></p>
+<p> 硬盘缓存官方文档用到了一个<a href="https://android.googlesource.com/platform/libcore/+/jb-mr2-release/luni/src/main/java/libcore/io/DiskLruCache.java" target="_blank" rel="external">DiskLruCache类</a>，感觉没有提供SDK的直接解决办法不是很好，有兴趣可以参考<a href="https://developer.android.com/intl/zh-cn/training/displaying-bitmaps/cache-bitmap.html#disk-cache" target="_blank" rel="external">这里</a>.    </p>
+</li>
+</ol>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/02/22/Bitmap相关-异步加载图片/">
                 Bitmap相关:异步加载图片
               </a>
@@ -780,114 +937,6 @@ MotionEvent motionEvent = MotionEvent.obtain(
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/01/31/Bitmap相关-基础介绍/">
-                Bitmap相关:基础介绍
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Jan 31
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/01/31/Bitmap相关-基础介绍/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/31/Bitmap相关-基础介绍/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <ol>
-<li><p>查看Bitmap的Config可以看到有如下四种：</p>
-<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Bitmap.Config ALPHA_8
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Bitmap.Config ARGB_4444 
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Bitmap.Config ARGB_8888
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Bitmap.Config RGB_565
-</code></pre><p> 这四种枚举值代表图片的存储方式，A为alpha，R为red，G为green，B为blue。<br> 由此可知每种形式的图片的位数：</p>
-<ul>
-<li><p>public static final Bitmap.Config ALPHA_8</p>
-<p>  每一个像素存放在单一的半透明通道，不存放颜色信息，每个像素1个字节。</p>
-</li>
-<li><p>public static final Bitmap.Config ARGB_4444 ，位数4+4+4+4 = 16</p>
-<p>  该方法在API13中被废弃，每个像素2个字节，ARGB通道均以4位精度存放，KITKAT(API 19)后，以这个Config创建的bitmap会被Config ARGB_8888 代替。            </p>
-</li>
-<li><p>public static final Bitmap.Config ARGB_8888，位数8+8+8+8 = 32</p>
-<p>  每个像素4个字节，ARGB通道均以8位精度存储。</p>
-</li>
-<li><p>public static final Bitmap.Config RGB_565，位数5+6+5 = 16</p>
-<p>  每个像素2个字节，只有RGB通道，R通道5位精度，G通道6位精度，B通道5位精度。</p>
-<p>而加载相应属性的bitmap，所需的内存为图片像素值*Config对应存储像素所需的字节。<br>eg：1920*1080*4/1024 表示1920*1080的存储方式为ARGB_8888的位图所需的内存大小(单位MB)</p>
-</li>
-</ul>
-</li>
-</ol>
-<ol>
-<li><p>Bitmap重新裁剪图片可以直接调用</p>
-<pre><code>函数原型:
-Bitmap.getScaledBitmap(Bitmap src,<span class="built_in">int</span> <span class="variable">width</span>,<span class="built_in">int</span> <span class="variable">height</span>,<span class="built_in">boolean</span> <span class="built_in">filter</span>);
-eg:            
-bitmap = Bitmap.createScaledBitmap(bitmap,<span class="number">640</span>,<span class="number">480</span>,<span class="keyword">true</span>);
-</code></pre></li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
@@ -926,7 +975,7 @@ bitmap = Bitmap.createScaledBitmap(bitmap,<span class="number">640</span>,<span 
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">46</span>
+              <span class="site-state-item-count">47</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -940,7 +989,7 @@ bitmap = Bitmap.createScaledBitmap(bitmap,<span class="number">640</span>,<span 
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">40</span>
+              <span class="site-state-item-count">41</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

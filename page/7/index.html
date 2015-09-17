@@ -144,6 +144,127 @@
           
           
             
+              <a class="post-title-link" href="/2015/01/06/Android-Service-一/">
+                Android Service (一)
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Jan 6
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/01/06/Android-Service-一/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/06/Android-Service-一/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>Service(服务)也是Android四大应用程序组件之一，Service都是通过android.app.Service类继承而来，在这里先介绍Service基础。</p>
+<p>Service没有UI部分，而是一直在Android后台运行，通常用于音乐播放或下载功能。可以通过onBind方法绑定Service与Activity,也可以通过onStartCommand方法启动Service(onStart方法已经废弃)。</p>
+<ul>
+<li><strong>使用onStartCommand方法启动Service,在应用退出时不会销毁服务。除非程序自己销毁</strong></li>
+<li><strong>使用onBind方法启动Service时，在绑定的组件销毁时也会销毁绑定的服务</strong></li>
+</ul>
+<p>Service的生命周期如下：</p>
+<p><img src="http://7sbqys.com1.z0.glb.clouddn.com/live_of_service.png" alt=""></p>
+<p>关于bindService的生命周期,这张图的解释也比较细致。</p>
+<p><img src="http://7sbqys.com1.z0.glb.clouddn.com/bind_service.png" alt=""></p>
+<p>下面来举个栗子：<strong>Service的名字为MyService</strong></p>
+<ul>
+<li><p>可以通过以下代码启动服务。</p>
+<pre><code>Intent serviceIntent = <span class="keyword">new</span> Intent(<span class="keyword">this</span>,MyService.class);
+<span class="comment">//启动服务</span>
+startService(serviceIntent);
+<span class="comment">//绑定服务,需要先定义ServiceConnection</span>
+ServiceConnection connection = <span class="keyword">new</span> ServiceConnection() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onServiceConnected</span><span class="params">(ComponentName name, IBinder service)</span> </span>{
+        <span class="comment">//start task</span>
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onServiceDisconnected</span><span class="params">(ComponentName name)</span> </span>{
+
+    }
+   };
+<span class="comment">//第三个参数为标志位,BIND_AUTO_CREATE表示绑定时自动创建Service(调用onCreate方法)</span>
+   bindService(serviceIntent,connection,BIND_AUTO_CREATE);
+</code></pre></li>
+</ul>
+<pre><code>还需在AndroidManifest.xml的&lt;<span class="type">application</span>&gt;标签中添加以下代码:
+
+    &lt;service android:enabled=<span class="string">"true"</span>
+         android:<span class="property">name</span>=<span class="string">".MyService"</span>/&gt;
+</code></pre><ul>
+<li><p>可以通过以下代码销毁服务。</p>
+<pre><code><span class="comment">//销毁服务</span>
+stopService<span class="params">(serviceIntent)</span>;
+<span class="comment">//解绑服务</span>
+unbindService<span class="params">(serviceIntent)</span>;
+</code></pre></li>
+</ul>
+<p>注意只有当一个Service没有与任何组件关联并停止时，该Service才会被销毁。即如果既调用了startService又调用了bindService,则要同时调用stopService和unbindService才能销毁服务。</p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/01/05/Content-Provider介绍/">
                 Content Provider介绍
               </a>
@@ -583,127 +704,6 @@ int byteCount = <span class="keyword">is</span>.read(<span class="keyword">buffe
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/12/23/Mac下反编译Android-APK/">
-                Mac下反编译Android APK
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2014 Dec 23
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/12/23/Mac下反编译Android-APK/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/23/Mac下反编译Android-APK/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <ol>
-<li><p>所需工具：</p>
-<ol>
-<li><p><a href="http://jd.benow.ca/" target="_blank" rel="external">JD-GUI</a>,主要反编译Java源代码。</p>
-</li>
-<li><p><a href="https://code.google.com/p/android-apktool/downloads/list" target="_blank" rel="external">apktool</a>,主要反编译xml等资源文件。需要下载apktool及apktool-install-macosx.</p>
-</li>
-<li><p><a href="http://code.google.com/p/dex2jar/" target="_blank" rel="external">dex2jar</a>,主要将apk中的dex文件转为jar。</p>
-</li>
-</ol>
-</li>
-<li><p>部署：</p>
-<ol>
-<li><p>JD-GUI直接解压就是app了。</p>
-</li>
-<li><p>apktool需要解压两个压缩包并将”apktool.jar”,”apktool”,”aapt”三个文件放在同一目录下，最好配置一下环境变量。</p>
-</li>
-<li><p>解压即可。使用时需要将”d2j-dex2jar.sh”文件及”lib”文件夹一起复制。</p>
-</li>
-</ol>
-</li>
-<li><p>获取xml(使用apktool)：</p>
-<ol>
-<li><p>使用apktool，命令如下： apktool d “apk的路径” “反编译后的文件路径”。</p>
-<p> eg(我已经cd到apk路径):</p>
-<pre><code>apktool <span class="keyword">d</span> <span class="keyword">test</span>.apk temp        
-</code></pre></li>
-<li><p>解压后的res路径就是你想要的了。</p>
-</li>
-</ol>
-</li>
-<li><p>获取java(使用dex2jar和JD-GUI)：</p>
-<ol>
-<li><p>将apk文件的后缀名改为.zip,然后直接解压。会得到一个名为”classes.dex”的文件。</p>
-</li>
-<li><p>将”d2j-dex2jar.sh”文件及”lib”文件夹一起复制到”classes.dex”的同一目录下，同时cd到该目录，命令为： d2j-dex2jar.sh “apk的路径” “反编译后的文件路径”。</p>
-<p>eg(我已经cd到该目录下):</p>
-<pre><code>./d2j-dex2jar<span class="class">.sh</span> classes<span class="class">.dex</span> ./temp
-</code></pre><p>然后在该目录下会产生一个”classes-dex2jar.jar”的jar文件。</p>
-</li>
-<li><p>利用JD-GUI打开该jar文件，所有的代码变一目了然了。可以使用File-Save All Source保存所有的源文件。</p>
-</li>
-</ol>
-</li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
@@ -742,7 +742,7 @@ int byteCount = <span class="keyword">is</span>.read(<span class="keyword">buffe
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">46</span>
+              <span class="site-state-item-count">47</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -756,7 +756,7 @@ int byteCount = <span class="keyword">is</span>.read(<span class="keyword">buffe
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">40</span>
+              <span class="site-state-item-count">41</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

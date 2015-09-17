@@ -144,6 +144,114 @@
           
           
             
+              <a class="post-title-link" href="/2015/01/31/Bitmap相关-基础介绍/">
+                Bitmap相关:基础介绍
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Jan 31
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/01/31/Bitmap相关-基础介绍/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/31/Bitmap相关-基础介绍/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <ol>
+<li><p>查看Bitmap的Config可以看到有如下四种：</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Bitmap.Config ALPHA_8
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Bitmap.Config ARGB_4444 
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Bitmap.Config ARGB_8888
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Bitmap.Config RGB_565
+</code></pre><p> 这四种枚举值代表图片的存储方式，A为alpha，R为red，G为green，B为blue。<br> 由此可知每种形式的图片的位数：</p>
+<ul>
+<li><p>public static final Bitmap.Config ALPHA_8</p>
+<p>  每一个像素存放在单一的半透明通道，不存放颜色信息，每个像素1个字节。</p>
+</li>
+<li><p>public static final Bitmap.Config ARGB_4444 ，位数4+4+4+4 = 16</p>
+<p>  该方法在API13中被废弃，每个像素2个字节，ARGB通道均以4位精度存放，KITKAT(API 19)后，以这个Config创建的bitmap会被Config ARGB_8888 代替。            </p>
+</li>
+<li><p>public static final Bitmap.Config ARGB_8888，位数8+8+8+8 = 32</p>
+<p>  每个像素4个字节，ARGB通道均以8位精度存储。</p>
+</li>
+<li><p>public static final Bitmap.Config RGB_565，位数5+6+5 = 16</p>
+<p>  每个像素2个字节，只有RGB通道，R通道5位精度，G通道6位精度，B通道5位精度。</p>
+<p>而加载相应属性的bitmap，所需的内存为图片像素值*Config对应存储像素所需的字节。<br>eg：1920*1080*4/1024 表示1920*1080的存储方式为ARGB_8888的位图所需的内存大小(单位MB)</p>
+</li>
+</ul>
+</li>
+</ol>
+<ol>
+<li><p>Bitmap重新裁剪图片可以直接调用</p>
+<pre><code>函数原型:
+Bitmap.getScaledBitmap(Bitmap src,<span class="built_in">int</span> <span class="variable">width</span>,<span class="built_in">int</span> <span class="variable">height</span>,<span class="built_in">boolean</span> <span class="built_in">filter</span>);
+eg:            
+bitmap = Bitmap.createScaledBitmap(bitmap,<span class="number">640</span>,<span class="number">480</span>,<span class="keyword">true</span>);
+</code></pre></li>
+</ol>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/01/31/Android拍照选取图片/">
                 Android拍照选取图片
               </a>
@@ -610,149 +718,6 @@ myTask.cancel(<span class="keyword">boolean</span> mayInterruptIfRunning);
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/01/14/Android线程相关/">
-                Android线程相关
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Jan 14
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/01/14/Android线程相关/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/14/Android线程相关/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>Android经常会需要处理一些耗时操作(比如下载，上传等)，执行这些耗时操作的时候，UI是没有反应的，如果时间很久会报ANR，所以需要开启新线程来执行耗时操作。</p>
-<p><strong>正确的开启新线程的方法：</strong></p>
-<pre><code><span class="tag">new</span> <span class="tag">Thread</span>(new <span class="function">Runnable</span>() {
-    <span class="variable">@Override</span>
-    public void <span class="function">run</span>() {
-        <span class="comment">//此处进行耗时操作</span>
-    }
-})<span class="class">.start</span>();
-</code></pre><hr>
-<p>Android中Activity所在窗口的线程叫做主线程(Main Thread),因此所有在窗口上显示的控件(UI控件)都是在主线程中创建的，而在主线程创建的新线程中是不允许访问非当前线程(主要是主线程)创建的控件的。所以才会有很多Android坑是<strong>不能在非UI线程中访问UI控件。</strong></p>
-<p>通常会有以下几种解决方法：</p>
-<ol>
-<li><p>View.post方法</p>
-<pre><code>view.post(<span class="keyword">new</span> Runnable() {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
-        <span class="comment">//对该view进行操作</span>
-    }
-});
-</code></pre></li>
-<li><p>Activity.runOnUiThread方法</p>
-<pre><code>MainActivity.<span class="keyword">this</span>.runOnUiThread(<span class="keyword">new</span> Runnable() {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
-        <span class="comment">//该方法如果在UI线程中执行，Runnale.run方法会立即执行</span>
-        <span class="comment">//如果在非UI线程中执行，系统会将该方法的引用加入UI线程的任务队列中</span>
-    }
-});
-</code></pre></li>
-<li><p>使用android.os.handler对象，handler将访问UI线程的代码的引用压入UI线程的处理队列，在其他代码执行完后执行handleMessage方法。</p>
-<pre><code><span class="keyword">Message</span> <span class="keyword">message</span> = new <span class="keyword">Message</span>();  <span class="comment">//Message对象可以放一些参数</span>
-handler.sendMessage(<span class="keyword">message</span>);    <span class="comment">//sendMessage方法通知handle</span>
-</code></pre></li>
-</ol>
-<pre><code>Handler <span class="keyword">handler</span> = <span class="keyword">new</span> Handler(){
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>{
-        <span class="comment">//可以在这里进行UI操作</span>
-        <span class="keyword">super</span>.handleMessage(msg);
-    }
-
-};
-</code></pre><hr>
-<h4 id="以上总结了开启新线程的方法和进行UI操作的方法，那么综合起来比较好的解决方法是：">以上总结了开启新线程的方法和进行UI操作的方法，那么综合起来比较好的解决方法是：</h4><ol>
-<li><p>先定义Handler对象</p>
-<pre><code>private <span class="operator"><span class="keyword">Handler</span> <span class="keyword">handler</span> = <span class="literal">null</span>;</span>
-</code></pre></li>
-<li><p>然后创建新线程，并在线程结束时进行调用hanlder.sendMessage方法。</p>
-<pre><code><span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
-        <span class="comment">//此处进行耗时操作</span>
-        <span class="keyword">handler</span>.sendMessage(msg);
-    }
-}).start(); 
-</code></pre></li>
-<li><p>在handler.handleMessage方法中进行UI操作。</p>
-<pre><code><span class="keyword">handler</span> = <span class="keyword">new</span> Handler(){
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>{
-        <span class="comment">//可以在这里进行UI操作</span>
-        <span class="keyword">super</span>.handleMessage(msg);
-    }
-
-};
-</code></pre></li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
@@ -791,7 +756,7 @@ handler.sendMessage(<span class="keyword">message</span>);    <span class="comme
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">46</span>
+              <span class="site-state-item-count">47</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -805,7 +770,7 @@ handler.sendMessage(<span class="keyword">message</span>);    <span class="comme
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">40</span>
+              <span class="site-state-item-count">41</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

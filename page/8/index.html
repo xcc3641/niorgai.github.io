@@ -144,6 +144,127 @@
           
           
             
+              <a class="post-title-link" href="/2014/12/23/Mac下反编译Android-APK/">
+                Mac下反编译Android APK
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2014 Dec 23
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/12/23/Mac下反编译Android-APK/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/23/Mac下反编译Android-APK/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <ol>
+<li><p>所需工具：</p>
+<ol>
+<li><p><a href="http://jd.benow.ca/" target="_blank" rel="external">JD-GUI</a>,主要反编译Java源代码。</p>
+</li>
+<li><p><a href="https://code.google.com/p/android-apktool/downloads/list" target="_blank" rel="external">apktool</a>,主要反编译xml等资源文件。需要下载apktool及apktool-install-macosx.</p>
+</li>
+<li><p><a href="http://code.google.com/p/dex2jar/" target="_blank" rel="external">dex2jar</a>,主要将apk中的dex文件转为jar。</p>
+</li>
+</ol>
+</li>
+<li><p>部署：</p>
+<ol>
+<li><p>JD-GUI直接解压就是app了。</p>
+</li>
+<li><p>apktool需要解压两个压缩包并将”apktool.jar”,”apktool”,”aapt”三个文件放在同一目录下，最好配置一下环境变量。</p>
+</li>
+<li><p>解压即可。使用时需要将”d2j-dex2jar.sh”文件及”lib”文件夹一起复制。</p>
+</li>
+</ol>
+</li>
+<li><p>获取xml(使用apktool)：</p>
+<ol>
+<li><p>使用apktool，命令如下： apktool d “apk的路径” “反编译后的文件路径”。</p>
+<p> eg(我已经cd到apk路径):</p>
+<pre><code>apktool <span class="keyword">d</span> <span class="keyword">test</span>.apk temp        
+</code></pre></li>
+<li><p>解压后的res路径就是你想要的了。</p>
+</li>
+</ol>
+</li>
+<li><p>获取java(使用dex2jar和JD-GUI)：</p>
+<ol>
+<li><p>将apk文件的后缀名改为.zip,然后直接解压。会得到一个名为”classes.dex”的文件。</p>
+</li>
+<li><p>将”d2j-dex2jar.sh”文件及”lib”文件夹一起复制到”classes.dex”的同一目录下，同时cd到该目录，命令为： d2j-dex2jar.sh “apk的路径” “反编译后的文件路径”。</p>
+<p>eg(我已经cd到该目录下):</p>
+<pre><code>./d2j-dex2jar<span class="class">.sh</span> classes<span class="class">.dex</span> ./temp
+</code></pre><p>然后在该目录下会产生一个”classes-dex2jar.jar”的jar文件。</p>
+</li>
+<li><p>利用JD-GUI打开该jar文件，所有的代码变一目了然了。可以使用File-Save All Source保存所有的源文件。</p>
+</li>
+</ol>
+</li>
+</ol>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2014/12/18/Android裁剪图片/">
                 Android裁剪图片
               </a>
@@ -733,102 +854,6 @@ textViewExtras.setMovementMethod(<span class="keyword">new</span> ScrollingMovem
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/12/13/Android连续点击两次back键退出/">
-                Android连续点击两次back键退出
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2014 Dec 13
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android开发tips/">Android开发tips</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/12/13/Android连续点击两次back键退出/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/13/Android连续点击两次back键退出/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>Android默认的推出就是按下BACK键，但有时候会不小心误触而推出应用=。=这样体验实在太差了，比较好的解决方法是连续点击按下BACK退出。</p>
-<p>实现的基本原理就是，当按下BACK键时，会被onKeyDown捕获，判断是BACK键，则执行exit方法。<br>在exit方法中，会首先判断isExit的值，如果为false的话，则置为true，同时会弹出提示，并在2000毫秒（2秒）后发出一个消息，在Handler中将此值还原成false。如果在发送消息间隔的2秒内，再次按了BACK键，则再次执行exit方法，此时isExit的值已为true，则会执行退出的方法。</p>
-<p>代码：</p>
-<p>先定义一个全局变量 Boolean isExit = false;</p>
-<pre><code><span class="annotation">@Override</span>
-<span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onKeyDown</span><span class="params">(<span class="keyword">int</span> keyCode, KeyEvent event)</span> </span>{
-     <span class="keyword">if</span> (keyCode == KeyEvent.KEYCODE_BACK) {
-          <span class="keyword">if</span>(!isExit) {
-               isExit = <span class="keyword">true</span>; 
-           Toast.makeText(getApplicationContext(),<span class="string">"再按一次返回键退出"</span>,Toast.LENGTH_SHORT).show();
-               <span class="keyword">new</span> Handler().postDelayed(<span class="keyword">new</span> Runnable(){
-                    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>{
-                         isExit = <span class="keyword">false</span>;
-                    }
-               }, <span class="number">2000</span>);;
-               <span class="keyword">return</span> <span class="keyword">false</span>;
-          }
-     }
-     <span class="function"><span class="keyword">return</span> <span class="keyword">super</span>.<span class="title">onKeyDown</span><span class="params">(keyCode, event)</span></span>;
-}
-</code></pre>
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
@@ -867,7 +892,7 @@ textViewExtras.setMovementMethod(<span class="keyword">new</span> ScrollingMovem
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">46</span>
+              <span class="site-state-item-count">47</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -881,7 +906,7 @@ textViewExtras.setMovementMethod(<span class="keyword">new</span> ScrollingMovem
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">40</span>
+              <span class="site-state-item-count">41</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

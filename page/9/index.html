@@ -144,6 +144,102 @@
           
           
             
+              <a class="post-title-link" href="/2014/12/13/Android连续点击两次back键退出/">
+                Android连续点击两次back键退出
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2014 Dec 13
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android开发tips/">Android开发tips</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/12/13/Android连续点击两次back键退出/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/13/Android连续点击两次back键退出/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>Android默认的推出就是按下BACK键，但有时候会不小心误触而推出应用=。=这样体验实在太差了，比较好的解决方法是连续点击按下BACK退出。</p>
+<p>实现的基本原理就是，当按下BACK键时，会被onKeyDown捕获，判断是BACK键，则执行exit方法。<br>在exit方法中，会首先判断isExit的值，如果为false的话，则置为true，同时会弹出提示，并在2000毫秒（2秒）后发出一个消息，在Handler中将此值还原成false。如果在发送消息间隔的2秒内，再次按了BACK键，则再次执行exit方法，此时isExit的值已为true，则会执行退出的方法。</p>
+<p>代码：</p>
+<p>先定义一个全局变量 Boolean isExit = false;</p>
+<pre><code><span class="annotation">@Override</span>
+<span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onKeyDown</span><span class="params">(<span class="keyword">int</span> keyCode, KeyEvent event)</span> </span>{
+     <span class="keyword">if</span> (keyCode == KeyEvent.KEYCODE_BACK) {
+          <span class="keyword">if</span>(!isExit) {
+               isExit = <span class="keyword">true</span>; 
+           Toast.makeText(getApplicationContext(),<span class="string">"再按一次返回键退出"</span>,Toast.LENGTH_SHORT).show();
+               <span class="keyword">new</span> Handler().postDelayed(<span class="keyword">new</span> Runnable(){
+                    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>{
+                         isExit = <span class="keyword">false</span>;
+                    }
+               }, <span class="number">2000</span>);;
+               <span class="keyword">return</span> <span class="keyword">false</span>;
+          }
+     }
+     <span class="function"><span class="keyword">return</span> <span class="keyword">super</span>.<span class="title">onKeyDown</span><span class="params">(keyCode, event)</span></span>;
+}
+</code></pre>
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2014/12/08/Activity中launchMode的值/">
                 Activity中launchMode的值
               </a>
@@ -594,108 +690,6 @@ drawable-xxhdpi     <span class="list">(<span class="keyword">dpi=480</span> , d
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/12/06/sharedPreference使用心得/">
-                sharedPreference使用心得
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2014 Dec 6
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/12/06/sharedPreference使用心得/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/06/sharedPreference使用心得/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>sharedPreference非常适合key-value形式的数据存储，它会将这些字段一起以文件的形式保存在本地，是一种比较可靠的数据保存方式。</p>
-<h3 id="存储位置为：">存储位置为：</h3><pre><code>/<span class="type">data</span>/<span class="type">data</span>/&lt;package <span class="keyword">name</span>&gt;/shared_prefs
-</code></pre><h2 id="使用方法如下：">使用方法如下：</h2><p>name字段为自己定义的String，实际上便是本地保存所保存数据的文件名(不包括拓展名)。<br>如这里便是</p>
-<pre><code>/<span class="type">data</span>/<span class="type">data</span>/&lt;package <span class="keyword">name</span>&gt;/shared_prefs/<span class="keyword">name</span>.xml
-</code></pre><h3 id="读：">读：</h3><pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">boolean</span> <span class="title">getLogin</span><span class="params">(Context context)</span></span>{  
-    SharedPreferences preferences = context.getSharedPreferences(name,Context.MODE_PRIVATE);  
-    <span class="function"><span class="keyword">return</span> preferences.<span class="title">getBoolean</span><span class="params">(<span class="string">"login"</span>, <span class="keyword">false</span>)</span></span>;  
-} 
-</code></pre><h3 id="写：">写：</h3><pre><code>public static void setLogin<span class="params">(Context context, boolean login)</span>{  
-    SharedPreferences preferences = context.getSharedPreferences<span class="params">(name,Context.MODE_PRIVATE)</span>;  
-    SharedPreferences.Editor editor = preferences.edit<span class="params">()</span>;  
-    editor.putBoolean<span class="params">(<span class="string">"login"</span>,login)</span>;  
-    editor.commit<span class="params">()</span>;  <span class="comment">//同步</span>
-    editor.apply<span class="params">()</span>;     <span class="comment">//异步</span>
-}  
-</code></pre><p><code>SharedPreferences.Editor</code>提供了两种提交的方法，分别是<code>commit</code>和<code>apply</code>，两种方法都是原子过程(即改过程不可拆分，如同a＝0)，但两种方法有区别：</p>
-<ol>
-<li>commit会同步提交数据到磁盘，同时给出boolean返回值代表是否成功。<strong>多个并发的commit同时执行时，commit会等待正在运行的commit运行完毕再运行，从而较低效率。</strong></li>
-<li>apply先将数据提交到内存，再异步提交到磁盘，<strong>apply并发操作时后面的apply会覆盖前面的apply，提高效率</strong>，但apply方法没有返回值，因此不会有错误的提示。</li>
-</ol>
-<p>注意写的方式不能这么写：</p>
-<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> setLogin(Context context, <span class="keyword">boolean</span> login){  
-    SharedPreferences preferences = context.getSharedPreferences(name,Context.MODE_PRIVATE);  
-    preferences.<span class="keyword">edit</span>().putBoolean(<span class="string">"login"</span>,login);  
-    preferences.<span class="keyword">edit</span>().commit();  
-}
-</code></pre>
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
@@ -734,7 +728,7 @@ drawable-xxhdpi     <span class="list">(<span class="keyword">dpi=480</span> , d
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">46</span>
+              <span class="site-state-item-count">47</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -748,7 +742,7 @@ drawable-xxhdpi     <span class="list">(<span class="keyword">dpi=480</span> , d
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">40</span>
+              <span class="site-state-item-count">41</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

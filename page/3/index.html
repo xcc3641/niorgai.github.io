@@ -144,6 +144,165 @@
           
           
             
+              <a class="post-title-link" href="/2015/03/11/Android复用Layout/">
+                Android复用Layout
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Mar 11
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/03/11/Android复用Layout/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/11/Android复用Layout/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <hr>
+<h4 id="&lt;include&gt;标签复用布局"><code>&lt;include&gt;</code>标签复用布局</h4><p>Android布局中经常可以发现能够重用的layout，如果每次都复制粘贴，第一是不方便，第二是可维护性不高，改动一个地方要改好几处，所以最直接的方法是复用layout。</p>
+<p>如果原布局为：</p>
+<pre><code><span class="tag">&lt;LinearLayout..&gt;</span>
+    <span class="tag">&lt;LinearLayout..&gt;</span>
+        <span class="tag">&lt;TextView..&gt;</span>
+        <span class="tag">&lt;TextView..&gt;</span>
+    <span class="tag">&lt;/LinearLayout&gt;</span>
+    <span class="tag">&lt;LinearLayout..&gt;</span>
+        <span class="tag">&lt;TextView..&gt;</span>
+        <span class="tag">&lt;TextView..&gt;</span>
+    <span class="tag">&lt;/LinearLayout&gt;</span>
+<span class="tag">&lt;/LinearLayout&gt;</span>
+</code></pre><p>那么可以抽取出复用布局reuse.xml：</p>
+<pre><code><span class="tag">&lt;LinearLayout..&gt;</span>
+    <span class="tag">&lt;TextView..&gt;</span>
+    <span class="tag">&lt;TextView..&gt;</span>
+<span class="tag">&lt;/LinearLayout&gt;</span>
+</code></pre><p>复用时使用<code>&lt;layout&gt;</code>标签，设置<code>layout=&quot;@layout/layoutId&quot;</code>即可。</p>
+<pre><code>&lt;include
+    android:<span class="variable">layout_width=</span><span class="string">"fill_parent"</span>
+    android:<span class="variable">layout_height=</span><span class="string">"0dp"</span>
+    android:<span class="variable">layout_weight=</span><span class="string">"1"</span>
+    <span class="variable">layout=</span><span class="string">"@layout/reuse.xml"</span>/&gt;
+</code></pre><p><strong>注意如果需要设置width或height一定要两个一起设置才会生效</strong></p>
+<p>如果希望减少reuse.xml中的LinearLayout嵌套(即在include时去掉根布局)，可以使用<code>&lt;merge&gt;</code>标签，即：</p>
+<pre><code><span class="tag">&lt;Merge..&gt;</span>
+    <span class="tag">&lt;TextView..&gt;</span>
+    <span class="tag">&lt;TextView..&gt;</span>
+<span class="tag">&lt;/Merge..&gt;</span>
+</code></pre><hr>
+<h4 id="抽取通用layout作为View">抽取通用layout作为View</h4><p>可以新建一个ReuseView</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReuseView</span> <span class="keyword">extends</span> <span class="title">LinearLayout</span></span>{
+    <span class="keyword">private</span> Context context;
+
+    <span class="function"><span class="keyword">public</span> <span class="title">MainPageInterface</span><span class="params">(Context context)</span> </span>{
+        <span class="keyword">super</span>(context);
+    }
+
+    <span class="function"><span class="keyword">public</span> <span class="title">MainPageInterface</span><span class="params">(Context context, AttributeSet attrs)</span> </span>{
+        <span class="keyword">super</span>(context, attrs);
+    }
+
+    <span class="function"><span class="keyword">public</span> <span class="title">MainPageInterface</span><span class="params">(Context context, AttributeSet attrs, <span class="keyword">int</span> defStyleAttr)</span> </span>{
+        <span class="keyword">super</span>(context, attrs, defStyleAttr);
+    }
+
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>{
+        inflate(getContext(), R.layout.reuse, ReuseView.<span class="keyword">this</span>);
+    }
+}
+</code></pre><p>这样主布局便变成</p>
+<pre><code><span class="tag">&lt;LinearLayout..&gt;</span>
+    <span class="tag">&lt;ReuseView ../&gt;</span>
+<span class="tag">&lt;/LinearLayout&gt;</span>
+</code></pre><p>这样的好处便是可以在View中实现功能，模块分离方便业务调整。</p>
+<p>LayoutInflater的inflate方法原型为：<code>View inflate (Context context, int resource, ViewGroup root)</code></p>
+<p>注意：</p>
+<ol>
+<li>inflate方法返回的view的默认layoutParams为null。</li>
+<li>返回值为The root View of the inflated hierarchy。</li>
+<li>如果设置了第二个参数root <ol>
+<li>attachToRoot为false，则只会返回设置了LayoutParams的view的root。</li>
+<li>attachToRoot为true，则会返回将该view作为root返回。</li>
+</ol>
+</li>
+<li>这样当R.layout.reuse为<merge>时,会少掉一层layout.</merge></li>
+</ol>
+<hr>
+<p>惰性布局ViewStub</p>
+<p>ViewStub用于显示本来不需要显示，只有特殊情况下才会显示的布局。虽然inflate一个布局的内存耗费较大，ViewStub会相对少一点。</p>
+<pre><code>&lt;ViewStub
+    android:<span class="variable">id=</span><span class="string">"@+id/stub_import"</span>
+    android:<span class="variable">inflatedId=</span><span class="string">"@+id/panel_import"</span>
+    android:<span class="variable">layout=</span><span class="string">"@layout/progress_overlay"</span>
+    android:<span class="variable">layout_width=</span><span class="string">"fill_parent"</span>
+    android:<span class="variable">layout_height=</span><span class="string">"wrap_content"</span>/&gt;
+</code></pre><p>使用时设置visible或者inflate布局。</p>
+<pre><code><span class="params">(<span class="params">(ViewStub)</span> findViewById<span class="params">(R.id.stub_import)</span>)</span>.setVisibility<span class="params">(View.VISIBLE)</span>;
+<span class="comment">// or</span>
+View importPanel = <span class="params">(<span class="params">(ViewStub)</span> findViewById<span class="params">(R.id.stub_import)</span>)</span>.inflate<span class="params">()</span>;
+</code></pre><p>一旦ViewStub被显示或inflate，ViewStub将不再属于该布局，会被其inflate的layout取代。此时可以通过inflatedId去寻找该View。</p>
+<p><strong>注意viewStub不支持</strong><code>&lt;merge&gt;</code><strong>标签</strong></p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/03/03/Android内存泄漏/">
                 Android内存泄漏
               </a>
@@ -901,163 +1060,6 @@ protected <span class="type">Bitmap</span> getBitmapFromReusableSet(<span class=
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/02/24/Bitmap相关-缓存Bitmap/">
-                Bitmap相关:缓存Bitmap
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Feb 24
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/02/24/Bitmap相关-缓存Bitmap/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/02/24/Bitmap相关-缓存Bitmap/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>缓存Bitmap从总体思路来说，<strong>先使用内存缓存，再使用硬盘缓存。</strong></p>
-<ol>
-<li><p><strong>内存缓存</strong></p>
-<p> 内存缓存推荐使用<strong>LruCache</strong>(使用Support Library可以支持到API 4)。注意<strong>使用强引用。</strong></p>
-<p> <strong>不推荐</strong>使用SoftReference或者WeakReference缓存Bitmap，从Android 2.3起，GC更倾向于回收SoftReference和SoftReference的对象，这使得缓存意义变小。</p>
-<p> 以下是一个使用<strong>LruCache</strong>的例子：</p>
-<pre><code><span class="keyword">private</span> LruCache&lt;<span class="keyword">String</span>, Bitmap&gt; mMemoryCache;
-
-@Override
-<span class="keyword">protected</span> <span class="keyword">void</span> onCreate(Bundle savedInstanceState) {
-    ...
-    <span class="comment">// 先获取最大的可用内存</span>
-    <span class="keyword">final</span> <span class="built_in">int</span> maxMemory = (<span class="built_in">int</span>) (Runtime.getRuntime().maxMemory() / <span class="number">1024</span>);
-
-    <span class="comment">// 利用1/8的内存作为缓存</span>
-    <span class="keyword">final</span> <span class="built_in">int</span> cacheSize = maxMemory / <span class="number">8</span>;
-
-    mMemoryCache = <span class="keyword">new</span> LruCache&lt;<span class="keyword">String</span>, Bitmap&gt;(cacheSize) {
-    @Override
-    <span class="keyword">protected</span> <span class="built_in">int</span> sizeOf(<span class="keyword">String</span> <span class="variable">key</span>, Bitmap bitmap) {
-        <span class="comment">//计算每个图片的大小</span>
-        <span class="keyword">return</span> bitmap.getByteCount() / <span class="number">1024</span>;
-        }
-    };
-    ...
-}
-
-<span class="keyword">public</span> <span class="keyword">void</span> addBitmapToMemoryCache(<span class="keyword">String</span> <span class="variable">key</span>, Bitmap bitmap) {
-<span class="keyword">if</span> (getBitmapFromMemCache(<span class="variable">key</span>) == <span class="keyword">null</span>) {
-    mMemoryCache.put(<span class="variable">key</span>, bitmap);
-    }
-}
-
-<span class="keyword">public</span> Bitmap getBitmapFromMemCache(<span class="keyword">String</span> <span class="variable">key</span>) {
-    <span class="keyword">return</span> mMemoryCache.<span class="built_in">get</span>(<span class="variable">key</span>);
-}
-</code></pre><p> <strong>LruCache的大小是需要按需求设置的，</strong>上面的例子中，正常hdpi设备的最大内存为32MB，则缓存大小为4MB。如果以800*480的图片为例，每张图片需要1.5MB(800*400*4).所以大约可以缓存2.5张图片。</p>
-<p> <strong>但内存缓存在configuration变化(比如屏幕方向变化)时，内存缓存容易被破坏，为了解决这种办法，可以使用Fragment来保存。</strong></p>
-<pre><code><span class="keyword">private</span> LruCache&lt;String, Bitmap&gt; mMemoryCache;
-
-<span class="annotation">@Override</span>
-<span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>{
-...
-    RetainFragment retainFragment =
-        RetainFragment.findOrCreateRetainFragment(getFragmentManager());
-    mMemoryCache = retainFragment.mRetainedCache;
-    <span class="keyword">if</span> (mMemoryCache == <span class="keyword">null</span>) {
-        mMemoryCache = <span class="keyword">new</span> LruCache&lt;String, Bitmap&gt;(cacheSize) {
-            <span class="comment">//和上面一样正常初始化</span>
-        }
-        retainFragment.mRetainedCache = mMemoryCache;
-    }
-...
-}
-
-<span class="class"><span class="keyword">class</span> <span class="title">RetainFragment</span> <span class="keyword">extends</span> <span class="title">Fragment</span> </span>{
-    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"RetainFragment"</span>;
-    <span class="keyword">public</span> LruCache&lt;String, Bitmap&gt; mRetainedCache;
-
-    <span class="function"><span class="keyword">public</span> <span class="title">RetainFragment</span><span class="params">()</span> </span>{}
-
-    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> RetainFragment <span class="title">findOrCreateRetainFragment</span><span class="params">(FragmentManager fm)</span> </span>{
-    RetainFragment fragment = (RetainFragment) fm.findFragmentByTag(TAG);
-        <span class="keyword">if</span> (fragment == <span class="keyword">null</span>) {
-            fragment = <span class="keyword">new</span> RetainFragment();
-            fm.beginTransaction().add(fragment, TAG).commit();
-        }
-        <span class="keyword">return</span> fragment;
-    }
-
-    <span class="annotation">@Override</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>{
-        <span class="keyword">super</span>.onCreate(savedInstanceState);
-        setRetainInstance(<span class="keyword">true</span>);
-    }
-}
-</code></pre></li>
-<li><p><strong>硬盘缓存</strong></p>
-<p> 硬盘缓存官方文档用到了一个<a href="https://android.googlesource.com/platform/libcore/+/jb-mr2-release/luni/src/main/java/libcore/io/DiskLruCache.java" target="_blank" rel="external">DiskLruCache类</a>，感觉没有提供SDK的直接解决办法不是很好，有兴趣可以参考<a href="https://developer.android.com/intl/zh-cn/training/displaying-bitmaps/cache-bitmap.html#disk-cache" target="_blank" rel="external">这里</a>.    </p>
-</li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
@@ -1096,7 +1098,7 @@ protected <span class="type">Bitmap</span> getBitmapFromReusableSet(<span class=
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">46</span>
+              <span class="site-state-item-count">47</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1110,7 +1112,7 @@ protected <span class="type">Bitmap</span> getBitmapFromReusableSet(<span class=
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">40</span>
+              <span class="site-state-item-count">41</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

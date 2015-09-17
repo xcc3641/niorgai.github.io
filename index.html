@@ -144,6 +144,170 @@
           
           
             
+              <a class="post-title-link" href="/2015/09/17/ToastUtil工具类/">
+                ToastUtil工具类
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Sep 17
+        </span>
+
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/09/17/ToastUtil工具类/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/09/17/ToastUtil工具类/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>Android开发固然会用到Toast,如果每次都Toast.makeToast来显示Toast的话,一方面写法麻烦,第二是多次调用Toast会使Toast一直浮在界面最上层,影响交互,最好的方式是封装一个ToastUtil:</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ToastUtil</span> </span>{
+
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> ToastUtil sToastUtil = <span class="keyword">null</span>;
+
+    <span class="keyword">private</span> Toast mToast = <span class="keyword">null</span>;
+
+    <span class="comment">/**
+     * 获取实例
+     *
+     * <span class="doctag">@return</span>
+     */</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function">ToastUtil <span class="title">getInstance</span><span class="params">()</span> </span>{
+        <span class="keyword">if</span> (sToastUtil == <span class="keyword">null</span>) {
+            <span class="keyword">synchronized</span> (ToastUtil.class) {
+                <span class="keyword">if</span> (sToastUtil == <span class="keyword">null</span>) {
+                    sToastUtil = <span class="keyword">new</span> ToastUtil();
+                }
+            }
+        }
+        <span class="keyword">return</span> sToastUtil;
+    }
+
+    <span class="keyword">protected</span> Handler <span class="keyword">handler</span> = <span class="keyword">new</span> Handler(Looper.getMainLooper());
+
+    <span class="comment">/**
+     * 显示Toast，多次调用此函数时，Toast显示的时间不会累计，并且显示内容为最后一次调用时传入的内容
+     * 持续时间默认为short
+     * <span class="doctag">@param</span> tips 要显示的内容
+     *            {<span class="doctag">@link</span> Toast#LENGTH_LONG}
+     */</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">showToast</span><span class="params">(<span class="keyword">final</span> String tips)</span></span>{
+        showToast(tips, Toast.LENGTH_SHORT);
+    }
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">showToast</span><span class="params">(<span class="keyword">final</span> <span class="keyword">int</span> tips)</span></span>{
+        showToast(tips, Toast.LENGTH_SHORT);
+    }
+    <span class="comment">/**
+     * 显示Toast，多次调用此函数时，Toast显示的时间不会累计，并且显示内容为最后一次调用时传入的内容
+     *
+     * <span class="doctag">@param</span> tips 要显示的内容
+     * <span class="doctag">@param</span> duration 持续时间，参见{<span class="doctag">@link</span> Toast#LENGTH_SHORT}和
+     *            {<span class="doctag">@link</span> Toast#LENGTH_LONG}
+     */</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">showToast</span><span class="params">(<span class="keyword">final</span> String tips, <span class="keyword">final</span> <span class="keyword">int</span> duration)</span> </span>{
+        <span class="keyword">if</span> (android.text.TextUtils.isEmpty(tips)) {
+            <span class="keyword">return</span>;
+        }
+        <span class="keyword">handler</span>.post(<span class="keyword">new</span> Runnable() {
+            <span class="annotation">@Override</span>
+            <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
+                <span class="keyword">if</span> (mToast == <span class="keyword">null</span>) {
+                    mToast = Toast.makeText(MyApplication.getMyApplicationContext(), tips, duration);
+                    mToast.show();
+                } <span class="keyword">else</span> {
+                    <span class="comment">//mToast.cancel();</span>
+                    <span class="comment">//mToast.setView(mToast.getView());</span>
+                    mToast.setText(tips);
+                    mToast.setDuration(duration);
+                    mToast.show();
+                }
+            }
+        });
+    }
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">showToast</span><span class="params">(<span class="keyword">final</span> <span class="keyword">int</span> tips, <span class="keyword">final</span> <span class="keyword">int</span> duration)</span> </span>{
+        <span class="keyword">handler</span>.post(<span class="keyword">new</span> Runnable() {
+            <span class="annotation">@Override</span>
+            <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
+                <span class="keyword">if</span> (mToast == <span class="keyword">null</span>) {
+                    mToast = Toast.makeText(MyApplication.getMyApplicationContext(), tips, duration);
+                    mToast.show();
+                } <span class="keyword">else</span> {
+                    <span class="comment">//mToast.cancel();</span>
+                    <span class="comment">//mToast.setView(mToast.getView());</span>
+                    mToast.setText(tips);
+                    mToast.setDuration(duration);
+                    mToast.show();
+                }
+            }
+        });
+    }
+}
+</code></pre><p>其实Toast调用的Context为ApplicationContext,在Application中初始化即可.</p>
+<pre><code>public <span class="class"><span class="keyword">class</span> <span class="title">MyApplication</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">Application</span> {</span>
+
+    <span class="keyword">private</span> static <span class="type">Context</span> myContext;
+
+    <span class="annotation">@Override</span>
+    public void onCreate() {
+        <span class="keyword">super</span>.onCreate();
+        myContext = <span class="keyword">this</span>.getApplicationContext();
+    }
+
+    public static <span class="type">Context</span> getMyApplicationContext(){
+        <span class="keyword">return</span> myContext;
+    }
+}
+</code></pre>
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/09/10/Android-Tips/">
                 Android Tips
               </a>
@@ -547,102 +711,6 @@ webSettings.setGeolocationDatabasePath<span class="params">(context.getFilesDir<
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/04/24/ListView的一些坑/">
-                ListView的一些坑
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Apr 24
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/04/24/ListView的一些坑/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/04/24/ListView的一些坑/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <ol>
-<li>setEmptyView需要listView与emptyView在一个Layout下，所以需要这样加入（获取ViewParent加入emptyView）：</li>
-</ol>
-<pre><code>View view = <span class="params">(LayoutInflater.from<span class="params">(context)</span>.inflate<span class="params">(R.layout.empty_goods,null,<span class="literal">false</span>)</span>)</span>;
-<span class="params">(<span class="params">(ViewGroup)</span>gridView.getParent<span class="params">()</span>)</span>.addView<span class="params">(view, new ViewGroup.LayoutParams<span class="params">(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)</span>)</span>;
-gridView.setEmptyView<span class="params">(view)</span>;
-</code></pre><ol>
-<li><p>ListView <code>setSelection</code>方法有时候可能会失效,原因一个是没有焦点,一个是没有在主线程中执行.解决方法是:</p>
-<pre><code>listView.<span class="params">(new Runnable<span class="params">()</span> {
-    @Override
-    public void run<span class="params">()</span> {
-        listView.requestFocusFromTouch<span class="params">()</span>;
-        listView.setItemChecked<span class="params">(i, <span class="literal">true</span>)</span>;
-        listView.setSelection<span class="params">(i)</span>;
-    }
-})</span>;
-</code></pre></li>
-<li><p>ListView.addView(View view)方法传入的是View, 通过<code>View.inflate(context, R.layout.file, null)</code>方法获取,在4.4(API 19)之前只能在<code>setAdapter</code>之前调用.</p>
-</li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
@@ -681,7 +749,7 @@ gridView.setEmptyView<span class="params">(view)</span>;
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">46</span>
+              <span class="site-state-item-count">47</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -695,7 +763,7 @@ gridView.setEmptyView<span class="params">(view)</span>;
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">40</span>
+              <span class="site-state-item-count">41</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
