@@ -144,6 +144,112 @@
           
           
             
+              <a class="post-title-link" href="/2015/02/05/Android游戏操控基础相关/">
+                Android游戏操控基础相关
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Feb 5
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/02/05/Android游戏操控基础相关/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/02/05/Android游戏操控基础相关/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <ol>
+<li><p>先说明SDK更新方面：</p>
+<ul>
+<li>2.3(SDK9) 支持 D-pad。</li>
+<li>3.1(SDK12) 支持 添加了Gamepad和Joystick。</li>
+<li>4.1(SDK16) 完善了InputDevice的相关API。</li>
+</ul>
+</li>
+<li><p>主要的HIM(Human Interface Device)包括遥控杆(Joystick),手柄(gamepad),而D-pad是指手柄的方向键(下图中的1)。分别在InputDevice中可以判断：</p>
+<pre><code>   int[] devs = InputDevice.getDeviceIds<span class="params">()</span>;
+<span class="keyword">for</span><span class="params">(int id : devs)</span>{
+    InputDevice dev = InputDevice.getDevice<span class="params">(id)</span>;
+    int sources = dev.getSources<span class="params">()</span>;
+
+    <span class="keyword">if</span><span class="params">(<span class="params">(sources &amp; InputDevice.SOURCE_GAMEPAD)</span> == InputDevice.SOURCE_GAMEPAD)</span>{
+           <span class="comment">//is Gamepad</span>
+       }
+
+       <span class="keyword">if</span><span class="params">(<span class="params">(sources &amp; InputDevice.SOURCE_JOYSTICK)</span> == InputDevice.SOURCE_JOYSTICK)</span>{
+           <span class="comment">//is Joystick</span>
+       }
+
+       <span class="keyword">if</span><span class="params">(<span class="params">(sources &amp; InputDevice.SOURCE_DPAD)</span> != InputDevice.SOURCE_DPAD)</span>{
+           <span class="comment">//is Joystick,notice is '!='</span>
+       }
+   }
+</code></pre></li>
+<li><p>官方的训练教程中主要有三篇，<a href="http://developer.android.com/intl/zh-cn/training/game-controllers/controller-input.html" target="_blank" rel="external">第一篇</a>说明怎么检测输入设备。<a href="http://developer.android.com/intl/zh-cn/training/game-controllers/compatibility.html" target="_blank" rel="external">第二篇</a>说明怎么根据SDK兼容不同Android版本。<a href="http://developer.android.com/intl/zh-cn/training/game-controllers/multiple-controllers.html" target="_blank" rel="external">第三篇</a>说明怎么处理多个用户同时操控。</p>
+</li>
+</ol>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/01/31/Bitmap相关-基础介绍/">
                 Bitmap相关:基础介绍
               </a>
@@ -610,114 +716,6 @@ fixup = squash + 只使用上面<span class="keyword">commit</span>的message
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/01/16/AsyncTask实现异步执行任务/">
-                简单使用AsyncTask实现异步执行任务
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Jan 16
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/01/16/AsyncTask实现异步执行任务/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/16/AsyncTask实现异步执行任务/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>包android.os.AsyncTask用于执行异步任务，使用AsyncTask必须继承AsyncTask类，并传入三个泛型参数：</p>
-<pre><code><span class="attribute">Params</span>: <span class="string">新建任务时的参数。</span>
-<span class="attribute">Progress</span>: <span class="string">任务在后台执行的进度值类型，一般是Integer。</span>
-<span class="attribute">Result</span>: <span class="string">任务执行后的返回值类型。</span>
-</code></pre><p>同时必须实现doInBackground方法，顾名思义执行后台任务。</p>
-<p>AsyncTask还有一些方法：</p>
-<pre><code><span class="comment">//任务开始前调用</span>
-protected void <span class="function"><span class="title">onPreExecute</span><span class="params">()</span></span>
-
-<span class="comment">//后台任务执行,Params泛型数组作为参数传入，Result泛型作为返回值。</span>
-protected Result <span class="function"><span class="title">doInBackground</span><span class="params">(Params... params)</span></span>
-
-<span class="comment">//通过AsyncTask.publishProgress调用，Progress泛型数组会当做参数传入。</span>
-protected void <span class="function"><span class="title">onProgressUpdate</span><span class="params">(Progress... values)</span></span> 
-
-<span class="comment">//任务运行后(doInBackground方法结束后)调用，doInBackground方法的返回值作为参数。</span>
-protected void <span class="function"><span class="title">onPostExecute</span><span class="params">(Result result)</span></span>
-
-<span class="comment">//通过AsyncTask.cancel方法调用，doInBackground方法的返回值作为参数。</span>
-<span class="comment">//先调用cancel方法1，再调用cancel方法2.</span>
-<span class="number">1</span><span class="class">.protected</span> void <span class="function"><span class="title">onCancelled</span><span class="params">(Result result)</span></span>
-<span class="number">2</span><span class="class">.protected</span> void <span class="function"><span class="title">onCancelled</span><span class="params">()</span></span>
-</code></pre><p>在使用AsyncTask时，<strong>除了doInBackground方法</strong>，其他方法<strong>都可以访问UI控件</strong>。</p>
-<p>使用AsyncTask：</p>
-<pre><code><span class="comment">//AsyncTask定义</span>
-<span class="class"><span class="keyword">class</span> <span class="title">MyTask</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">AsyncTask&lt;String</span>,<span class="title">Integer</span>,<span class="title">Long&gt;</span>
-</span><span class="comment">//新建AsyncTask</span>
-<span class="type">MyTask</span> myTask = <span class="keyword">new</span> <span class="type">MyTask</span>();
-myTask.execute(<span class="string">"task1"</span>,<span class="string">"task2"</span>);
-</code></pre><p>取消AsyncTask：</p>
-<pre><code><span class="comment">//通过mayInterruptIfRunning参数决定是否会在任务运行时结束任务。</span>
-myTask.cancel(<span class="keyword">boolean</span> mayInterruptIfRunning);
-</code></pre>
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
@@ -756,7 +754,7 @@ myTask.cancel(<span class="keyword">boolean</span> mayInterruptIfRunning);
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">47</span>
+              <span class="site-state-item-count">48</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

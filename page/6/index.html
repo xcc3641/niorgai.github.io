@@ -144,6 +144,114 @@
           
           
             
+              <a class="post-title-link" href="/2015/01/16/AsyncTask实现异步执行任务/">
+                简单使用AsyncTask实现异步执行任务
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Jan 16
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/01/16/AsyncTask实现异步执行任务/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/16/AsyncTask实现异步执行任务/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>包android.os.AsyncTask用于执行异步任务，使用AsyncTask必须继承AsyncTask类，并传入三个泛型参数：</p>
+<pre><code><span class="attribute">Params</span>: <span class="string">新建任务时的参数。</span>
+<span class="attribute">Progress</span>: <span class="string">任务在后台执行的进度值类型，一般是Integer。</span>
+<span class="attribute">Result</span>: <span class="string">任务执行后的返回值类型。</span>
+</code></pre><p>同时必须实现doInBackground方法，顾名思义执行后台任务。</p>
+<p>AsyncTask还有一些方法：</p>
+<pre><code><span class="comment">//任务开始前调用</span>
+protected void <span class="function"><span class="title">onPreExecute</span><span class="params">()</span></span>
+
+<span class="comment">//后台任务执行,Params泛型数组作为参数传入，Result泛型作为返回值。</span>
+protected Result <span class="function"><span class="title">doInBackground</span><span class="params">(Params... params)</span></span>
+
+<span class="comment">//通过AsyncTask.publishProgress调用，Progress泛型数组会当做参数传入。</span>
+protected void <span class="function"><span class="title">onProgressUpdate</span><span class="params">(Progress... values)</span></span> 
+
+<span class="comment">//任务运行后(doInBackground方法结束后)调用，doInBackground方法的返回值作为参数。</span>
+protected void <span class="function"><span class="title">onPostExecute</span><span class="params">(Result result)</span></span>
+
+<span class="comment">//通过AsyncTask.cancel方法调用，doInBackground方法的返回值作为参数。</span>
+<span class="comment">//先调用cancel方法1，再调用cancel方法2.</span>
+<span class="number">1</span><span class="class">.protected</span> void <span class="function"><span class="title">onCancelled</span><span class="params">(Result result)</span></span>
+<span class="number">2</span><span class="class">.protected</span> void <span class="function"><span class="title">onCancelled</span><span class="params">()</span></span>
+</code></pre><p>在使用AsyncTask时，<strong>除了doInBackground方法</strong>，其他方法<strong>都可以访问UI控件</strong>。</p>
+<p>使用AsyncTask：</p>
+<pre><code><span class="comment">//AsyncTask定义</span>
+<span class="class"><span class="keyword">class</span> <span class="title">MyTask</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">AsyncTask&lt;String</span>,<span class="title">Integer</span>,<span class="title">Long&gt;</span>
+</span><span class="comment">//新建AsyncTask</span>
+<span class="type">MyTask</span> myTask = <span class="keyword">new</span> <span class="type">MyTask</span>();
+myTask.execute(<span class="string">"task1"</span>,<span class="string">"task2"</span>);
+</code></pre><p>取消AsyncTask：</p>
+<pre><code><span class="comment">//通过mayInterruptIfRunning参数决定是否会在任务运行时结束任务。</span>
+myTask.cancel(<span class="keyword">boolean</span> mayInterruptIfRunning);
+</code></pre>
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/01/14/Android线程相关/">
                 Android线程相关
               </a>
@@ -699,123 +807,6 @@ sendBroadcast<span class="params">(broadcastIntent)</span>;
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/01/08/Android-Service-二/">
-                Android Service (二)
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Jan 8
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/01/08/Android-Service-二/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/08/Android-Service-二/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h4 id="后台服务">后台服务</h4><p>在<a href="http://niorgai.github.io/2015/01/06/Android-Service-%E4%B8%80/">第一篇的Service介绍</a>中说到Service的启动是后台运行,其实这里的后台跟Thread完全没有关系，这里所说的Service后台只是表示它不依赖UI，但事实上他与所绑定的组件是在<strong>同一个进程中</strong>运行的！所以如果Service中执行了耗时操作，一样会提示ANR。</p>
-<p>如果Service与Activity绑定，即使Activity被销毁，或者程序被kill，Service还是会继续运行。当程序重新运行或者Activity重新与Service绑定后，可以获取Service中Binder的实例并调用其任意的公有方法。</p>
-<h6 id="如果希望在Service中执行耗时操作，只需要在Service中新建一个子线程，如下图：">如果希望在Service中执行耗时操作，只需要在Service中新建一个子线程，如下图：</h6><pre><code><span class="annotation">@Override</span>
-<span class="keyword">public</span> <span class="function"><span class="keyword">int</span> <span class="title">onStartCommand</span><span class="params">(Intent intent, <span class="keyword">int</span> flags, <span class="keyword">int</span> startId)</span> </span>{
-    <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() {
-        <span class="annotation">@Override</span>
-        <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
-            <span class="comment">// 开始执行后台任务</span>
-        }
-    }).start();
-    <span class="function"><span class="keyword">return</span> <span class="keyword">super</span>.<span class="title">onStartCommand</span><span class="params">(intent, flags, startId)</span></span>;
-}
-</code></pre><h6 id="IntentService:方便用于执行耗时操作的Service子类">IntentService:方便用于执行耗时操作的Service子类</h6><p>文档原文：This is a subclass of Service that uses a worker thread to handle all start requests, one at a time. This is the best option if you don’t require that your service handle multiple requests simultaneously. All you need to do is implement onHandleIntent(), which receives the intent for each start request so you can do the background work.</p>
-<p>当Service不需要同时处理多个请求时，使用IntentService会很方便。IntentService会默认开启一个worker thread来处理startService的请求，因为已经默认开了一个thread了，所以可以在Service中直接处理耗时操作。</p>
-<pre><code><span class="class"><span class="keyword">class</span> <span class="title">myService</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">IntentService</span>{</span>
-
-        <span class="annotation">@Override</span>
-        <span class="keyword">protected</span> void onHandleIntent(<span class="type">Intent</span> intent) {
-
-        }
-    }
-</code></pre><hr>
-<h4 id="前台服务">前台服务</h4><p>Service的系统优先级是比较低的，当系统内存不足时可能回收后台运行的Service，如果希望自己的Servie不被回收，可以使用前台Service，同时前台Service也会显示在系统的状态栏，下拉可以看到相关状态。</p>
-<pre><code><span class="class"><span class="keyword">class</span> <span class="title">MyService</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">Service</span>{</span>
-
-        <span class="annotation">@Override</span>
-        public void onCreate() {
-            <span class="type">Notification</span> notification = <span class="keyword">new</span> <span class="type">Notification</span>(
-                    <span class="type">R</span>.drawable.ic_launcher,<span class="string">"有通知"</span>,<span class="type">System</span>.currentTimeMillis());
-            <span class="comment">//设置目标Intent</span>
-            <span class="type">Intent</span> notifyIntent = <span class="keyword">new</span> <span class="type">Intent</span>(<span class="keyword">this</span>,<span class="type">MainActivity</span>.<span class="keyword">class</span>);
-            <span class="comment">//设置点击跳转Intent</span>
-            <span class="type">PendingIntent</span> pendingIntent = <span class="type">PendingIntent</span>.getActivity(
-                    <span class="keyword">this</span>,<span class="number">0</span>,notifyIntent,<span class="number">0</span>);
-            notification.setLatestEventInfo(<span class="keyword">this</span>,<span class="string">"通知的标题"</span>,<span class="string">"通知的内容"</span>,pendingIntent);
-            startForeground(<span class="number">0</span>,notification);
-            <span class="comment">//</span>
-            <span class="keyword">super</span>.onCreate();
-        }
-    }
-</code></pre><p> 其实就是创建一个Notification,通过setLatestEventInfo方法设置内容，startForeground方法变将其变为一个前台Service。</p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
@@ -854,7 +845,7 @@ sendBroadcast<span class="params">(broadcastIntent)</span>;
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">47</span>
+              <span class="site-state-item-count">48</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

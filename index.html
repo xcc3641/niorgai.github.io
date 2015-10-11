@@ -144,6 +144,173 @@
           
           
             
+              <a class="post-title-link" href="/2015/10/12/滑动冲突解决-更顺滑的RefreshLayout/">
+                滑动冲突解决-更顺滑的RefreshLayout
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Oct 12
+        </span>
+
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/10/12/滑动冲突解决-更顺滑的RefreshLayout/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/12/滑动冲突解决-更顺滑的RefreshLayout/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>在做<a href="https://github.com/niorgai/SuperRefreshLayout" target="_blank" rel="external">SuperRefreshLayout</a>这个下拉刷新的控件时,发现了一个问题,这也是很多下拉刷新控件都会有的问题.</p>
+<p>如果用户在顶部下拉时触发了控件的下拉效果,此时用户不放手向上滑动,会取消该控件的下拉效果.但是<strong>用户继续向上滑动时,子View却不会向下滚动了.</strong>一定要用户抬起手重新向下滚动才可以.</p>
+<p>界面状态分别为:</p>
+<table>
+<thead>
+<tr>
+<th>普通状态(图1)</th>
+<th>拉动中(图2)</th>
+<th>刷新中(图3)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="http://7sbqys.com1.z0.glb.clouddn.com/refresh_normal.jpg" alt=""></td>
+<td><img src="http://7sbqys.com1.z0.glb.clouddn.com/refresh_draging.jpg" alt=""></td>
+<td><img src="http://7sbqys.com1.z0.glb.clouddn.com/refresh_refreshing.jpg" alt=""></td>
+</tr>
+</tbody>
+</table>
+<p>当用户从普通状态(图1)向下拉动进入拉动中状态(图2),用户向上滑动取消拉动动作,恢复普通状态(图1),此时继续向上滑动,界面并不会跟随用户手指滚动.</p>
+<h2 id="问题分析:">问题分析:</h2><p>外层刷新控件称为RefreshLayout, 内部子控件称为子View.</p>
+<ol>
+<li><p>RefreshLayout在由图1向下滑动至图2的过程中,其实是RefreshLayout拦截了当前的Touch事件,此时:</p>
+<ol>
+<li>RefreshLayout的<code>onInterceptTouchEvent()</code>方法返回true,后续的Touch事件都会交给RefreshLayout的<code>onTouchEvent()</code>处理.</li>
+<li>子View的<code>dispatchTouchEvent()</code>方法会接收到Action_cancel事件,表示当前触摸事件已经结束,不会再处理接收到的除Action_down之外的事件.</li>
+<li>RefreshLayout的<code>onTouchEvent()</code>方法消费Touch事件,界面逐渐变为图2.</li>
+</ol>
+</li>
+<li><p>RefreshLayout由图2向上滑动恢复图1状态后并继续向上滑动时,界面无法向下滑动,因为:</p>
+<ol>
+<li>RefreshLayout拦截了Touch事件,子View无法接收.</li>
+<li>RefreshLayout的<code>onTouchEvent()</code>方法返回false(因为当子View可以向下滑动时不需要处理).</li>
+</ol>
+</li>
+</ol>
+<h2 id="解决思路:">解决思路:</h2><p>我们的最终目标就是<strong>把RefreshLayout”错误”拦截的Touch事件交给子View来处理</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>原因</th>
+<th>解决</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>怎么判断是”错误”的拦截</td>
+<td>有需要拦截的Touch事件(如滑动到顶部后继续下拉)</td>
+<td>在拦截后记录标志位, 在RefreshLayout的<code>onTouchEvent()</code>方法中不该处理(return false)的情况中判断该标志位</td>
+</tr>
+<tr>
+<td>为什么子View无法接收Touch事件</td>
+<td>在一开始滚动的过程中RefreshLayout的<code>onInterceptTouchEvent()</code>方法返回true,拦截了所有的Touch事件</td>
+<td>事件传递机制是系统设定的,不好更改.但可以在RefreshLayout的<code>onTouchEvent()</code>方法中调用子View的<code>dispatchTouchEvent()</code>方法,让子View接受并处理该Touch事件</td>
+</tr>
+<tr>
+<td>怎么让子View能够处理该Touch事件</td>
+<td>RefreshLayout拦截Touch事件后,子View会接收到Action_cancel事件,后续事件无法处理</td>
+<td>判断是否为拦截后的第一个Touch事件,是的话先模拟一个Action_down事件并传递给子View,使子View认为这是一个新的Touch事件序列.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="解决代码:">解决代码:</h2><p>以下代码为简略版:</p>
+<pre><code><span class="comment">//首先定义一个变量,检测是否是同一点击事件序列中第一个拦截后应该处理的move事件</span>
+private boolean isFirstMoveAfterIntercept = <span class="literal">false</span>;
+
+ <span class="comment">//在dispatchTouchEvent方法中初始化</span>
+ @Override
+public boolean dispatchTouchEvent<span class="params">(MotionEvent ev)</span> {
+    <span class="keyword">if</span> <span class="params">(ev.getAction<span class="params">()</span> == MotionEvent.ACTION_DOWN)</span> {
+        isFirstMoveAfterIntercept = <span class="literal">true</span>;
+    }
+    <span class="keyword">if</span> <span class="params">(ev.getAction<span class="params">()</span> == MotionEvent.ACTION_UP || ev.getAction<span class="params">()</span> == MotionEvent.ACTION_CANCEL)</span> {
+        isFirstMoveAfterIntercept = <span class="literal">false</span>;
+    }
+    return super.dispatchTouchEvent<span class="params">(ev)</span>;
+}
+
+@Override
+public boolean onTouchEvent<span class="params">(MotionEvent ev)</span> {
+    ......
+    <span class="comment">//mIsBeingDragged表示被拦截了</span>
+    <span class="keyword">if</span> <span class="params">(mIsBeingDragged)</span> {
+        <span class="comment">//此时是错误的拦截(不需要拦截的情况)</span>
+        <span class="keyword">if</span> <span class="params">(originalDragPercent &lt; <span class="number">0</span>)</span> {
+            <span class="comment">//判断是否是拦截后的第一个Move事件</span>
+            <span class="keyword">if</span> <span class="params">(isFirstMoveAfterIntercept)</span> {
+                <span class="comment">// 先为子View模拟一个Action_Down事件,使其认为这是一个新的Touch事件序列</span>
+                MotionEvent event = MotionEvent.obtain<span class="params">(ev)</span>;
+                event.setAction<span class="params">(MotionEvent.ACTION_DOWN)</span>;
+                mTarget.dispatchTouchEvent<span class="params">(event)</span>;
+                isFirstMoveAfterIntercept = <span class="literal">false</span>;
+            }
+            <span class="comment">//将Move事件传递到子View</span>
+            mTarget.dispatchTouchEvent<span class="params">(ev)</span>;
+            return <span class="literal">false</span>;
+        }
+        ...
+    }
+    ....
+}
+</code></pre>
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/09/17/ToastUtil工具类/">
                 ToastUtil工具类
               </a>
@@ -615,102 +782,6 @@ webSettings.setGeolocationDatabasePath<span class="params">(context.getFilesDir<
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/05/13/ProgressBar相关/">
-                ProgressBar相关
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 May 13
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/05/13/ProgressBar相关/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/05/13/ProgressBar相关/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>ProgressBar作为一个进度条控件,经常会被用到,但是使用的时候还是有一些注意点的.</p>
-<ol>
-<li><p>默认的横向Progressbar使用的style是<code>&quot;@android:style/Widget.ProgressBar.Horizontal&quot;</code>,但这个style带有圆角,为了去掉这个圆角,我们只需要一直沿着style查看到源码,然后将progressDrawable文件<code>progress_horizontal</code>复制到自己工程的drawable文件下,那换背景色,去掉圆角的都可以随意修改了~.</p>
-</li>
-<li><p>注意ProgressBar设置progress的时候要在新线程设置,这个在开发者文档也有提到.</p>
-<pre><code><span class="keyword">private</span> Handler mHandler = <span class="keyword">new</span> Handler();
-
-<span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() {
-            <span class="annotation">@Override</span>
-            <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
-                mHandler.post(<span class="keyword">new</span> Runnable() {
-                    <span class="annotation">@Override</span>
-                    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
-                        progressBar.setProgress(newProgress);
-                    }
-                });
-            }
-        }).start();
-</code></pre></li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
@@ -749,7 +820,7 @@ webSettings.setGeolocationDatabasePath<span class="params">(context.getFilesDir<
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">47</span>
+              <span class="site-state-item-count">48</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

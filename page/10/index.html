@@ -144,6 +144,100 @@
           
           
             
+              <a class="post-title-link" href="/2014/12/06/手机屏幕单位/">
+                手机屏幕单位
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2014 Dec 6
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/12/06/手机屏幕单位/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/06/手机屏幕单位/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>先插一句比较小白的话。。<br>点动成线，其实我们看到的屏幕是一个个像素点显示的，密集的点显示成所看到的图像。</p>
+<h3 id="常见的单位：in、px、dpi(ppi、density)、dp(dip)、sp">常见的单位：in、px、dpi(ppi、density)、dp(dip)、sp</h3><p>in：inch，英寸，每英寸大约是2.54厘米，一般手机所说的屏幕多少寸都是指对角线的长度。</p>
+<p>px：Pixel，像素，最小单位，指每一个像素点。通常所说的分辨率1920*1080就是指各个方向上的像素点的数量。</p>
+<p>dpi(ppi、density)：<br>dpi为Dots Per Inch的缩写，表示每英寸点的个数，一般用于打印分辨率。<br>ppi为Pixels Per Inch的缩写，表示每英寸像素点的个数，一般用于显示分辨率。<br>density，密度，表示每Inch点的个数。<br>计算方法为px/in即可。</p>
+<p>安卓的资源列表文件夹与其对应：</p>
+<pre><code>drawable-ldpi         <span class="list">(<span class="keyword">dpi=120</span> , density = <span class="number">0.75</span>)</span>
+drawable-mdpi         <span class="list">(<span class="keyword">dpi=160</span> , density = <span class="number">1</span>,这也是默认的layout文件夹)</span>
+drawable-hdpi         <span class="list">(<span class="keyword">dpi=240</span> , density = <span class="number">1.5</span>)</span>
+drawable-xhdpi         <span class="list">(<span class="keyword">dpi=320</span> , density = <span class="number">2</span>)</span>
+drawable-xxhdpi     <span class="list">(<span class="keyword">dpi=480</span> , density = <span class="number">3</span>)</span>
+</code></pre><p>dp(dip)：设备独立像素，Device Independent Pixels的缩写，Android特有的单位。不会因为像素而导致显示效果不同。</p>
+<p>sp：主要用于调整字体大小,转换方法与dp一样,但是会随着系统设置而变化字体大小.</p>
+<p><strong>默认的icon大小为48dp*48dp</strong></p>
+<p><strong>默认的通知栏icon大小为24dp*24dp</strong></p>
+<p>适配时建议根据设计图计算密度，如iphone5的设备分辨率为640X1164, 屏幕尺寸为4英寸，那么由勾股定理对角线平方为640*640+1164*1164=1764496,开根号得出对角线分辨率为1328，1328/4=332,这就是iphone5的”dpi”,所以可以把iphone5的对应设计图放在xhdpi文件夹中。</p>
+<p>加载资源时，Android会先根据屏幕的dpi在dpi相同的资源文件夹中找资源，然后从最大的资源文件夹开始找。<br>所以推荐在dpi最高的文件夹放置一套资源文件即可，对资源的长高设定wrap_content，系统会自动缩放保持显示效果。如100px*100px的图放在xhdpi中，那么mdpi的设备显示时,100<em>1/2 = 50px,那么该图就会以50px\</em>50px的大小显示。 </p>
+<p>LayoutParams实例化时传的参数为px，需要将布局的dp转为px才能使效果一样。<br>LayoutParams初始化时需要初始化为父布局的类型<br>dp转px的方法为：</p>
+<pre><code><span class="built_in">int</span> dip = (<span class="built_in">int</span>)<span class="type">TypedValue</span>.applyDimension(<span class="type">TypedValue</span>.<span class="type">COMPLEX_UNIT_DIP</span>,<span class="number">60</span>,getResources<span class="literal">()</span>.getDisplayMetrics<span class="literal">()</span>);
+</code></pre>
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2014/12/06/sharedPreference使用心得/">
                 sharedPreference使用心得
               </a>
@@ -378,7 +472,7 @@
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">47</span>
+              <span class="site-state-item-count">48</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
