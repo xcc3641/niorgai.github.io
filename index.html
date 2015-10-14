@@ -144,8 +144,171 @@
           
           
             
-              <a class="post-title-link" href="/2015/10/12/滑动冲突解决-更顺滑的RefreshLayout/">
-                滑动冲突解决-更顺滑的RefreshLayout
+              <a class="post-title-link" href="/2015/10/15/滑动冲突解决-更合理的拦截/">
+                滑动冲突解决-更合理的拦截
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Oct 15
+        </span>
+
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/10/15/滑动冲突解决-更合理的拦截/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/15/滑动冲突解决-更合理的拦截/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="问题说明:">问题说明:</h2><p>当<code>SwipeRefreshLayout</code>中放置了<code>ViewPager</code>控件,两者的滑动会相互冲突.具体表现为<code>ViewPager</code>的左右滑动不顺畅,容易被<code>SwipeRefreshLayout</code>拦截(即出现刷新的View).</p>
+<h2 id="问题原因:">问题原因:</h2><p><code>ViewPager</code>本身是处理了滚动事件的冲突,它在横向滑动时会调用<code>requestDisallowInterceptTouchEvent()</code>方法使父控件不拦截当前的Touch事件序列.但是<code>SwipeRefreshLayout</code>的<code>requestDisallowInterceptTouchEvent()</code>方法什么也没有做,所以仍然会拦截当前的Touch事件序列.</p>
+<h2 id="问题分析:">问题分析:</h2><p>为什么<code>SwipeRefreshLayout</code>的<code>requestDisallowInterceptTouchEvent()</code>方法什么都不做?</p>
+<p>首先<code>SwipeRefreshLayout</code>继承自<code>ViewGroup</code>.</p>
+<ul>
+<li>在<code>requestDisallowInterceptTouchEvent()</code>方法什么都不做的情况下,用户可以从底部下拉刷新一次拉出LoadingView.</li>
+<li>如果方法调用<code>ViewGroup</code>的<code>requestDisallowInterceptTouchEvent()</code>方法, 可以解决<code>ViewPager</code>的兼容问题,但是用户在界面底部下拉至头部后,无法继续下拉,需要手指放开一次才能拉出LoadingView.</li>
+</ul>
+<h2 id="目标分析:">目标分析:</h2><p>那么为了更加顺滑地滚动,想要的效果当然是<strong>一次性拉出LoadingView</strong>.既然ViewPager在左右滑动时才会调用<code>requestDisallowInterceptTouchEvent()</code>方法,那么<code>SwipeRefreshLayout</code><strong>只应该在上下滑动时</strong>才拦截Touch事件.</p>
+<p>具体逻辑如下:</p>
+<ol>
+<li>记录是否调用了<code>requestDisallowInterceptTouchEvent()</code>方法,并且设置为true.</li>
+<li>在<code>SwipeRefreshLayout</code>中判断是否是上下滑动.</li>
+<li>如果同时满足1,2,则调用<code>super.requestDisallowInterceptTouchEvent(true)</code>.</li>
+<li>否则调用<code>super.requestDisallowInterceptTouchEvent(false)</code>.</li>
+</ol>
+<p>注意:因为<code>ViewGroup</code>的<code>requestDisallowInterceptTouchEvent</code>方法设置true后,Touch事件在<code>dispatchTouchEvent()</code>方法中就会被拦截,所以需要在<code>dispatchTouchEvent()</code>方法中判断是否为上下滑动.</p>
+<h2 id="实现代码(部分):">实现代码(部分):</h2><pre><code><span class="comment">//非法按键</span>
+<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> INVALID_POINTER = -<span class="number">1</span>;
+
+<span class="comment">//dispatch方法记录第一次按下的x</span>
+<span class="keyword">private</span> <span class="keyword">float</span> mInitialDisPatchDownX;
+
+<span class="comment">//dispatch方法记录第一次按下的y</span>
+<span class="keyword">private</span> <span class="keyword">float</span> mInitialDisPatchDownY;
+
+<span class="comment">//dispatch方法记录的手指</span>
+<span class="keyword">private</span> <span class="keyword">int</span> mActiveDispatchPointerId = INVALID_POINTER;
+
+<span class="comment">//是否请求拦截</span>
+<span class="keyword">private</span> <span class="keyword">boolean</span> hasRequestDisallowIntercept = <span class="keyword">false</span>;
+
+<span class="annotation">@Override</span>
+<span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">requestDisallowInterceptTouchEvent</span><span class="params">(<span class="keyword">boolean</span> b)</span> </span>{
+    hasRequestDisallowIntercept = b;
+    <span class="comment">// Nope.</span>
+}
+
+<span class="annotation">@Override</span>
+<span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">dispatchTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>{
+    <span class="keyword">switch</span> (ev.getAction()) {
+        <span class="keyword">case</span> MotionEvent.ACTION_DOWN:
+            mActiveDispatchPointerId = MotionEventCompat.getPointerId(ev, 0);
+            <span class="keyword">final</span> <span class="keyword">float</span> initialDownX = getMotionEventX(ev, mActiveDispatchPointerId);
+            <span class="keyword">if</span> (initialDownX != INVALID_POINTER) {
+                mInitialDisPatchDownX = initialDownX;
+            }
+            <span class="keyword">final</span> <span class="keyword">float</span> initialDownY = getMotionEventY(ev, mActiveDispatchPointerId);
+            <span class="keyword">if</span> (mInitialDisPatchDownY != INVALID_POINTER) {
+                mInitialDisPatchDownY = initialDownY;
+            }
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> MotionEvent.ACTION_MOVE:
+            <span class="keyword">if</span> (hasRequestDisallowIntercept) {
+                <span class="comment">//解决viewPager滑动冲突问题</span>
+                <span class="keyword">final</span> <span class="keyword">float</span> x = getMotionEventX(ev, mActiveDispatchPointerId);
+                <span class="keyword">final</span> <span class="keyword">float</span> y = getMotionEventY(ev, mActiveDispatchPointerId);
+                <span class="keyword">if</span> (mInitialDisPatchDownX != INVALID_POINTER &amp;&amp; x != INVALID_POINTER &amp;&amp;
+                        mInitialDisPatchDownY != INVALID_POINTER &amp;&amp; y != INVALID_POINTER) {
+                    <span class="keyword">final</span> <span class="keyword">float</span> xDiff = Math.abs(x - mInitialDisPatchDownX);
+                    <span class="keyword">final</span> <span class="keyword">float</span> yDiff = Math.abs(y - mInitialDisPatchDownY);
+                    <span class="keyword">if</span> (xDiff &gt; mTouchSlop &amp;&amp; xDiff * <span class="number">0.7</span>f &gt; yDiff) {
+                        <span class="comment">//横向滚动不需要拦截</span>
+                        <span class="keyword">super</span>.requestDisallowInterceptTouchEvent(<span class="keyword">true</span>);
+                    } <span class="keyword">else</span> {
+                        <span class="keyword">super</span>.requestDisallowInterceptTouchEvent(<span class="keyword">false</span>);
+                    }
+                } <span class="keyword">else</span> {
+                    <span class="keyword">super</span>.requestDisallowInterceptTouchEvent(<span class="keyword">false</span>);
+                }
+            }
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> MotionEvent.ACTION_UP:
+        <span class="keyword">case</span> MotionEvent.ACTION_CANCEL:
+            <span class="keyword">if</span> (ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_CANCEL) {
+                hasRequestDisallowIntercept = <span class="keyword">false</span>;
+            }
+            <span class="keyword">break</span>;
+    }
+
+    <span class="function"><span class="keyword">return</span> <span class="keyword">super</span>.<span class="title">dispatchTouchEvent</span><span class="params">(ev)</span></span>;
+}
+
+<span class="keyword">private</span> <span class="function"><span class="keyword">float</span> <span class="title">getMotionEventY</span><span class="params">(MotionEvent ev, <span class="keyword">int</span> activePointerId)</span> </span>{
+    <span class="keyword">final</span> <span class="keyword">int</span> index = MotionEventCompat.findPointerIndex(ev, activePointerId);
+    <span class="keyword">if</span> (index &lt; <span class="number">0</span>) {
+        <span class="keyword">return</span> -<span class="number">1</span>;
+    }
+    <span class="function"><span class="keyword">return</span> MotionEventCompat.<span class="title">getY</span><span class="params">(ev, index)</span></span>;
+}
+
+<span class="keyword">private</span> <span class="function"><span class="keyword">float</span> <span class="title">getMotionEventX</span><span class="params">(MotionEvent ev, <span class="keyword">int</span> activePointerId)</span> </span>{
+    <span class="keyword">final</span> <span class="keyword">int</span> index = MotionEventCompat.findPointerIndex(ev, activePointerId);
+    <span class="keyword">if</span> (index &lt; <span class="number">0</span>) {
+        <span class="keyword">return</span> -<span class="number">1</span>;
+    }
+    <span class="function"><span class="keyword">return</span> MotionEventCompat.<span class="title">getX</span><span class="params">(ev, index)</span></span>;
+}
+</code></pre>
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/10/12/滑动冲突解决-联动子View/">
+                滑动冲突解决-联动子View
               </a>
             
           
@@ -163,8 +326,8 @@
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/10/12/滑动冲突解决-更顺滑的RefreshLayout/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/12/滑动冲突解决-更顺滑的RefreshLayout/"></span>
+            <a href="/2015/10/12/滑动冲突解决-联动子View/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/12/滑动冲突解决-联动子View/"></span>
             </a>
           </span>
           
@@ -666,122 +829,6 @@ webSettings.setGeolocationDatabasePath<span class="params">(context.getFilesDir<
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/06/26/一些自适应高度的控件/">
-                一些自适应高度的控件
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Jun 26
-        </span>
-
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/06/26/一些自适应高度的控件/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/06/26/一些自适应高度的控件/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>很多时候因为业务需求需要一些自适应高度的控件,贴一下自己整理的常见控件~</p>
-<ol>
-<li><p><strong>自适应高度的ViewPager</strong></p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WrapContentViewPager</span> <span class="keyword">extends</span> <span class="title">ViewPager</span></span>{
-
-    <span class="function"><span class="keyword">public</span> <span class="title">WrapContentViewPager</span><span class="params">(Context context)</span> </span>{
-        <span class="keyword">super</span>(context);
-    }
-
-    <span class="function"><span class="keyword">public</span> <span class="title">WrapContentViewPager</span><span class="params">(Context context, AttributeSet attrs)</span> </span>{
-        <span class="keyword">super</span>(context, attrs);
-    }
-
-    <span class="annotation">@Override</span>
-    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthMeasureSpec, <span class="keyword">int</span> heightMeasureSpec)</span> </span>{
-        <span class="keyword">int</span> height = <span class="number">0</span>;
-        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; getChildCount(); i++) {
-            View child = getChildAt(i);
-            child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(<span class="number">0</span>, MeasureSpec.UNSPECIFIED));
-            <span class="keyword">int</span> h = child.getMeasuredHeight();
-            <span class="keyword">if</span>(h &gt; height) height = h;
-        }
-
-        heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
-
-        <span class="keyword">super</span>.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-}
-</code></pre></li>
-<li><p><strong>自适应高度的ListView(改一下也支持GridView)</strong></p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WrapContentListView</span> <span class="keyword">extends</span> <span class="title">ListView</span></span>{
-    <span class="function"><span class="keyword">public</span> <span class="title">WrapContentListView</span><span class="params">(Context context)</span> </span>{
-        <span class="keyword">super</span>(context);
-    }
-
-    <span class="function"><span class="keyword">public</span> <span class="title">WrapContentListView</span><span class="params">(Context context, AttributeSet attrs)</span> </span>{
-        <span class="keyword">super</span>(context, attrs);
-    }
-
-    <span class="function"><span class="keyword">public</span> <span class="title">WrapContentListView</span><span class="params">(Context context, AttributeSet attrs, <span class="keyword">int</span> defStyleAttr)</span> </span>{
-        <span class="keyword">super</span>(context, attrs, defStyleAttr);
-    }
-
-    <span class="annotation">@Override</span>
-    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthMeasureSpec, <span class="keyword">int</span> heightMeasureSpec)</span> </span>{
-        <span class="keyword">int</span> expandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE &gt;&gt; <span class="number">2</span>, MeasureSpec.AT_MOST);
-        <span class="keyword">super</span>.onMeasure(widthMeasureSpec, expandSpec);
-    }
-}
-</code></pre></li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
@@ -820,7 +867,7 @@ webSettings.setGeolocationDatabasePath<span class="params">(context.getFilesDir<
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">48</span>
+              <span class="site-state-item-count">49</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

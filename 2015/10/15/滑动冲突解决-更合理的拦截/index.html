@@ -47,7 +47,7 @@
 
 
 
-  <title> 滑动冲突解决-更顺滑的RefreshLayout // Jianqiu's blog </title>
+  <title> 滑动冲突解决-更合理的拦截 // Jianqiu's blog </title>
 </head>
 
 <body>
@@ -142,7 +142,7 @@
           
           
             
-              滑动冲突解决-更顺滑的RefreshLayout
+              滑动冲突解决-更合理的拦截
             
           
         </h1>
@@ -150,7 +150,7 @@
 
       <div class="post-meta">
         <span class="post-time">
-          发表于 2015 Oct 12
+          发表于 2015 Oct 15
         </span>
 
         
@@ -159,8 +159,8 @@
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/10/12/滑动冲突解决-更顺滑的RefreshLayout/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/12/滑动冲突解决-更顺滑的RefreshLayout/"></span>
+            <a href="/2015/10/15/滑动冲突解决-更合理的拦截/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/15/滑动冲突解决-更合理的拦截/"></span>
             </a>
           </span>
           
@@ -174,107 +174,103 @@
       
 
       
-        <p>在做<a href="https://github.com/niorgai/SuperRefreshLayout" target="_blank" rel="external">SuperRefreshLayout</a>这个下拉刷新的控件时,发现了一个问题,这也是很多下拉刷新控件都会有的问题.</p>
-<p>如果用户在顶部下拉时触发了控件的下拉效果,此时用户不放手向上滑动,会取消该控件的下拉效果.但是<strong>用户继续向上滑动时,子View却不会向下滚动了.</strong>一定要用户抬起手重新向下滚动才可以.</p>
-<p>界面状态分别为:</p>
-<table>
-<thead>
-<tr>
-<th>普通状态(图1)</th>
-<th>拉动中(图2)</th>
-<th>刷新中(图3)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><img src="http://7sbqys.com1.z0.glb.clouddn.com/refresh_normal.jpg" alt=""></td>
-<td><img src="http://7sbqys.com1.z0.glb.clouddn.com/refresh_draging.jpg" alt=""></td>
-<td><img src="http://7sbqys.com1.z0.glb.clouddn.com/refresh_refreshing.jpg" alt=""></td>
-</tr>
-</tbody>
-</table>
-<p>当用户从普通状态(图1)向下拉动进入拉动中状态(图2),用户向上滑动取消拉动动作,恢复普通状态(图1),此时继续向上滑动,界面并不会跟随用户手指滚动.</p>
-<h2 id="问题分析:">问题分析:</h2><p>外层刷新控件称为RefreshLayout, 内部子控件称为子View.</p>
+        <h2 id="问题说明:">问题说明:</h2><p>当<code>SwipeRefreshLayout</code>中放置了<code>ViewPager</code>控件,两者的滑动会相互冲突.具体表现为<code>ViewPager</code>的左右滑动不顺畅,容易被<code>SwipeRefreshLayout</code>拦截(即出现刷新的View).</p>
+<h2 id="问题原因:">问题原因:</h2><p><code>ViewPager</code>本身是处理了滚动事件的冲突,它在横向滑动时会调用<code>requestDisallowInterceptTouchEvent()</code>方法使父控件不拦截当前的Touch事件序列.但是<code>SwipeRefreshLayout</code>的<code>requestDisallowInterceptTouchEvent()</code>方法什么也没有做,所以仍然会拦截当前的Touch事件序列.</p>
+<h2 id="问题分析:">问题分析:</h2><p>为什么<code>SwipeRefreshLayout</code>的<code>requestDisallowInterceptTouchEvent()</code>方法什么都不做?</p>
+<p>首先<code>SwipeRefreshLayout</code>继承自<code>ViewGroup</code>.</p>
+<ul>
+<li>在<code>requestDisallowInterceptTouchEvent()</code>方法什么都不做的情况下,用户可以从底部下拉刷新一次拉出LoadingView.</li>
+<li>如果方法调用<code>ViewGroup</code>的<code>requestDisallowInterceptTouchEvent()</code>方法, 可以解决<code>ViewPager</code>的兼容问题,但是用户在界面底部下拉至头部后,无法继续下拉,需要手指放开一次才能拉出LoadingView.</li>
+</ul>
+<h2 id="目标分析:">目标分析:</h2><p>那么为了更加顺滑地滚动,想要的效果当然是<strong>一次性拉出LoadingView</strong>.既然ViewPager在左右滑动时才会调用<code>requestDisallowInterceptTouchEvent()</code>方法,那么<code>SwipeRefreshLayout</code><strong>只应该在上下滑动时</strong>才拦截Touch事件.</p>
+<p>具体逻辑如下:</p>
 <ol>
-<li><p>RefreshLayout在由图1向下滑动至图2的过程中,其实是RefreshLayout拦截了当前的Touch事件,此时:</p>
-<ol>
-<li>RefreshLayout的<code>onInterceptTouchEvent()</code>方法返回true,后续的Touch事件都会交给RefreshLayout的<code>onTouchEvent()</code>处理.</li>
-<li>子View的<code>dispatchTouchEvent()</code>方法会接收到Action_cancel事件,表示当前触摸事件已经结束,不会再处理接收到的除Action_down之外的事件.</li>
-<li>RefreshLayout的<code>onTouchEvent()</code>方法消费Touch事件,界面逐渐变为图2.</li>
+<li>记录是否调用了<code>requestDisallowInterceptTouchEvent()</code>方法,并且设置为true.</li>
+<li>在<code>SwipeRefreshLayout</code>中判断是否是上下滑动.</li>
+<li>如果同时满足1,2,则调用<code>super.requestDisallowInterceptTouchEvent(true)</code>.</li>
+<li>否则调用<code>super.requestDisallowInterceptTouchEvent(false)</code>.</li>
 </ol>
-</li>
-<li><p>RefreshLayout由图2向上滑动恢复图1状态后并继续向上滑动时,界面无法向下滑动,因为:</p>
-<ol>
-<li>RefreshLayout拦截了Touch事件,子View无法接收.</li>
-<li>RefreshLayout的<code>onTouchEvent()</code>方法返回false(因为当子View可以向下滑动时不需要处理).</li>
-</ol>
-</li>
-</ol>
-<h2 id="解决思路:">解决思路:</h2><p>我们的最终目标就是<strong>把RefreshLayout”错误”拦截的Touch事件交给子View来处理</strong>.</p>
-<table>
-<thead>
-<tr>
-<th>问题</th>
-<th>原因</th>
-<th>解决</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>怎么判断是”错误”的拦截</td>
-<td>有需要拦截的Touch事件(如滑动到顶部后继续下拉)</td>
-<td>在拦截后记录标志位, 在RefreshLayout的<code>onTouchEvent()</code>方法中不该处理(return false)的情况中判断该标志位</td>
-</tr>
-<tr>
-<td>为什么子View无法接收Touch事件</td>
-<td>在一开始滚动的过程中RefreshLayout的<code>onInterceptTouchEvent()</code>方法返回true,拦截了所有的Touch事件</td>
-<td>事件传递机制是系统设定的,不好更改.但可以在RefreshLayout的<code>onTouchEvent()</code>方法中调用子View的<code>dispatchTouchEvent()</code>方法,让子View接受并处理该Touch事件</td>
-</tr>
-<tr>
-<td>怎么让子View能够处理该Touch事件</td>
-<td>RefreshLayout拦截Touch事件后,子View会接收到Action_cancel事件,后续事件无法处理</td>
-<td>判断是否为拦截后的第一个Touch事件,是的话先模拟一个Action_down事件并传递给子View,使子View认为这是一个新的Touch事件序列.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="解决代码:">解决代码:</h2><p>以下代码为简略版:</p>
-<pre><code><span class="comment">//首先定义一个变量,检测是否是同一点击事件序列中第一个拦截后应该处理的move事件</span>
-private boolean isFirstMoveAfterIntercept = <span class="literal">false</span>;
+<p>注意:因为<code>ViewGroup</code>的<code>requestDisallowInterceptTouchEvent</code>方法设置true后,Touch事件在<code>dispatchTouchEvent()</code>方法中就会被拦截,所以需要在<code>dispatchTouchEvent()</code>方法中判断是否为上下滑动.</p>
+<h2 id="实现代码(部分):">实现代码(部分):</h2><pre><code><span class="comment">//非法按键</span>
+<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> INVALID_POINTER = -<span class="number">1</span>;
 
- <span class="comment">//在dispatchTouchEvent方法中初始化</span>
- @Override
-public boolean dispatchTouchEvent<span class="params">(MotionEvent ev)</span> {
-    <span class="keyword">if</span> <span class="params">(ev.getAction<span class="params">()</span> == MotionEvent.ACTION_DOWN)</span> {
-        isFirstMoveAfterIntercept = <span class="literal">true</span>;
-    }
-    <span class="keyword">if</span> <span class="params">(ev.getAction<span class="params">()</span> == MotionEvent.ACTION_UP || ev.getAction<span class="params">()</span> == MotionEvent.ACTION_CANCEL)</span> {
-        isFirstMoveAfterIntercept = <span class="literal">false</span>;
-    }
-    return super.dispatchTouchEvent<span class="params">(ev)</span>;
+<span class="comment">//dispatch方法记录第一次按下的x</span>
+<span class="keyword">private</span> <span class="keyword">float</span> mInitialDisPatchDownX;
+
+<span class="comment">//dispatch方法记录第一次按下的y</span>
+<span class="keyword">private</span> <span class="keyword">float</span> mInitialDisPatchDownY;
+
+<span class="comment">//dispatch方法记录的手指</span>
+<span class="keyword">private</span> <span class="keyword">int</span> mActiveDispatchPointerId = INVALID_POINTER;
+
+<span class="comment">//是否请求拦截</span>
+<span class="keyword">private</span> <span class="keyword">boolean</span> hasRequestDisallowIntercept = <span class="keyword">false</span>;
+
+<span class="annotation">@Override</span>
+<span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">requestDisallowInterceptTouchEvent</span><span class="params">(<span class="keyword">boolean</span> b)</span> </span>{
+    hasRequestDisallowIntercept = b;
+    <span class="comment">// Nope.</span>
 }
 
-@Override
-public boolean onTouchEvent<span class="params">(MotionEvent ev)</span> {
-    ......
-    <span class="comment">//mIsBeingDragged表示被拦截了</span>
-    <span class="keyword">if</span> <span class="params">(mIsBeingDragged)</span> {
-        <span class="comment">//此时是错误的拦截(不需要拦截的情况)</span>
-        <span class="keyword">if</span> <span class="params">(originalDragPercent &lt; <span class="number">0</span>)</span> {
-            <span class="comment">//判断是否是拦截后的第一个Move事件</span>
-            <span class="keyword">if</span> <span class="params">(isFirstMoveAfterIntercept)</span> {
-                <span class="comment">// 先为子View模拟一个Action_Down事件,使其认为这是一个新的Touch事件序列</span>
-                MotionEvent event = MotionEvent.obtain<span class="params">(ev)</span>;
-                event.setAction<span class="params">(MotionEvent.ACTION_DOWN)</span>;
-                mTarget.dispatchTouchEvent<span class="params">(event)</span>;
-                isFirstMoveAfterIntercept = <span class="literal">false</span>;
+<span class="annotation">@Override</span>
+<span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">dispatchTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>{
+    <span class="keyword">switch</span> (ev.getAction()) {
+        <span class="keyword">case</span> MotionEvent.ACTION_DOWN:
+            mActiveDispatchPointerId = MotionEventCompat.getPointerId(ev, 0);
+            <span class="keyword">final</span> <span class="keyword">float</span> initialDownX = getMotionEventX(ev, mActiveDispatchPointerId);
+            <span class="keyword">if</span> (initialDownX != INVALID_POINTER) {
+                mInitialDisPatchDownX = initialDownX;
             }
-            <span class="comment">//将Move事件传递到子View</span>
-            mTarget.dispatchTouchEvent<span class="params">(ev)</span>;
-            return <span class="literal">false</span>;
-        }
-        ...
+            <span class="keyword">final</span> <span class="keyword">float</span> initialDownY = getMotionEventY(ev, mActiveDispatchPointerId);
+            <span class="keyword">if</span> (mInitialDisPatchDownY != INVALID_POINTER) {
+                mInitialDisPatchDownY = initialDownY;
+            }
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> MotionEvent.ACTION_MOVE:
+            <span class="keyword">if</span> (hasRequestDisallowIntercept) {
+                <span class="comment">//解决viewPager滑动冲突问题</span>
+                <span class="keyword">final</span> <span class="keyword">float</span> x = getMotionEventX(ev, mActiveDispatchPointerId);
+                <span class="keyword">final</span> <span class="keyword">float</span> y = getMotionEventY(ev, mActiveDispatchPointerId);
+                <span class="keyword">if</span> (mInitialDisPatchDownX != INVALID_POINTER &amp;&amp; x != INVALID_POINTER &amp;&amp;
+                        mInitialDisPatchDownY != INVALID_POINTER &amp;&amp; y != INVALID_POINTER) {
+                    <span class="keyword">final</span> <span class="keyword">float</span> xDiff = Math.abs(x - mInitialDisPatchDownX);
+                    <span class="keyword">final</span> <span class="keyword">float</span> yDiff = Math.abs(y - mInitialDisPatchDownY);
+                    <span class="keyword">if</span> (xDiff &gt; mTouchSlop &amp;&amp; xDiff * <span class="number">0.7</span>f &gt; yDiff) {
+                        <span class="comment">//横向滚动不需要拦截</span>
+                        <span class="keyword">super</span>.requestDisallowInterceptTouchEvent(<span class="keyword">true</span>);
+                    } <span class="keyword">else</span> {
+                        <span class="keyword">super</span>.requestDisallowInterceptTouchEvent(<span class="keyword">false</span>);
+                    }
+                } <span class="keyword">else</span> {
+                    <span class="keyword">super</span>.requestDisallowInterceptTouchEvent(<span class="keyword">false</span>);
+                }
+            }
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> MotionEvent.ACTION_UP:
+        <span class="keyword">case</span> MotionEvent.ACTION_CANCEL:
+            <span class="keyword">if</span> (ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_CANCEL) {
+                hasRequestDisallowIntercept = <span class="keyword">false</span>;
+            }
+            <span class="keyword">break</span>;
     }
-    ....
+
+    <span class="function"><span class="keyword">return</span> <span class="keyword">super</span>.<span class="title">dispatchTouchEvent</span><span class="params">(ev)</span></span>;
+}
+
+<span class="keyword">private</span> <span class="function"><span class="keyword">float</span> <span class="title">getMotionEventY</span><span class="params">(MotionEvent ev, <span class="keyword">int</span> activePointerId)</span> </span>{
+    <span class="keyword">final</span> <span class="keyword">int</span> index = MotionEventCompat.findPointerIndex(ev, activePointerId);
+    <span class="keyword">if</span> (index &lt; <span class="number">0</span>) {
+        <span class="keyword">return</span> -<span class="number">1</span>;
+    }
+    <span class="function"><span class="keyword">return</span> MotionEventCompat.<span class="title">getY</span><span class="params">(ev, index)</span></span>;
+}
+
+<span class="keyword">private</span> <span class="function"><span class="keyword">float</span> <span class="title">getMotionEventX</span><span class="params">(MotionEvent ev, <span class="keyword">int</span> activePointerId)</span> </span>{
+    <span class="keyword">final</span> <span class="keyword">int</span> index = MotionEventCompat.findPointerIndex(ev, activePointerId);
+    <span class="keyword">if</span> (index &lt; <span class="number">0</span>) {
+        <span class="keyword">return</span> -<span class="number">1</span>;
+    }
+    <span class="function"><span class="keyword">return</span> MotionEventCompat.<span class="title">getX</span><span class="params">(ev, index)</span></span>;
 }
 </code></pre>
       
@@ -291,7 +287,7 @@ public boolean onTouchEvent<span class="params">(MotionEvent ev)</span> {
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/09/17/ToastUtil工具类/">ToastUtil工具类</a>
+              <a href="/2015/10/12/滑动冲突解决-联动子View/">滑动冲突解决-联动子View</a>
             
           </div>
         </div>
@@ -311,8 +307,8 @@ public boolean onTouchEvent<span class="params">(MotionEvent ev)</span> {
     
       <div class="comments" id="comments">
         
-          <div class="ds-thread" data-thread-key="2015/10/12/滑动冲突解决-更顺滑的RefreshLayout/"
-               data-title="滑动冲突解决-更顺滑的RefreshLayout" data-url="http://niorgai.github.io/2015/10/12/滑动冲突解决-更顺滑的RefreshLayout/">
+          <div class="ds-thread" data-thread-key="2015/10/15/滑动冲突解决-更合理的拦截/"
+               data-title="滑动冲突解决-更合理的拦截" data-url="http://niorgai.github.io/2015/10/15/滑动冲突解决-更合理的拦截/">
           </div>
         
       </div>
@@ -359,7 +355,7 @@ public boolean onTouchEvent<span class="params">(MotionEvent ev)</span> {
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">48</span>
+              <span class="site-state-item-count">49</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -401,7 +397,7 @@ public boolean onTouchEvent<span class="params">(MotionEvent ev)</span> {
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题分析:"><span class="nav-number">1.</span> <span class="nav-text">问题分析:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决思路:"><span class="nav-number">2.</span> <span class="nav-text">解决思路:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决代码:"><span class="nav-number">3.</span> <span class="nav-text">解决代码:</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题说明:"><span class="nav-number">1.</span> <span class="nav-text">问题说明:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题原因:"><span class="nav-number">2.</span> <span class="nav-text">问题原因:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题分析:"><span class="nav-number">3.</span> <span class="nav-text">问题分析:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目标分析:"><span class="nav-number">4.</span> <span class="nav-text">目标分析:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现代码(部分):"><span class="nav-number">5.</span> <span class="nav-text">实现代码(部分):</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>

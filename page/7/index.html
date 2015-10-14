@@ -144,6 +144,120 @@
           
           
             
+              <a class="post-title-link" href="/2015/01/10/Broadcast-Receiver使用/">
+                Broadcast Receiver使用
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Jan 10
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/01/10/Broadcast-Receiver使用/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/10/Broadcast-Receiver使用/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>作为Android的四大组件之一，广播接收器可以接收系统广播同时进行自定义的动作。</p>
+<h6 id="广播接收器必须从android-content-BroadcastReceiver继承，同时需要实现onReceive方法，原型为：">广播接收器必须从android.content.BroadcastReceiver继承，同时需要实现onReceive方法，原型为：</h6><pre><code><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onReceive</span><span class="params">(Context context, Intent intent)</span></span>;
+</code></pre><p>一些常见的广播动作：</p>
+<ul>
+<li>android.provider.Telephony.SMS_RECEIVED 接收短信</li>
+</ul>
+<p>权限为android.permission.RECEIVE_SMS</p>
+<ul>
+<li>android.intent.action.PHONE_STATE 捕捉来电</li>
+</ul>
+<p>权限为android.permission.READ_PHONE_STATE</p>
+<ul>
+<li>android.intent.action.NEW_OUTGOING_CALL 捕捉去电</li>
+</ul>
+<p>权限为android.permission.PEOCESS_OUTGOING_CALLS</p>
+<ul>
+<li>android.intent.action.BOOT_COMPLETED 开机完毕</li>
+</ul>
+<h6 id="注册广播方法：">注册广播方法：</h6><pre><code>registerReceiver<span class="list">(<span class="keyword">BroadcastReceiver</span> receiver,IntentFilter filter)</span><span class="comment">;</span>
+</code></pre><h6 id="注销广播方法：">注销广播方法：</h6><pre><code>unregisterReceiver<span class="list">(<span class="keyword">BroadcastReceiver</span> receiver)</span><span class="comment">;</span>
+</code></pre><h6 id="通过设置AndroidManifest-xml中不同receiver的android:priority属性可以设置不同广播接收器的优先值。">通过设置AndroidManifest.xml中不同receiver的android:priority属性可以设置不同广播接收器的优先值。</h6><h4 id="发送广播方法：">发送广播方法：</h4><ol>
+<li><p>添加广播数据和category并发送广播：</p>
+<pre><code>Intent broadcastIntent = new Intent<span class="params">(<span class="string">"mobile.android.mybroadcast"</span>)</span>;
+broadcastIntent.addCategory<span class="params">(<span class="string">"mobile.android.mycategory"</span>)</span>;
+broadcastIntent.putExtra<span class="params">(<span class="string">"data"</span>,<span class="string">"test"</span>)</span>;
+sendBroadcast<span class="params">(broadcastIntent)</span>;
+</code></pre></li>
+<li><p>配置接收器的AndroidManifest.xml文件，注册接收器</p>
+<pre><code><span class="tag">&lt;<span class="title">receiver</span> <span class="attribute">android:name</span>=<span class="value">".myReceiver"</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">intent-filter</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">action</span> <span class="attribute">android:name</span>=<span class="value">"mobile.android.myboardcast"</span>/&gt;</span>
+        <span class="tag">&lt;<span class="title">category</span> <span class="attribute">android:name</span>=<span class="value">"mobile.android.mycategory"</span>/&gt;</span>
+    <span class="tag">&lt;/<span class="title">intent-filter</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">receiver</span>&gt;</span>
+</code></pre></li>
+<li><p>在myReceiver中继承BroadcastReceiver并实现onReceive方法，通过intent.getStringExtra(“data”)即可获取数据。</p>
+</li>
+</ol>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/01/08/Android-Service-二/">
                 Android Service (二)
               </a>
@@ -605,97 +719,6 @@ uriMatcher<span class="variable">.addURI</span>(AUTHORITY,<span class="string">"
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/12/30/OpenFileOutput-OpenFileIntput-使用/">
-                OpenFileOutput & OpenFileIntput 使用
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2014 Dec 30
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/12/30/OpenFileOutput-OpenFileIntput-使用/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/30/OpenFileOutput-OpenFileIntput-使用/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>与sharedPreference相似，OpenFileOutput和OpenFileIntput也是在Context中调用，同时将文件保存在以下路径：</p>
-<pre><code><span class="type">data</span>/<span class="type">data</span>/&lt;package <span class="keyword">name</span>&gt;/files
-</code></pre><p><strong>name为String类型，表示文件名称</strong></p>
-<p><strong>text为String类型，表示所需写入的内容</strong></p>
-<p>使用方法(需要注意catch FileNotFoundException)：</p>
-<p>写:</p>
-<pre><code>OutputStream os = context.openFileOutput<span class="params">(name,Context.MODE_PRIVATE)</span>;
-os.write<span class="params">(text.getBytes<span class="params">(<span class="string">"UTF-8"</span>)</span>)</span>;
-os.close<span class="params">()</span>;
-</code></pre><p>读:</p>
-<pre><code>InputStream <span class="keyword">is</span> = <span class="keyword">context</span>.openFileInput(name);
-byte[] <span class="keyword">buffer</span> = <span class="keyword">new</span> byte[<span class="number">100</span>];
-int byteCount = <span class="keyword">is</span>.read(<span class="keyword">buffer</span>);
-<span class="typename">String</span> str = <span class="keyword">new</span> <span class="typename">String</span>(<span class="keyword">buffer</span>,<span class="number">0</span>,byteCount,<span class="string">"UTF-8"</span>);
-<span class="keyword">is</span>.close();
-</code></pre>
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
@@ -734,7 +757,7 @@ int byteCount = <span class="keyword">is</span>.read(<span class="keyword">buffe
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">48</span>
+              <span class="site-state-item-count">49</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

@@ -144,6 +144,129 @@
           
           
             
+              <a class="post-title-link" href="/2014/12/06/Android-shape使用相关/">
+                Android shape使用相关
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2014 Dec 6
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/12/06/Android-shape使用相关/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/06/Android-shape使用相关/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>shape是利用xml来创造一张图片，用起来效率比直接用图片效率高，个人感觉主要体现在listview的刷新时，利用shape的xml文件作背景比利用bitmap作背景，刷新时明显流畅很多。</p>
+<ul>
+<li><p>shape的常用方法有很多~觉得<a href="http://blog.csdn.net/u012910985/article/details/21553591" target="_blank" rel="external">这篇</a>总结的还不错~</p>
+<p>  <strong>注意使用shape来画line时，注意以下两点：</strong></p>
+<ol>
+<li>引用该shape的View的layout_height的值必须大于shape中<stroke>标签下android:width的值。</stroke></li>
+<li><p>必须关闭硬件加速，可以在AndroidMainfest中修改，也可以调用<code>view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);</code></p>
+<p><strong>这样才会显示line</strong></p>
+</li>
+</ol>
+</li>
+<li><p>关于Android 5.0的Meterial Design，了解还不够深，<a href="http://blog.csdn.net/a396901990/article/details/40153035" target="_blank" rel="external">这</a>是之前搜到的一篇文章~</p>
+</li>
+</ul>
+<p>最近主要想实现imageView边框的阴影，网上的资料查到主要是这几种方法:</p>
+<ol>
+<li>利用shape的layer-list图层，每一个item表示一个图层，item里面根据需要放上相应的shape。</li>
+</ol>
+<p>比如底层放置一个阴影色的填充(solid)，上层防止一个白色的填充(solid)，然后利用上层shape的padding来设置阴影的大小。</p>
+<pre><code><span class="pi">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<span class="tag">&lt;<span class="title">layer-list</span> <span class="attribute">xmlns:android</span>=<span class="value">"http://schemas.android.com/apk/res/android"</span> &gt;</span>
+    <span class="comment">&lt;!-- 上图层的矩形 --&gt;</span>
+    <span class="tag">&lt;<span class="title">item</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">shape</span> <span class="attribute">android:shape</span>=<span class="value">"rectangle"</span> &gt;</span>
+            <span class="tag">&lt;<span class="title">solid</span> <span class="attribute">android:color</span>=<span class="value">"#0F000000"</span>/&gt;</span>
+        <span class="tag">&lt;/<span class="title">shape</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">item</span>&gt;</span>
+
+    <span class="comment">&lt;!-- 下图层的矩形 --&gt;</span>
+    <span class="comment">&lt;!-- padding来控制边框(阴影)大小 --&gt;</span>
+
+    <span class="tag">&lt;<span class="title">item</span>
+        <span class="attribute">android:left</span>=<span class="value">"2dp"</span>
+        <span class="attribute">android:top</span>=<span class="value">"2dp"</span>
+        <span class="attribute">android:bottom</span>=<span class="value">"2dp"</span>
+        <span class="attribute">android:right</span>=<span class="value">"2dp"</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">shape</span> <span class="attribute">android:shape</span>=<span class="value">"rectangle"</span> &gt;</span>
+            <span class="tag">&lt;<span class="title">solid</span> <span class="attribute">android:color</span>=<span class="value">"#FFFFFF"</span>/&gt;</span>
+        <span class="tag">&lt;/<span class="title">shape</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">item</span>&gt;</span>
+ <span class="tag">&lt;/<span class="title">layer-list</span>&gt;</span>
+</code></pre><ol>
+<li><p>利用Android 5.0中的outline(轮廓)及view的elevation(高度)，通过elevation的不同设置不同的阴影效果。这个还没有尝试。</p>
+</li>
+<li><p>在imageView的位置先放置一张阴影色的图片，最好是.9.png格式。</p>
+</li>
+</ol>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2014/12/06/手机屏幕单位/">
                 手机屏幕单位
               </a>
@@ -472,7 +595,7 @@ drawable-xxhdpi     <span class="list">(<span class="keyword">dpi=480</span> , d
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">48</span>
+              <span class="site-state-item-count">49</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
