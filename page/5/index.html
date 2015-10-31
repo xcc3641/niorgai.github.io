@@ -144,6 +144,157 @@
           
           
             
+              <a class="post-title-link" href="/2015/02/22/Bitmap相关-读取大图片/">
+                Bitmap相关:读取大图片
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Feb 22
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/02/22/Bitmap相关-读取大图片/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/02/22/Bitmap相关-读取大图片/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <ol>
+<li><p>从Uri获取bitmap的方法有很多种，介绍一下常用的：</p>
+<p> <strong>tmpFile表示存放图片的file，uri为所获得的内容获取</strong></p>
+<ol>
+<li><p>先通过buffer将Uri内容保存至tmpFile，使用时通过<code>Bitmap bitmap = BitmapFactory.decodeFile(tmpFile.getAbsolutePath());</code>获取bitmap对象即可。</p>
+<pre><code><span class="label">InputStream</span> inputStream = getContentResolver().openInputStream(uri)<span class="comment">;</span>
+<span class="label">FileOutputStream</span> fileOutputStream = new FileOutputStream(tmpFile)<span class="comment">;</span>
+
+//copy <span class="keyword">stream </span>with <span class="keyword">buffer
+</span><span class="keyword">byte[] </span><span class="keyword">buffer </span>= new <span class="keyword">byte[1024];
+</span><span class="label">int</span> <span class="keyword">bytesRead;
+</span><span class="label">while</span>((<span class="keyword">bytesRead </span>= inputStream.read(<span class="keyword">buffer)) </span>!= -<span class="number">1</span>){
+    fileOutputStream.write(<span class="keyword">buffer, </span><span class="number">0</span>, <span class="keyword">bytesRead);
+</span>}
+
+<span class="label">fileOutputStream.close</span>()<span class="comment">;</span>
+<span class="label">inputStream.close</span>()<span class="comment">;</span>
+</code></pre></li>
+<li><p>通过<code>Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);</code>，很容易OutOfMemory。</p>
+</li>
+<li><p>通过stream解析文件，并改动其大小</p>
+<pre><code>FileInputStream f = <span class="keyword">new</span> FileInputStream(uri.getPath());
+BitmapFactory.<span class="keyword">Options</span> <span class="keyword">options</span> = <span class="keyword">new</span> BitmapFactory.<span class="keyword">Options</span>();
+<span class="keyword">options</span>.inSampleSize = <span class="number">4</span>;<span class="comment">//载入的像素为原图的1/4</span>
+BufferedInputStream bis = <span class="keyword">new</span> BufferedInputStream(f);
+Bitmap bitmap = BitmapFactory.decodeStream(bis, <span class="keyword">null</span>, <span class="keyword">options</span>);
+</code></pre></li>
+</ol>
+</li>
+</ol>
+<h2 id="官方教程给了一种比较好的读取大bitmap的方法：">官方教程给了一种比较好的读取大bitmap的方法：</h2><p>思路是：</p>
+<ol>
+<li>先通过设置<code>BitmapFactory.Options</code>的<code>inJustDecodeBounds</code>方法为true，decode图片获取图片的长宽。</li>
+<li>判断被加载图片的长宽是否大于所需的长宽(下面的例子判断了是否横图，所需的长宽为屏幕长宽)。</li>
+<li>通过计算设置<code>option.inSampleSize</code>为所需的压缩比，再加载图片。</li>
+</ol>
+<pre><code><span class="keyword">public</span> Bitmap getBitmap(String path){
+    <span class="keyword">final</span> BitmapFactory.<span class="keyword">Options</span> <span class="keyword">options</span> = <span class="keyword">new</span> BitmapFactory.<span class="keyword">Options</span>();
+    <span class="keyword">options</span>.inJustDecodeBounds = <span class="keyword">true</span>;
+    <span class="comment">//options.inJustDecodeBounds为ture时，不会真正decode文件，只是获取图片的大小，</span>
+    <span class="comment">//通过options.outWidth和options.outHeight返回</span>
+    BitmapFactory.decodeFile(path, <span class="keyword">options</span>);
+
+    <span class="comment">// Calculate inSampleSize，这里用的是屏幕分辨率计算。</span>
+    <span class="keyword">if</span>(<span class="keyword">options</span>.outWidth &gt; <span class="keyword">options</span>.outHeight){
+        <span class="comment">//Landscape photos，横屏照片宽度 &gt; 高度</span>
+        <span class="keyword">options</span>.inSampleSize = calculateInSampleSize(<span class="keyword">options</span>, mDisplayMetrics.heightPixels, mDisplayMetrics.widthPixels);
+    }<span class="keyword">else</span> {
+        <span class="keyword">options</span>.inSampleSize = calculateInSampleSize(<span class="keyword">options</span>, mDisplayMetrics.widthPixels, mDisplayMetrics.heightPixels);
+    }
+
+    <span class="comment">// Decode bitmap with inSampleSize set</span>
+    <span class="keyword">options</span>.inJustDecodeBounds = <span class="keyword">false</span>;
+    <span class="keyword">return</span> BitmapFactory.decodeFile(path, <span class="keyword">options</span>);
+}
+</code></pre><p><code>calculateInSampleSize</code>方法就是根据宽度高度获取inSampleSize压缩比，如果原图大小为2400*3200,所需内存约为30MB，如果inSampleSize为2，则获取大小为1200*1600，大小只需7.5MB(以Config.8888为例)。</p>
+<pre><code>   <span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">int</span> calculateInSampleSize(
+    BitmapFactory.Options options, <span class="built_in">int</span> reqWidth, <span class="built_in">int</span> reqHeight) {
+    <span class="comment">// Raw height and width of image</span>
+    <span class="keyword">final</span> <span class="built_in">int</span> <span class="variable">height</span> = options.outHeight;
+    <span class="keyword">final</span> <span class="built_in">int</span> <span class="variable">width</span> = options.outWidth;
+    <span class="built_in">int</span> inSampleSize = <span class="number">1</span>;
+
+    <span class="keyword">if</span> (<span class="variable">height</span> &gt; reqHeight || <span class="variable">width</span> &gt; reqWidth) {
+        <span class="keyword">final</span> <span class="built_in">int</span> halfHeight = <span class="variable">height</span> / <span class="number">2</span>;
+        <span class="keyword">final</span> <span class="built_in">int</span> halfWidth = <span class="variable">width</span> / <span class="number">2</span>;
+        <span class="comment">// Calculate the largest inSampleSize value that is a power of 2 and keeps both</span>
+        <span class="comment">// height and width larger than the requested height and width.</span>
+        <span class="keyword">while</span> ((halfHeight / inSampleSize) &gt; reqHeight
+                &amp;&amp; (halfWidth / inSampleSize) &gt; reqWidth) {
+            inSampleSize *= <span class="number">2</span>;
+        }
+    }
+    <span class="keyword">return</span> inSampleSize;
+}
+</code></pre>
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/02/09/Android游戏操控捕捉输入/">
                 Android游戏操控捕捉输入
               </a>
@@ -651,124 +802,6 @@ intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</spa
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/01/31/Android相册选取图片/">
-                Android相册选取图片
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Jan 31
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/01/31/Android相册选取图片/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/31/Android相册选取图片/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>目前从图库选择图片可以有两种方法：</p>
-<p><strong>以下结果属于vivo Xplay,Android Version 4.4.4测试结果，如果有其他机型测试我会补充</strong><br>1.<strong>Intent.ACTION_PICK：</strong></p>
-<pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(<span class="type">Intent</span>.ACTION_PICK,
-            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
-</code></pre><p> onActivityResult返回的Intent中：</p>
-<ul>
-<li><code>intent.getData()</code>会返回所选图片的Uri，格式为<code>content://media/external/images/media/919</code></li>
-<li><code>intent.getExtras()</code>返回的bundle中包含一个boolean变量，通过<code>data.getExtras().get(&quot;isFinishGallery&quot;)</code>获取,应该是指是否获取完毕，查询文档没有官方结果。</li>
-<li><code>intent.putExtra(&quot;return-data&quot;,false)</code>对返回值没有影响。</li>
-</ul>
-<p>2.<strong>Intent.ACTION_GET_CONTENT</strong></p>
-<pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(<span class="type">Intent</span>.ACTION_GET_CONTENT);
-<span class="type">intent</span>.setType(<span class="string">"image/*"</span>);//不加会导致crash
-</code></pre><p>  onActivityResult返回的Intent中：</p>
-<ul>
-<li><code>intent.getData()</code>返回所选图片的Uri：</li>
-</ul>
-<hr>
-<p>关于返回Uri格式的说明：</p>
-<ul>
-<li><p>系统版本大于等于19(KitKat):<code>content://com.android.providers.media.documents/document/image%3A919</code></p>
-</li>
-<li><p>系统版本低于19:<code>content://media/external/images/media/919</code></p>
-</li>
-</ul>
-<p>可以通过以下函数获取真实路径：</p>
-<pre><code><span class="keyword">private</span> <span class="keyword">String</span> getRealPathFromURI(Context context,Uri contentUri) {
-    <span class="keyword">String</span>[] proj = { MediaStore.Images.Media.DATA };
-    Cursor <span class="built_in">cursor</span> = context.getContentResolver().query(contentUri, proj, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);
-    <span class="keyword">if</span> (<span class="built_in">cursor</span> != <span class="keyword">null</span>) {
-        <span class="built_in">cursor</span>.moveToFirst();
-        <span class="built_in">int</span> columnIndex = <span class="built_in">cursor</span>.getColumnIndex(proj[<span class="number">0</span>]);
-        <span class="keyword">String</span> path = <span class="built_in">cursor</span>.getString(columnIndex);
-        <span class="built_in">cursor</span>.close();
-        <span class="keyword">return</span> path;
-    }
-    <span class="keyword">return</span> contentUri.getPath();
-   }
-</code></pre><ol>
-<li>Uri获取bitmap的方法可以参考<a href="http://niorgai.github.io/2015/02/22/Bitmap%E7%9B%B8%E5%85%B3-%E8%AF%BB%E5%8F%96%E5%A4%A7%E5%9B%BE%E7%89%87/">Bitmap相关:读取大图片</a>.</li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
@@ -807,7 +840,7 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">49</span>
+              <span class="site-state-item-count">50</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

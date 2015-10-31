@@ -144,6 +144,139 @@
           
           
             
+              <a class="post-title-link" href="/2015/03/02/Activity生命周期/">
+                Activity生命周期
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Mar 2
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/03/02/Activity生命周期/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/02/Activity生命周期/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>Activity是很熟悉的东西，但是它的生命周期一直掌握的不够完全，所以就其方法和功能介绍一下：</p>
+<p>对于Activity来说,本质上就是以下四种状态:</p>
+<ol>
+<li>Activity处于前台,此时它保持活跃的状态.</li>
+<li>Activity失去焦点但任然可见(即被透明的或不是全屏的Activity挡住焦点),此时它会暂停(pause),暂停了的Activity任然是alive,它会维护住它的全部变量和状态,但可以在系统内存不足时被kill掉.</li>
+<li>Activity完全被其他Activity挡住,那么他会停止(stop),它任然会维护住它的全部变量和状态,但它会更容易在系统内存不足时被kill掉</li>
+<li>如果Activity被暂停或停止了,系统可以随时kill掉这个Activity或者直接kill整个进程.当它重新出现时,所有的状态必须重新创建.</li>
+</ol>
+<p>同时看一下官方给的一个说明图：<br><img src="http://7sbqys.com1.z0.glb.clouddn.com/activity_lifecycle.png" alt=""></p>
+<p>这个图是给了一些基本的方法，下面再逐个说一下。</p>
+<hr>
+<p>启动部分：</p>
+<ol>
+<li><p><strong>onCreate(Bundle savedInstanceState)</strong></p>
+<p> 在这里进行常见的初始化操作，比如绑定UI，初始化控件等。savedInstanceState参数存储了一些在<code>onSaveInstanceState(Bundle)</code>存储的数据，如果没有设置则为null。</p>
+</li>
+<li><p><strong>onRestart()</strong></p>
+<p> 用户重新导航至该Activity时调用。</p>
+</li>
+<li><p><strong>onStart()</strong></p>
+<p> 在<code>onCreate(Bundle savedInstanceState)</code>或<code>onRestart()</code>后调用。</p>
+</li>
+<li><p><strong>onRestoreInstanceState (Bundle savedInstanceState)</strong></p>
+<p> 在<code>onStart()</code>和<code>onPostCreate (Bundle savedInstanceState)</code>之间调用，用于恢复在<code>onSaveInstanceState(Bundle)</code>中存储的数据。</p>
+</li>
+<li><p><strong>onPostCreate (Bundle savedInstanceState)</strong></p>
+<p> 在Activity启动完成后调用，但通常不声明这个函数，它用于系统类的初始化。</p>
+</li>
+<li><p><strong>onResume ()</strong></p>
+<p> 准备与用户进行交互，但这不是最佳的方式去判断当前界面是否对用户可用，但像键盘等系统控件弹出时也会影响焦点，所以最佳方式是使用<a href="http://developer.android.com/intl/zh-cn/reference/android/app/Activity.html#onWindowFocusChanged(boolean" target="_blank" rel="external"><code>onWindowFocusChanged (boolean hasFocus)</code></a>)来判断当前界面是否获得了焦点。</p>
+</li>
+<li><p><strong>onPostResume ()</strong></p>
+<p> 当Activity resume完成后调用，但通常不声明这个函数，它用于系统类的初始化。</p>
+</li>
+</ol>
+<hr>
+<p>结束部分：</p>
+<ol>
+<li><p><strong>onPause ()</strong></p>
+<p> 当Activity失去焦点但不被kill的时候，onPause()会被调用。只有onPause结束，新Activity的onCreate方法才会开始。</p>
+</li>
+<li><p><strong>onSaveInstanceState (Bundle outState)</strong></p>
+<p> 本意是用于存储Activity数据，因为该方法不在Activity的生命周期内,所以谷歌不建议使用该方法存储数据,对用户的持久化数据处理应该放在onPause中.该数据可以通过<code>onCreate(Bundle)</code>或<code>onRestoreInstanceState (Bundle savedInstanceState)</code>恢复，该方法会在<code>onStop()</code>之前调用，但不一定会在<code>onPause</code>方法前调用。</p>
+</li>
+<li><p><strong>onStop ()</strong></p>
+<p> 当Activity对用户已经不可见时调用，但当系统内存较低时，Activity可能在<code>onPause()</code>后没有足够内存继续运行而导致<code>onStop()</code>不被调用。</p>
+</li>
+<li><p><strong>onDestroy ()</strong></p>
+<p> 在Activity销毁前执行最后工作，主要执行释放内存相关操作，不能在该方法内保存数据。</p>
+</li>
+</ol>
+<hr>
+<ol>
+<li>整个生命周期从onCreate到onDestroy,所以对于一些全局的变量,需要在onCreate初始化,在onDestroy中销毁,例如handler.</li>
+<li>可见的生命周期是从onStart到onStop,在这两个方法期间可以维护一些需要改变Activity展示的数据,比如BroadcastReceiver的注册和销毁.</li>
+<li>前台的生命周期是onResume到onPause,此时用户可以与Activity交互.</li>
+</ol>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/03/02/Loading界面简单实现/">
                 Loading界面简单实现
               </a>
@@ -1018,157 +1151,6 @@ protected <span class="type">Bitmap</span> getBitmapFromReusableSet(<span class=
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/02/22/Bitmap相关-读取大图片/">
-                Bitmap相关:读取大图片
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Feb 22
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/02/22/Bitmap相关-读取大图片/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/02/22/Bitmap相关-读取大图片/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <ol>
-<li><p>从Uri获取bitmap的方法有很多种，介绍一下常用的：</p>
-<p> <strong>tmpFile表示存放图片的file，uri为所获得的内容获取</strong></p>
-<ol>
-<li><p>先通过buffer将Uri内容保存至tmpFile，使用时通过<code>Bitmap bitmap = BitmapFactory.decodeFile(tmpFile.getAbsolutePath());</code>获取bitmap对象即可。</p>
-<pre><code><span class="label">InputStream</span> inputStream = getContentResolver().openInputStream(uri)<span class="comment">;</span>
-<span class="label">FileOutputStream</span> fileOutputStream = new FileOutputStream(tmpFile)<span class="comment">;</span>
-
-//copy <span class="keyword">stream </span>with <span class="keyword">buffer
-</span><span class="keyword">byte[] </span><span class="keyword">buffer </span>= new <span class="keyword">byte[1024];
-</span><span class="label">int</span> <span class="keyword">bytesRead;
-</span><span class="label">while</span>((<span class="keyword">bytesRead </span>= inputStream.read(<span class="keyword">buffer)) </span>!= -<span class="number">1</span>){
-    fileOutputStream.write(<span class="keyword">buffer, </span><span class="number">0</span>, <span class="keyword">bytesRead);
-</span>}
-
-<span class="label">fileOutputStream.close</span>()<span class="comment">;</span>
-<span class="label">inputStream.close</span>()<span class="comment">;</span>
-</code></pre></li>
-<li><p>通过<code>Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);</code>，很容易OutOfMemory。</p>
-</li>
-<li><p>通过stream解析文件，并改动其大小</p>
-<pre><code>FileInputStream f = <span class="keyword">new</span> FileInputStream(uri.getPath());
-BitmapFactory.<span class="keyword">Options</span> <span class="keyword">options</span> = <span class="keyword">new</span> BitmapFactory.<span class="keyword">Options</span>();
-<span class="keyword">options</span>.inSampleSize = <span class="number">4</span>;<span class="comment">//载入的像素为原图的1/4</span>
-BufferedInputStream bis = <span class="keyword">new</span> BufferedInputStream(f);
-Bitmap bitmap = BitmapFactory.decodeStream(bis, <span class="keyword">null</span>, <span class="keyword">options</span>);
-</code></pre></li>
-</ol>
-</li>
-</ol>
-<h2 id="官方教程给了一种比较好的读取大bitmap的方法：">官方教程给了一种比较好的读取大bitmap的方法：</h2><p>思路是：</p>
-<ol>
-<li>先通过设置<code>BitmapFactory.Options</code>的<code>inJustDecodeBounds</code>方法为true，decode图片获取图片的长宽。</li>
-<li>判断被加载图片的长宽是否大于所需的长宽(下面的例子判断了是否横图，所需的长宽为屏幕长宽)。</li>
-<li>通过计算设置<code>option.inSampleSize</code>为所需的压缩比，再加载图片。</li>
-</ol>
-<pre><code><span class="keyword">public</span> Bitmap getBitmap(String path){
-    <span class="keyword">final</span> BitmapFactory.<span class="keyword">Options</span> <span class="keyword">options</span> = <span class="keyword">new</span> BitmapFactory.<span class="keyword">Options</span>();
-    <span class="keyword">options</span>.inJustDecodeBounds = <span class="keyword">true</span>;
-    <span class="comment">//options.inJustDecodeBounds为ture时，不会真正decode文件，只是获取图片的大小，</span>
-    <span class="comment">//通过options.outWidth和options.outHeight返回</span>
-    BitmapFactory.decodeFile(path, <span class="keyword">options</span>);
-
-    <span class="comment">// Calculate inSampleSize，这里用的是屏幕分辨率计算。</span>
-    <span class="keyword">if</span>(<span class="keyword">options</span>.outWidth &gt; <span class="keyword">options</span>.outHeight){
-        <span class="comment">//Landscape photos，横屏照片宽度 &gt; 高度</span>
-        <span class="keyword">options</span>.inSampleSize = calculateInSampleSize(<span class="keyword">options</span>, mDisplayMetrics.heightPixels, mDisplayMetrics.widthPixels);
-    }<span class="keyword">else</span> {
-        <span class="keyword">options</span>.inSampleSize = calculateInSampleSize(<span class="keyword">options</span>, mDisplayMetrics.widthPixels, mDisplayMetrics.heightPixels);
-    }
-
-    <span class="comment">// Decode bitmap with inSampleSize set</span>
-    <span class="keyword">options</span>.inJustDecodeBounds = <span class="keyword">false</span>;
-    <span class="keyword">return</span> BitmapFactory.decodeFile(path, <span class="keyword">options</span>);
-}
-</code></pre><p><code>calculateInSampleSize</code>方法就是根据宽度高度获取inSampleSize压缩比，如果原图大小为2400*3200,所需内存约为30MB，如果inSampleSize为2，则获取大小为1200*1600，大小只需7.5MB(以Config.8888为例)。</p>
-<pre><code>   <span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">int</span> calculateInSampleSize(
-    BitmapFactory.Options options, <span class="built_in">int</span> reqWidth, <span class="built_in">int</span> reqHeight) {
-    <span class="comment">// Raw height and width of image</span>
-    <span class="keyword">final</span> <span class="built_in">int</span> <span class="variable">height</span> = options.outHeight;
-    <span class="keyword">final</span> <span class="built_in">int</span> <span class="variable">width</span> = options.outWidth;
-    <span class="built_in">int</span> inSampleSize = <span class="number">1</span>;
-
-    <span class="keyword">if</span> (<span class="variable">height</span> &gt; reqHeight || <span class="variable">width</span> &gt; reqWidth) {
-        <span class="keyword">final</span> <span class="built_in">int</span> halfHeight = <span class="variable">height</span> / <span class="number">2</span>;
-        <span class="keyword">final</span> <span class="built_in">int</span> halfWidth = <span class="variable">width</span> / <span class="number">2</span>;
-        <span class="comment">// Calculate the largest inSampleSize value that is a power of 2 and keeps both</span>
-        <span class="comment">// height and width larger than the requested height and width.</span>
-        <span class="keyword">while</span> ((halfHeight / inSampleSize) &gt; reqHeight
-                &amp;&amp; (halfWidth / inSampleSize) &gt; reqWidth) {
-            inSampleSize *= <span class="number">2</span>;
-        }
-    }
-    <span class="keyword">return</span> inSampleSize;
-}
-</code></pre>
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
@@ -1207,7 +1189,7 @@ Bitmap bitmap = BitmapFactory.decodeStream(bis, <span class="keyword">null</span
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">49</span>
+              <span class="site-state-item-count">50</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

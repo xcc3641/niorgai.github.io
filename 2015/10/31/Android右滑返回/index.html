@@ -24,7 +24,7 @@
 
 
 
-  <meta name="keywords" content="手柄支持," />
+  <meta name="keywords" content="Hexo,next" />
 
 
 
@@ -47,7 +47,7 @@
 
 
 
-  <title> Android游戏操控捕捉输入 // Jianqiu's blog </title>
+  <title> Android右滑返回 // Jianqiu's blog </title>
 </head>
 
 <body>
@@ -142,7 +142,7 @@
           
           
             
-              Android游戏操控捕捉输入
+              Android右滑返回
             
           
         </h1>
@@ -150,28 +150,17 @@
 
       <div class="post-meta">
         <span class="post-time">
-          发表于 2015 Feb 9
+          发表于 2015 Oct 31
         </span>
 
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
         
 
         
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/02/09/Android游戏操控捕捉输入/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/02/09/Android游戏操控捕捉输入/"></span>
+            <a href="/2015/10/31/Android右滑返回/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/31/Android右滑返回/"></span>
             </a>
           </span>
           
@@ -185,157 +174,32 @@
       
 
       
-        <p>在<a href="http://niorgai.github.io/2015/02/05/Android%E6%B8%B8%E6%88%8F%E6%93%8D%E6%8E%A7%E5%9F%BA%E7%A1%80%E7%9B%B8%E5%85%B3/">基础介绍</a>中说到主要的HIM设备包括遥控杆(Joystick),手柄(gamepad)和D-pad，但其实他们是有关系的。先就维基百科的图说一下：</p>
-<ul>
-<li><p>D-pad:<br>  其实就是Gamepad的方向键部分。</p>
-<p>  <img src="http://7sbqys.com1.z0.glb.clouddn.com/dpad.png" alt="D-pad"></p>
-</li>
-<li><p>Joystick:<br>  遥控杆，比较少见，但是与gamepad的遥控杆/方向盘的输入一样。</p>
-<p>  <img src="http://7sbqys.com1.z0.glb.clouddn.com/joystick.png" alt="Joystick"></p>
-</li>
-<li><p>Gamepad:<br>  常见的手柄，简易的手柄没有遥控杆，如下图。</p>
-<p>  <img src="http://7sbqys.com1.z0.glb.clouddn.com/gamepadsample.jpeg" alt="sampleGamepad"></p>
-<p>  <img src="http://7sbqys.com1.z0.glb.clouddn.com/Gamepadall.jpg" alt="allGamepad"></p>
-</li>
-</ul>
-<hr>
-<p>下面说一下捕捉输入：</p>
-<ul>
-<li><p>捕捉输入设备：</p>
-<p>  <a href="http://niorgai.github.io/2015/02/05/Android%E6%B8%B8%E6%88%8F%E6%93%8D%E6%8E%A7%E5%9F%BA%E7%A1%80%E7%9B%B8%E5%85%B3/">基础介绍</a>介绍了捕捉输入的方法，实际中，joystick和D-pad的输入都可以从gamepad捕捉，所以个人认为只是适配手柄的话检测手柄设备即可。</p>
-</li>
-<li><p>按键捕捉：</p>
-<p>  直接在onkeyDown方法中根据keyCode的不同对应不同操作就好了，适用于A、B、X、Y、Start等，<strong>不建议用于捕捉方向键。</strong></p>
-</li>
-<li><p>方向捕捉：</p>
-<p>  因为方向的输入会包含X，Y信息，所以建议通过<code>onGenericMotionEvent</code>方法捕捉。通过最后<code>processJoystickInput</code>方法中获取的(x,y)左边进行相应移动操作。</p>
-<pre><code>@<span class="function">Override
-<span class="keyword">public</span> boolean <span class="title">onGenericMotionEvent</span>(<span class="params">MotionEvent <span class="keyword">event</span></span>) </span>{
-    <span class="comment">// Check that the event came from a game controller</span>
-    <span class="keyword">if</span> ((<span class="keyword">event</span>.getSource() &amp; InputDevice.SOURCE_JOYSTICK) ==
-            InputDevice.SOURCE_JOYSTICK &amp;&amp;
-            <span class="keyword">event</span>.getAction() == MotionEvent.ACTION_MOVE) {
-
-        <span class="comment">// Process all historical movement samples in the batch</span>
-        final <span class="keyword">int</span> historySize = <span class="keyword">event</span>.getHistorySize();
-
-        <span class="comment">// Process the movements starting from the</span>
-        <span class="comment">// earliest historical position in the batch</span>
-        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; historySize; i++) {
-            <span class="comment">// Process the event at historical position i</span>
-            processJoystickInput(<span class="keyword">event</span>, i);
-        }
-
-        <span class="comment">// Process the current movement sample in the batch (position -1)</span>
-        processJoystickInput(<span class="keyword">event</span>, -<span class="number">1</span>);
-        <span class="keyword">return</span> <span class="keyword">true</span>;
-    }
-    <span class="keyword">return</span> super.onGenericMotionEvent(<span class="keyword">event</span>);
-}  
-
-<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">float</span> <span class="title">getCenteredAxis</span>(<span class="params">MotionEvent <span class="keyword">event</span>,
-                           InputDevice device, <span class="keyword">int</span> axis, <span class="keyword">int</span> historyPos</span>) </span>{
-    <span class="comment">//device为null表示模拟的输入，此时直接返回数据即可。</span>
-    <span class="keyword">if</span>(device == <span class="keyword">null</span>){
-        <span class="keyword">return</span> <span class="keyword">event</span>.getAxisValue(axis);
-    }
-    final InputDevice.MotionRange range =
-            device.getMotionRange(axis, <span class="keyword">event</span>.getSource());
-
-    <span class="comment">// A joystick at rest does not always report an absolute position of</span>
-    <span class="comment">// (0,0). Use the getFlat() method to determine the range of values</span>
-    <span class="comment">// bounding the joystick axis center.</span>
-    <span class="keyword">if</span> (range != <span class="keyword">null</span>) {
-        final <span class="keyword">float</span> flat = range.getFlat();
-        final <span class="keyword">float</span> <span class="keyword">value</span> =
-                historyPos &lt; <span class="number">0</span> ? <span class="keyword">event</span>.getAxisValue(axis):
-                        <span class="keyword">event</span>.getHistoricalAxisValue(axis, historyPos);
-
-        <span class="comment">// Ignore axis values that are within the 'flat' region of the</span>
-        <span class="comment">// joystick axis center.</span>
-        <span class="keyword">if</span> (Math.abs(<span class="keyword">value</span>) &gt; flat) {
-            <span class="keyword">return</span> <span class="keyword">value</span>;
-        }
-    }
-    <span class="keyword">return</span> <span class="number">0</span>;
-}
-</code></pre></li>
-</ul>
-<pre><code><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">processJoystickInput</span>(<span class="params">MotionEvent <span class="keyword">event</span>,
-                              <span class="keyword">int</span> historyPos</span>) </span>{
-
-    InputDevice mInputDevice = <span class="keyword">event</span>.getDevice();
-
-    <span class="comment">// Calculate the horizontal distance to move by</span>
-    <span class="comment">// using the input value from one of these physical controls:</span>
-    <span class="comment">// the left control stick, hat axis, or the right control stick.</span>
-    <span class="keyword">float</span> x = getCenteredAxis(<span class="keyword">event</span>, mInputDevice,
-            MotionEvent.AXIS_X, historyPos);
-    <span class="keyword">if</span> (x == <span class="number">0</span>) {
-        x = getCenteredAxis(<span class="keyword">event</span>, mInputDevice,
-                MotionEvent.AXIS_HAT_X, historyPos);
-    }
-    <span class="keyword">if</span> (x == <span class="number">0</span>) {
-        x = getCenteredAxis(<span class="keyword">event</span>, mInputDevice,
-                MotionEvent.AXIS_Z, historyPos);
-    }
-
-    <span class="comment">// Calculate the vertical distance to move by</span>
-    <span class="comment">// using the input value from one of these physical controls:</span>
-      <span class="comment">// the left control stick, hat switch, or the right control stick.</span>
-    <span class="keyword">float</span> y = getCenteredAxis(<span class="keyword">event</span>, mInputDevice,
-            MotionEvent.AXIS_Y, historyPos);
-    <span class="keyword">if</span> (y == <span class="number">0</span>) {
-        y = getCenteredAxis(<span class="keyword">event</span>, mInputDevice,
-            MotionEvent.AXIS_HAT_Y, historyPos);
-    }
-    <span class="keyword">if</span> (y == <span class="number">0</span>) {
-        y = getCenteredAxis(<span class="keyword">event</span>, mInputDevice,
-                MotionEvent.AXIS_RZ, historyPos);
-        }
-
-        <span class="comment">//根据获取的(x,y)左边进行相应移动</span>
-}
-</code></pre><hr>
-<p>如果需要模拟Gamepad的输入：</p>
-<ul>
-<li>键值可以通过<code>onKeyDown</code>来对应。</li>
-<li><p>操作杆可以通过<code>onGenericMotionEvent</code>来模拟,下面方法是关于初始化一个MotionEvent：</p>
-<pre><code><span class="keyword">long</span> downTime = SystemClock.uptimeMillis();
-<span class="keyword">long</span> eventTime = SystemClock.uptimeMillis() + <span class="number">100</span>;
-<span class="keyword">int</span> action = MotionEvent.ACTION_MOVE;
-<span class="keyword">float</span> x  = <span class="number">0f</span>;
-<span class="keyword">float</span> y  = <span class="number">1f</span>;
-<span class="keyword">int</span> metaData = <span class="number">0</span>;
-MotionEvent motionEvent = MotionEvent.obtain(
-        downTime,eventTime,action,x,y,metaData);
-</code></pre><p><strong>注意这种方法因为</strong><code>motionEvent.getDevice()</code><strong>方法返回null会导致crash，应该判断device为null而直接通过</strong><code>motionEvent.getX()</code>,<code>motionEvent.getY()</code><strong>返回x，y值.</strong></p>
-</li>
-</ul>
+        <p>作为一个Android开发者,遇到好的交互当然希望引用过来.iphone的应用可以从屏幕左端右滑返回上一个界面,这个交互在单手操作上非常舒服.那么当然希望在Android上实现.</p>
+<p>起初看到知乎和微信都实现了这个功能,于是就自己偷懒没有去想怎么实现,而是先去网上找了一下别人的实现,最后找到了这个<a href="http://blog.csdn.net/xiaanming/article/details/20934541" target="_blank" rel="external">Android 向右滑动销毁（finish）Activity, 随着手势的滑动而滑动的效果</a>.作者的原理和代码都很简明,但是copy下来后发现还是有点小bug,于是做了点修复.以及我和它的思路有所区别,最后就没有fork他的库了,而是自己写了一个demo:<a href="https://github.com/niorgai/SlideFinishLayout" target="_blank" rel="external">Android 右滑销毁Activity的Layout</a>.</p>
+<p>最初实现的时候,我也想像知乎一样可以从屏幕中间滑动,但最后发现知乎并没有ViewPager之类的横向滑动的控件,所以对原来的库做了以下修改:</p>
+<ol>
+<li>采取了边缘滑动的返回方式.这样便不需要考虑横向滑动的控件的触摸事件冲突.</li>
+<li>根据滑动的比例动态改变背景色,使背景色从黑色40%透明到全透明变化,过渡更加自然.</li>
+<li>finish()的时候调用<code>overridePendingTransition(0, 0)</code>使Activity的关闭动画取消,用户感觉更加自然.</li>
+<li><code>dispatchTouchEvent()</code>中对Move进行判断,这样当子View不消费Touch事件时,<code>slideFinishLayout</code>可以从任意位置滑动返回.</li>
+</ol>
+<h2 id="待解决优化:">待解决优化:</h2><p>因为这里实现滑动返回的是把Activity设为透明,那么上一个Activity的<code>onStop()</code>方法不会被调用,当Activity打开过多,性能下降很快.</p>
 
       
     </div>
 
     <div class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/手柄支持/"> #手柄支持 </a>
-          
-        </div>
-      
 
       
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/02/22/Bitmap相关-读取大图片/">Bitmap相关:读取大图片</a>
-            
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/02/05/Android游戏操控基础相关/">Android游戏操控基础相关</a>
+              <a href="/2015/10/15/滑动冲突解决-更合理的拦截/">滑动冲突解决-更合理的拦截</a>
             
           </div>
         </div>
@@ -355,8 +219,8 @@ MotionEvent motionEvent = MotionEvent.obtain(
     
       <div class="comments" id="comments">
         
-          <div class="ds-thread" data-thread-key="2015/02/09/Android游戏操控捕捉输入/"
-               data-title="Android游戏操控捕捉输入" data-url="http://niorgai.github.io/2015/02/09/Android游戏操控捕捉输入/">
+          <div class="ds-thread" data-thread-key="2015/10/31/Android右滑返回/"
+               data-title="Android右滑返回" data-url="http://niorgai.github.io/2015/10/31/Android右滑返回/">
           </div>
         
       </div>
@@ -445,7 +309,7 @@ MotionEvent motionEvent = MotionEvent.obtain(
           <div class="post-toc">
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#待解决优化:"><span class="nav-number">1.</span> <span class="nav-text">待解决优化:</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
