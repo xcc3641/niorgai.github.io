@@ -956,6 +956,15 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
 <li>注册对象后没有反注册，比如Broadcast Receiver等。</li>
 <li>handler问题，如果handler是非静态的，会导致Activity或者Service不被回收，所以应当注册为静态内部类，同时在onDestroy时停止线程:<code>mThread.getLooper().quit();</code></li>
 <li>Activity被静态引用，特别是缓存bitmap时，解决方法可以考虑使用Application的context代替Activity的context。</li>
+<li><p>View在callback中被引用,可能回调还没有结束,但是view处于引用状态,无法回收</p>
+<pre><code><span class="tag">public</span> <span class="tag">void</span> <span class="tag">leak</span>(final View view) {
+    <span class="tag">api</span><span class="class">.callback</span>(new <span class="function">callBack</span>() {
+        <span class="tag">onCallBack</span>() {
+            ...
+        }
+    )
+}
+</code></pre></li>
 </ol>
 <h2 id="检测内存泄露的方法">检测内存泄露的方法</h2><ol>
 <li>Android Studio自带的Memory Monitor,手动触发GC可以看得比较直观</li>
