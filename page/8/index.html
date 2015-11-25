@@ -144,109 +144,6 @@
           
           
             
-              <a class="post-title-link" href="/2015/01/03/Android-SQLite数据库/">
-                Android SQLite数据库
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Jan 3
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/01/03/Android-SQLite数据库/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/03/Android-SQLite数据库/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>操作数据库主要利用android.database.sqlite.SQLiteDatabase这个包，使用方法一般有3种：</p>
-<ol>
-<li><p>使用SQLiteOpenHelper的子类，SQLiteOpenHelper是一个抽象类，其子类必须实现这两个方法：</p>
-<p> 方法1：</p>
-<pre><code><span class="annotation">@Override</span>
-<span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(SQLiteDatabase db)</span> </span>{  
-
-}
-</code></pre><p>该方法将先在  /data/data/<package name="">/databases 目录下寻找数据库，如果数据库不存在则调用该方法。可以在该方法中调用</package></p>
-<pre><code>    <span class="tag">db</span><span class="class">.execSQL</span>(<span class="tag">sql</span>);
-
-方法，其中<span class="tag">sql</span>为自定义的<span class="tag">sql</span>语句，可以建表及插入数据。
-</code></pre><p> 方法2：</p>
-<pre><code><span class="annotation">@Override</span>
-<span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onUpgrade</span><span class="params">(SQLiteDatabase db, <span class="keyword">int</span> oldVersion, <span class="keyword">int</span> newVersion)</span> </span>{
-
-}
-</code></pre><p> 该方法在数据库存在且当前版本号高于上次版本号时会调用，子类如果不需要可以不进行任何操作。</p>
-</li>
-<li><p>如果直接使用SQLiteDatabase可以创建任意路径的数据库，方法原型为：</p>
-<pre><code>public <span class="literal">static</span> SQLiteDatabase openOrCreateDatabase(<span class="built_in">String</span> path, CursorFactory <span class="literal">factory</span>) 
-</code></pre><p> 然后利用contentValues或者直接调用execSQL等语句直接实现。</p>
-</li>
-<li><p>如果只想创建存在于RAM中的数据库，并且在程序退出时自动销毁数据库，可以直接调用</p>
-<pre><code>SQLiteDatabase <span class="variable">database =</span> SQLiteDatabase.create(<span class="constant">null</span>);
-</code></pre></li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
               <a class="post-title-link" href="/2014/12/30/OpenFileOutput-OpenFileIntput-使用/">
                 OpenFileOutput & OpenFileIntput 使用
               </a>
@@ -744,6 +641,129 @@ int byteCount = <span class="keyword">is</span>.read(<span class="keyword">buffe
 
 
     
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/12/16/PopupWindow相关/">
+                PopupWindow相关
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2014 Dec 16
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/12/16/PopupWindow相关/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/16/PopupWindow相关/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>PopupWindow顾名思义，就是一个弹出窗口。不过特性倒是挺好玩的：</p>
+<ol>
+<li>以弹出窗口的形式展示，可以替代系统的dialog。</li>
+<li>可以在任意位置出现，并且会浮动在当前窗口的顶部(获取焦点)。</li>
+<li>可以用来装载任意的view。</li>
+<li>通过设置背景颜色0xaa000000可以实现半透明效果</li>
+<li><p>关于点击消失：</p>
+<ol>
+<li><p>如果需要点击外部消失，只需设置背景，foucs，outSideTouchable。</p>
+<pre><code><span class="keyword">this</span>.setBackgroundDrawable(<span class="keyword">new</span> ColorDrawable(<span class="number">0xaa000000</span>));
+<span class="keyword">this</span>.setFocusable(<span class="literal">true</span>);
+<span class="keyword">this</span>.setOutsideTouchable(<span class="literal">true</span>);
+</code></pre></li>
+<li><p>如果需要点击自身(非按钮控件)消失，在自身设置onclick就好。</p>
+<pre><code>mWindow.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>{
+        GetExpressAlert.<span class="keyword">this</span>.dismiss();
+    }
+});
+</code></pre></li>
+</ol>
+</li>
+<li><p>因为某些机型是虚拟按键的,所以要加上以下设置防止挡住按键.</p>
+<pre><code><span class="tag">this</span><span class="class">.setSoftInputMode</span>(<span class="tag">WindowManager</span><span class="class">.LayoutParams</span><span class="class">.SOFT_INPUT_ADJUST_RESIZE</span>);
+</code></pre></li>
+</ol>
+<p>整个类也特别简单：</p>
+<pre><code>public <span class="class"><span class="keyword">class</span> <span class="title">GetExpressAlert</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">PopupWindow</span> {</span>
+    <span class="type">Context</span> mContext;
+    <span class="type">View</span> mWindow;
+
+    public <span class="type">GetExpressAlert</span>(<span class="type">Context</span> context) {
+    mContext = context;
+    <span class="type">LayoutInflater</span> inflater = (<span class="type">LayoutInflater</span>) context
+            .getSystemService(<span class="type">Context</span>.<span class="type">LAYOUT_INFLATER_SERVICE</span>);
+    mWindow = inflater.inflate(<span class="type">R</span>.layout.get_express_alert, <span class="literal">null</span>);
+    <span class="keyword">this</span>.setContentView(mWindow);
+    <span class="keyword">this</span>.setWidth(<span class="type">LayoutParams</span>.<span class="type">FILL_PARENT</span>);
+    <span class="keyword">this</span>.setHeight(<span class="type">LayoutParams</span>.<span class="type">FILL_PARENT</span>);
+
+    <span class="keyword">this</span>.setBackgroundDrawable(<span class="keyword">new</span> <span class="type">ColorDrawable</span>(<span class="number">0xaa000000</span>));
+    }
+
+}
+</code></pre><p>显示效果：<br><img src="http://7sbqys.com1.z0.glb.clouddn.com/alert.png" alt=""></p>
+<p>xml代码没有什么特别的，所以不贴了。</p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
   </div>
 
   
@@ -782,7 +802,7 @@ int byteCount = <span class="keyword">is</span>.read(<span class="keyword">buffe
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">49</span>
+              <span class="site-state-item-count">48</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

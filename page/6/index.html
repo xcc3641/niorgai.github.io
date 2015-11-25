@@ -262,156 +262,6 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
           
           
             
-              <a class="post-title-link" href="/2015/01/26/Git小技巧/">
-                Git小技巧
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Jan 26
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/方便开发/">方便开发</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/01/26/Git小技巧/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/26/Git小技巧/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <hr>
-<p><strong>add：</strong></p>
-<ol>
-<li>git add -u 只添加更新了的文件</li>
-</ol>
-<hr>
-<p><strong>commit：</strong></p>
-<ol>
-<li>commit —amend会修正上次的提交(包括description)</li>
-<li>直接<code>git commit</code>会通过vim打开，可以编辑详细的commit信息。</li>
-<li><p><code>git rebase</code> 可以理解为重新定位base。</p>
-<p> 比如现在从master的A点开了一个分支branch，branch改动了，但是master也改动到了B。那么可以这样做：</p>
-<pre><code>git checkout master<span class="comment">; </span>
-git pull origin master<span class="comment">; </span>
-git checkout branch<span class="comment">; </span>
-git rebase master<span class="comment">; </span>
-</code></pre><p> 这样branch也是从master的B点为base了。可能会遇到冲突，打开相应文件更改为正确的内容然后重新add修改后的文件，继续执行<code>git rebase --continue</code>即可。</p>
-</li>
-<li><p>git rebase -i <tag> 从某一个tag开始重新整理commit点。</tag></p>
-<p> eg：如果当前commit是A -&gt; B -&gt;C -&gt;D,想调整为A-&gt;C-&gt;B-&gt;D.</p>
-<ol>
-<li><code>git rebase -i A</code>,即从B点开始调整，这时候会用自带的编辑器打开<code>.git/rebase-merge/git-rebase-todo</code>文件，内容如下：<strong>(如果遇到提示:</strong><code>Could not execute editor</code><strong>,表示没有找到文本编辑器，因为我用的是vim，所以直接添加vim路径到git的config中：</strong><code>git config --global core.editor &quot;/usr/bin/vim&quot;</code><strong>,然后重新运行rebase命令即可)</strong></li>
-<li><p>打开后文件前部分内容大致如下：</p>
-<pre><code>pick <span class="number">2</span>c97b26 A
-pick fd19f8e B
-pick <span class="number">02849</span>bf C
-pick bd73d4d D
-
-<span class="preprocessor"># Rebase 0580eab..74d8a3d onto 0580eab</span>
-<span class="preprocessor"># ...[chunked]</span>
-</code></pre><p> 文件中第一列表示操作指令：</p>
-<pre><code>pick = 使用这个<span class="operator"><span class="keyword">commit</span> ，不改动
-reword = 使用这个<span class="keyword">commit</span> ，但改动<span class="keyword">commit</span> message
-edit = 使用这个<span class="keyword">commit</span>，但改动<span class="keyword">commit</span> 的內容
-squash = 使用这个<span class="keyword">commit</span>，但会与上面的<span class="keyword">commit</span>合并，<span class="keyword">commit</span>的message也会合并
-fixup = squash + 只使用上面<span class="keyword">commit</span>的message
-<span class="keyword">exec</span> = 执行一条命令</span>
-</code></pre><p> 上面四条commit信息可以随意移动位置，复制粘贴即可。</p>
-<p>3.<code>:wq</code>退出编辑器,会自动继续rebase操作，最后成功整理commit信息。</p>
-</li>
-</ol>
-</li>
-</ol>
-<hr>
-<p><strong>push：</strong></p>
-<ol>
-<li>push -f强制推送本地代码</li>
-</ol>
-<hr>
-<p><strong>merge: </strong></p>
-<ol>
-<li>git merge —squash，merge but do not commit</li>
-</ol>
-<hr>
-<p><strong>撤销</strong></p>
-<ol>
-<li>git rm —cache file会将已经提交的file从git仓库删除，并重置文件为untracked状态</li>
-<li>git clean -f 删除 untracked files</li>
-<li>git clean -fd 连 untracked 的目录也一起删掉</li>
-<li><p>git clean -xfd 连 gitignore 的untrack 文件/目录也一起删掉 （慎用，一般这个是用来删掉编译出来的 .class之类的文件用的）</p>
-<p>  <strong>在用上述 git clean 前，加上 -n 参数来先看看会删掉哪些文件，防止重要文件被误删</strong></p>
-<ol>
-<li>git clean -nxfd</li>
-<li>git clean -nf</li>
-<li>git clean -nfd</li>
-</ol>
-</li>
-</ol>
-<hr>
-<p><strong>branch</strong></p>
-<ol>
-<li><code>git push origin :branch-name</code>，推一个空的分支到server上，即删除该分支。</li>
-<li><code>git branch -r -d origin/branch-name</code>删除本地分支</li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
               <a class="post-title-link" href="/2015/01/16/AsyncTask实现异步执行任务/">
                 简单使用AsyncTask实现异步执行任务
               </a>
@@ -806,6 +656,161 @@ handler.sendMessage(<span class="keyword">message</span>);    <span class="comme
 
 
     
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/01/10/Android-Service-三/">
+                Android Service (三)
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015 Jan 10
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android/">Android</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/01/10/Android-Service-三/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/10/Android-Service-三/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>在前面有关服务的<a href="http://niorgai.github.io/2015/01/06/Android-Service-%E4%B8%80/">第一篇</a>和<a href="http://niorgai.github.io/2015/01/08/Android-Service-%E4%BA%8C/">第二篇</a>中已经说明了怎么开启一个服务，但之前的描述都是指一个应用内的服务，这些服务不能被其他应用程序调用。</p>
+<p>Android采用了远程过程调用(Remote Procedure Call,RPC)来使其他应用程序也可以访问本应用程序内的服务。与其他基于RPC的解决方案一样，Android使用接口定义语言(Interface Definition Language)来公开服务的接口，所以跨进程访问的服务便称为<strong>AIDL(Android Interface Definition Language)</strong>服务。</p>
+<p>一般创建AIDL服务的步骤如下(以Ant构建的项目为例)：</p>
+<ol>
+<li>在项目的src文件夹下任意包中新建一个XX.aidl文件，文件内容为相应包名及接口定义。如果aidl文件内容正确，gen目录下回自动生成一个同名的Java接口文件(gradle构建的项目没有找到。。)。</li>
+<li>建立一个Service类并实现aidl文件定义的Java接口。</li>
+<li>在AndroidManiFest.xml文件中注册AIDL服务。</li>
+</ol>
+<p>下面用一个例子来介绍：</p>
+<ol>
+<li><p>新建一个ITest.aidl文件,接口只有一个getData方法。</p>
+<pre><code><span class="keyword">package</span> qiu.test
+
+<span class="class"><span class="keyword">interface</span> <span class="title">ITest</span></span>{
+    <span class="function">String <span class="title">getData</span><span class="params">()</span></span>;
+}
+</code></pre></li>
+<li><p>编写一个TestService类。</p>
+<pre><code>public <span class="class"><span class="keyword">class</span> <span class="title">TestService</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">Service</span>{</span>
+
+    public <span class="class"><span class="keyword">class</span> <span class="title">TestServiceeImp</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">ITest</span>.<span class="title">Stub</span>{</span>
+
+        <span class="annotation">@Override</span>
+         public <span class="type">String</span> getData() <span class="keyword">throws</span> <span class="type">RemoteException</span>{
+            <span class="keyword">return</span> <span class="string">"Here is data"</span>;
+        }
+    }
+
+    <span class="annotation">@Override</span>
+    public <span class="type">IBinder</span> onBind(<span class="type">Intent</span> intent) {
+        <span class="keyword">return</span> <span class="keyword">new</span> <span class="type">TestServiceImp</span>();
+    }
+}
+</code></pre><p> Stub为IBinder的子类，通过onBind方法返回TestServiceImp对象，客户端便可以获取Service对象。</p>
+</li>
+<li><p>在AndroidManiFest.xml文件中配置Service。</p>
+<pre><code><span class="tag">&lt;<span class="title">service</span> <span class="attribute">android:name</span>=<span class="value">".TestService"</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">intent-filter</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">action</span> <span class="attribute">android:name</span>=<span class="value">"qiu.test.ITest"</span>/&gt;</span>
+    <span class="tag">&lt;/<span class="title">intent-filter</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">service</span>&gt;</span>
+</code></pre><p> 其实qiu.test.ITest便是客户端用于访问AIDL服务的ID。</p>
+</li>
+</ol>
+<hr>
+<h3 id="以上就是服务端的代码，也可以理解为另一程序的Service代码。下面来编写客户端，或者说调用端的代码。">以上就是服务端的代码，也可以理解为另一程序的Service代码。下面来编写客户端，或者说调用端的代码。</h3><hr>
+<p>首先需要将服务端自动生成的ITest.java文件连同包目录一起复制到src文件中。</p>
+<p>接下来实现MainActivity类。</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>{
+
+    <span class="annotation">@Override</span>
+    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>{
+        <span class="keyword">super</span>.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        <span class="comment">//获取的服务端Service对象，通过该对象可以调用任意共有方法</span>
+        ITest service = <span class="keyword">null</span>;
+
+        ServiceConnection connection = <span class="keyword">new</span> ServiceConnection() {
+            <span class="annotation">@Override</span>
+            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceConnected</span><span class="params">(ComponentName name, IBinder service)</span> </span>{
+                <span class="comment">//初始化服务端Service对象</span>
+                service = ITest.Stub.asInterface(service);
+            }
+
+            <span class="annotation">@Override</span>
+            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceDisconnected</span><span class="params">(ComponentName name)</span> </span>{
+
+            }
+        };
+
+        <span class="comment">//绑定服务,使用隐式Intent</span>
+        bindService(<span class="keyword">new</span> Intent(<span class="string">"qiu.test.ITest"</span>), connection, BIND_AUTO_CREATE);
+
+        <span class="comment">//绑定后就可以调用ITest的任意方法，比如getData。</span>
+        System.out.println(<span class="string">"Data is : "</span> + service.getData());
+
+    }
+}
+</code></pre>
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
   </div>
 
   
@@ -844,7 +849,7 @@ handler.sendMessage(<span class="keyword">message</span>);    <span class="comme
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">49</span>
+              <span class="site-state-item-count">48</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
