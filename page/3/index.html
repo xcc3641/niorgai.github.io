@@ -965,6 +965,7 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
     )
 }
 </code></pre></li>
+<li>WebView的泄露问题:在魅族上面发现webView打开再关闭就会内存泄露..目前使用的解决方法是在webview外面嵌套一层layout作为container.在Activity的<code>onDestroy</code>中调用<code>container.removeAllViews()</code>方法.</li>
 </ol>
 <h2 id="检测内存泄露的方法">检测内存泄露的方法</h2><ol>
 <li>Android Studio自带的Memory Monitor,手动触发GC可以看得比较直观</li>
