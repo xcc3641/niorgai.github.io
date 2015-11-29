@@ -144,138 +144,6 @@
           
           
             
-              <a class="post-title-link" href="/2014/12/26/Android代码混淆/">
-                Android代码混淆
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2014 Dec 26
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android开发经验/">Android开发经验</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/12/26/Android代码混淆/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/26/Android代码混淆/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>在<a href="http://niorgai.github.io/2014/12/23/Mac%E4%B8%8B%E5%8F%8D%E7%BC%96%E8%AF%91Android-APK/">这篇文章</a>中说了反编译Android APK的方法，当然作为开发者很多时候不希望某些涉及机密的代码被别人看到，于是需要在打包APK的时候做一些代码混淆。</p>
-<p>混淆技巧(感谢<a href="http://www.cnblogs.com/qianxudetianxia/p/4948499.html" target="_blank" rel="external">Android打包的那些事</a>):</p>
-<ol>
-<li><p>默认的混淆:</p>
-<p> sdk目录下的android-sdk/tools/proguard/proguard-android.txt文件包含了buildTools对应版本的混淆配置,不需要再改动.</p>
-</li>
-<li><p>project路径下的<code>proguard-rules.pro</code>文件(最新Android Studio新建的工程可能不叫这个名字)对应自己项目的混淆配置.</p>
-<ol>
-<li><p>第三方的包可以直接不混淆包名.如友盟(com.umeng):</p>
-<pre><code>-dontwarn com.umeng.<span class="keyword">*</span><span class="keyword">*</span>
--keep class com.umeng.<span class="keyword">*</span><span class="keyword">*</span> { <span class="keyword">*</span>; }
-</code></pre></li>
-<li><p>混淆后友盟错误统计需要上传mapping文件,追查bug很不好,所以建议开启行数.</p>
-<pre><code><span class="preprocessor">#不混淆行数,方便debug</span>
--keepattributes SourceFile,LineNumberTable
-</code></pre></li>
-</ol>
-</li>
-<li><p>其他技巧,这都是可以在proguard的文档上查到的.</p>
-<pre><code>#指定代码的压缩级别
--<span class="ruby">optimizationpasses <span class="number">5</span>
-</span>
-#包明不混合大小写
--<span class="ruby">dontusemixedcaseclassnames
-</span>
-#不去忽略非公共的库类
--<span class="ruby">dontskipnonpubliclibraryclasses
-</span>
- #不优化输入的类文件
--<span class="ruby">dontoptimize
-</span>
- #预校验
--<span class="ruby">dontpreverify
-</span>
- #混淆时是否记录日志
--<span class="ruby">verbose
-</span>
- # 混淆时所采用的算法
--<span class="ruby">optimizations !code/simplification/arithmetic,!field/*,!<span class="class"><span class="keyword">class</span>/<span class="title">merging</span>/*</span>
-</span>
-#保护注解
--<span class="ruby">keepattributes *<span class="constant">Annotation</span>*
-</span>
-#忽略警告
--<span class="ruby">ignorewarning
-</span>
-#apk 包内所有 class 的内部结构
--<span class="ruby">dump class_files.txt
-</span>#未混淆的类和成员
--<span class="ruby">printseeds seeds.txt
-</span>#列出从 apk 中删除的代码
--<span class="ruby">printusage unused.txt
-</span>#混淆前后的映射
--<span class="ruby">printmapping mapping.txt</span>
-</code></pre></li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
               <a class="post-title-link" href="/2014/12/23/Mac下反编译Android-APK/">
                 Mac下反编译Android APK
               </a>
@@ -864,6 +732,128 @@ public <span class="type">View</span> getView<span class="container">(<span clas
 
 
     
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/12/13/EditText优化/">
+                EditText优化
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2014 Dec 13
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android开发经验/">Android开发经验</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/12/13/EditText优化/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/13/EditText优化/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <ol>
+<li><p>光标设置</p>
+<p> 如果EditText设置的高度比较大，光标默认会显示在居中的坐标，需要设置android:gravity=”top”。<br>如果光标太贴近边框，只需设置android:paddingLeft即可。</p>
+</li>
+<li><p>多行输入</p>
+<p> 在多行输入后光标会水平往右滚动，为了保持换行输入的习惯，还要设置</p>
+<pre><code><span class="label">android:</span>inputType=<span class="string">"textMultiLine"</span>
+<span class="label">android:</span>singleLine=<span class="string">"false"</span>
+<span class="label">android:</span>scrollHorizontally=<span class="string">"false"</span>    
+</code></pre><p> 为了直观显示，可以设置</p>
+<pre><code><span class="label">android:</span>scrollbars=<span class="string">"vertical"</span>
+<span class="label">android:</span>scrollbarStyle=<span class="string">"insideInset"</span>
+</code></pre><p> 但输入框满了后，如果继续输入，EditText会不断增加高度，这样会隐藏上面的控件，最好设置    android:minLines和 android:maxLines确认最大最小行数。</p>
+</li>
+<li><p>软键盘遮挡<br> 可以在AndroidManifext.xml中设置Activity的软键盘：</p>
+<pre><code>android:windowSoftInputMode=<span class="string">"adjustPan</span>
+</code></pre><p> 最后为了软键盘不挡住下方控件，最好还是全部添加一个scrollView。</p>
+<p> 为了防止ScorllView和EditText(TextView)的滚动相冲突：<br> 除了在xml中设置editText：</p>
+<pre><code><span class="label">android:</span>scrollbars=<span class="string">"vertical"</span>
+<span class="label">android:</span>scrollbarStyle=<span class="string">"insideInset"</span>
+</code></pre><p> 还需要在代码中设置：</p>
+<pre><code>scrollView.setOnTouchListener(<span class="keyword">new</span> View.OnTouchListener() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onTouch</span><span class="params">(View v, MotionEvent event)</span> </span>{
+        textViewExtras.getParent().requestDisallowInterceptTouchEvent(<span class="keyword">false</span>);
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    }
+});
+
+textViewExtras.setOnTouchListener(<span class="keyword">new</span> View.OnTouchListener() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onTouch</span><span class="params">(View v, MotionEvent event)</span> </span>{
+        textViewExtras.getParent().requestDisallowInterceptTouchEvent(<span class="keyword">true</span>);
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    }
+});
+textViewExtras.setMovementMethod(<span class="keyword">new</span> ScrollingMovementMethod());
+</code></pre></li>
+<li><ol>
+<li>中划线 : textview.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG );</li>
+<li>底部横线: textview.getPaint().setFlags(Paint. UNDERLINE_TEXT_FLAG )或者\<u>\</u></li>
+</ol>
+</li>
+<li><p>设置<code>android:imeOptions</code>属性时,有可能会失效.只需要再设置<code>android:singleLine</code>为true或者设置<code>android:inputType</code>为text,就可以修复~</p>
+</li>
+</ol>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
   </div>
 
   
@@ -902,7 +892,7 @@ public <span class="type">View</span> getView<span class="container">(<span clas
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">30</span>
+              <span class="site-state-item-count">28</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -916,7 +906,7 @@ public <span class="type">View</span> getView<span class="container">(<span clas
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">32</span>
+              <span class="site-state-item-count">33</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
