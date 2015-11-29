@@ -8,6 +8,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
 
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
 
 
 
@@ -16,6 +22,12 @@
 
 
 
+  
+    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
 
 <link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.3"/>
 
@@ -30,27 +42,34 @@
 
 
 
-  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
 
+
+<meta name="description" content="Android | jianqiu&apos;s blog">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Jianqiu's blog">
+<meta property="og:url" content="http://niorgai.github.io/page/3/index.html">
+<meta property="og:site_name" content="Jianqiu's blog">
+<meta property="og:description" content="Android | jianqiu&apos;s blog">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Jianqiu's blog">
+<meta name="twitter:description" content="Android | jianqiu&apos;s blog">
 
 
 <script type="text/javascript" id="hexo.configuration">
   var CONFIG = {
     scheme: 'Mist',
-    analytics: {
-      google: ''
-    },
     sidebar: 'post'
   };
 </script>
 
 
 
-
   <title> Jianqiu's blog </title>
 </head>
 
-<body>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
   <!--[if lte IE 8]>
   <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
     <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
@@ -60,24 +79,31 @@
     </a>
   </div>
 <![endif]-->
+  
+
+
+
+
+
 
   <div class="container one-column 
    page-home 
 ">
     <div class="headband"></div>
 
-    <div id="header" class="header">
-      <div class="header-inner">
-        <h1 class="site-meta">
-  <span class="logo-line-before"><i></i></span>
-  <a href="/" class="brand">
-      <span class="logo">
-        <i class="icon-logo"></i>
-      </span>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
       <span class="site-title">Jianqiu's blog</span>
-  </a>
-  <span class="logo-line-after"><i></i></span>
-</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Learn More</p>
+</div>
 
 <div class="site-nav-toggle">
   <button>
@@ -87,7 +113,7 @@
   </button>
 </div>
 
-<div class="site-nav">
+<nav class="site-nav">
   
 
   
@@ -95,93 +121,119 @@
       
         
         <li class="menu-item menu-item-home">
-          <a href="/">
-            <i class="menu-item-icon icon-home"></i> <br />
+          <a href="/" rel="section">
+            
             首页
           </a>
         </li>
       
         
         <li class="menu-item menu-item-archives">
-          <a href="/archives">
-            <i class="menu-item-icon icon-archives"></i> <br />
+          <a href="/archives" rel="section">
+            
             归档
           </a>
         </li>
       
         
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+            分类
+          </a>
+        </li>
+      
+        
         <li class="menu-item menu-item-tags">
-          <a href="/tags">
-            <i class="menu-item-icon icon-tags"></i> <br />
+          <a href="/tags" rel="section">
+            
             标签
           </a>
         </li>
+      
+
+      
       
     </ul>
   
 
   
-</div>
+</nav>
 
+ </div>
+    </header>
 
-      </div>
-    </div>
-
-    <div id="main" class="main">
+    <main id="main" class="main">
       <div class="main-inner">
-        <div id="content" class="content">
-          
-  <div id="posts" class="posts-expand">
+        <div id="content" class="content"> 
+  <section id="posts" class="posts-expand">
     
       
 
-  <div class="post post-type-normal ">
-    <div class="post-header">
+  
+  
 
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/03/19/Android-Studio开发遇到的问题/">
-                Android Studio开发遇到的问题
-              </a>
-            
-          
-        </h1>
-      
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Mar 19
-        </span>
+    
+      <header class="post-header">
 
         
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
+        
+          <h1 class="post-title" itemprop="name headline">
             
-              <a href="/categories/Android开发工具/">Android开发工具</a>
+            
+              
+                <a class="post-title-link" href="/2015/03/19/Android-Studio开发遇到的问题/" itemprop="url">
+                  Android Studio开发遇到的问题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-03-19T10:14:47+08:00" content="2015 Mar 19">
+              2015 Mar 19
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发工具/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发工具</span>
+                  </a>
+                </span>
+
+                
+                
 
               
-              
+            </span>
+          
 
+          
             
-          </span>
-        
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/03/19/Android-Studio开发遇到的问题/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/19/Android-Studio开发遇到的问题/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
 
-        
           
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/03/19/Android-Studio开发遇到的问题/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/19/Android-Studio开发遇到的问题/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
+
+        </div>
+      </header>
+    
+
 
     <div class="post-body">
 
@@ -190,7 +242,9 @@
 
       
         
-          <ol>
+          <span itemprop="articleBody">
+            
+              <ol>
 <li><p>Android studio卡顿优化</p>
 <p> 除了机器配置之外,也可以给Android Studio分配更多内存.<br> 打开Android Studio的安装目录,Mac下进入bin目录,打开studio.vmoptions文件,<br> 修改以下配置</p>
 <ol>
@@ -257,11 +311,13 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
 </li>
 </ol>
 
+            
+          </span>
         
       
     </div>
 
-    <div class="post-footer">
+    <footer class="post-footer">
       
 
       
@@ -270,60 +326,77 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
       
         <div class="post-eof"></div>
       
-    </div>
-  </div>
+    </footer>
+  </article>
 
 
     
       
 
-  <div class="post post-type-normal ">
-    <div class="post-header">
+  
+  
 
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/03/14/ScrollView中放置ListView/">
-                ScrollView中放置ListView
-              </a>
-            
-          
-        </h1>
-      
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Mar 14
-        </span>
+    
+      <header class="post-header">
 
         
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
+        
+          <h1 class="post-title" itemprop="name headline">
             
-              <a href="/categories/Android开发经验/">Android开发经验</a>
+            
+              
+                <a class="post-title-link" href="/2015/03/14/ScrollView中放置ListView/" itemprop="url">
+                  ScrollView中放置ListView
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-03-14T00:17:40+08:00" content="2015 Mar 14">
+              2015 Mar 14
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
 
               
-              
+            </span>
+          
 
+          
             
-          </span>
-        
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/03/14/ScrollView中放置ListView/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/14/ScrollView中放置ListView/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
 
-        
           
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/03/14/ScrollView中放置ListView/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/14/ScrollView中放置ListView/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
+
+        </div>
+      </header>
+    
+
 
     <div class="post-body">
 
@@ -332,7 +405,9 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
 
       
         
-          <p>最近有个需求是需要在ScrollView中放置一个ListView，如果不做处理的话，直接放置控件会导致：</p>
+          <span itemprop="articleBody">
+            
+              <p>最近有个需求是需要在ScrollView中放置一个ListView，如果不做处理的话，直接放置控件会导致：</p>
 <ol>
 <li>ListView的高度设置为wrap_content时，每个item的高度无法控制，可能导致item高度为0而不显示。</li>
 <li>ListView的高度设置为wrap_content时，疯狂调用getView方法导致卡顿。</li>
@@ -406,11 +481,13 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
     convertView = inflater.inflate(R.layout.parenting_listview_item,parent,<span class="keyword">false</span>);
 }
 </code></pre>
+            
+          </span>
         
       
     </div>
 
-    <div class="post-footer">
+    <footer class="post-footer">
       
 
       
@@ -419,60 +496,77 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
       
         <div class="post-eof"></div>
       
-    </div>
-  </div>
+    </footer>
+  </article>
 
 
     
       
 
-  <div class="post post-type-normal ">
-    <div class="post-header">
+  
+  
 
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/03/11/Android复用Layout/">
-                Android复用Layout
-              </a>
-            
-          
-        </h1>
-      
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Mar 11
-        </span>
+    
+      <header class="post-header">
 
         
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
+        
+          <h1 class="post-title" itemprop="name headline">
             
-              <a href="/categories/Android开发经验/">Android开发经验</a>
+            
+              
+                <a class="post-title-link" href="/2015/03/11/Android复用Layout/" itemprop="url">
+                  Android复用Layout
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-03-11T22:07:12+08:00" content="2015 Mar 11">
+              2015 Mar 11
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
 
               
-              
+            </span>
+          
 
+          
             
-          </span>
-        
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/03/11/Android复用Layout/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/11/Android复用Layout/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
 
-        
           
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/03/11/Android复用Layout/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/11/Android复用Layout/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
+
+        </div>
+      </header>
+    
+
 
     <div class="post-body">
 
@@ -481,7 +575,9 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
 
       
         
-          <h2 id="&lt;include&gt;标签复用布局"><code>&lt;include&gt;</code>标签复用布局</h2><p>Android布局中经常可以发现能够重用的layout，如果每次都复制粘贴，第一是不方便，第二是可维护性不高，改动一个地方要改好几处，所以最直接的方法是复用layout。</p>
+          <span itemprop="articleBody">
+            
+              <h2 id="&lt;include&gt;标签复用布局"><code>&lt;include&gt;</code>标签复用布局</h2><p>Android布局中经常可以发现能够重用的layout，如果每次都复制粘贴，第一是不方便，第二是可维护性不高，改动一个地方要改好几处，所以最直接的方法是复用layout。</p>
 <p>如果原布局为：</p>
 <pre><code><span class="tag">&lt;LinearLayout..&gt;</span>
     <span class="tag">&lt;LinearLayout..&gt;</span>
@@ -564,11 +660,13 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
 </code></pre><p>一旦ViewStub被显示或inflate，ViewStub将不再属于该布局，会被其inflate的layout取代。此时可以通过inflatedId去寻找该View。</p>
 <p><strong>注意viewStub不支持</strong><code>&lt;merge&gt;</code><strong>标签</strong></p>
 
+            
+          </span>
         
       
     </div>
 
-    <div class="post-footer">
+    <footer class="post-footer">
       
 
       
@@ -577,60 +675,77 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
       
         <div class="post-eof"></div>
       
-    </div>
-  </div>
+    </footer>
+  </article>
 
 
     
       
 
-  <div class="post post-type-normal ">
-    <div class="post-header">
+  
+  
 
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/03/03/Android内存泄漏/">
-                Android内存泄漏
-              </a>
-            
-          
-        </h1>
-      
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Mar 3
-        </span>
+    
+      <header class="post-header">
 
         
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
+        
+          <h1 class="post-title" itemprop="name headline">
             
-              <a href="/categories/Android开发经验/">Android开发经验</a>
+            
+              
+                <a class="post-title-link" href="/2015/03/03/Android内存泄漏/" itemprop="url">
+                  Android内存泄漏
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-03-03T16:11:13+08:00" content="2015 Mar 3">
+              2015 Mar 3
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
 
               
-              
+            </span>
+          
 
+          
             
-          </span>
-        
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/03/03/Android内存泄漏/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/03/Android内存泄漏/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
 
-        
           
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/03/03/Android内存泄漏/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/03/Android内存泄漏/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
+
+        </div>
+      </header>
+    
+
 
     <div class="post-body">
 
@@ -639,7 +754,9 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
 
       
         
-          <p>以下内容提取于<a href="http://blog.csdn.net/gemmem/article/details/8920039" target="_blank" rel="external">Android进程的内存管理分析</a>及<a href="http://blog.csdn.net/gemmem/article/details/13017999" target="_blank" rel="external">Android内存泄漏分析及调试</a>.</p>
+          <span itemprop="articleBody">
+            
+              <p>以下内容提取于<a href="http://blog.csdn.net/gemmem/article/details/8920039" target="_blank" rel="external">Android进程的内存管理分析</a>及<a href="http://blog.csdn.net/gemmem/article/details/13017999" target="_blank" rel="external">Android内存泄漏分析及调试</a>.</p>
 <p>Android中的内存分为：</p>
 <ol>
 <li>native进程：采用C/C++实现，不包含dalvik实例的进程。</li>
@@ -672,11 +789,13 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
 <li><code>adb shell dumpsys meminfo [包名]</code>可以看到内存使用情况.</li>
 </ol>
 
+            
+          </span>
         
       
     </div>
 
-    <div class="post-footer">
+    <footer class="post-footer">
       
 
       
@@ -685,60 +804,77 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
       
         <div class="post-eof"></div>
       
-    </div>
-  </div>
+    </footer>
+  </article>
 
 
     
       
 
-  <div class="post post-type-normal ">
-    <div class="post-header">
+  
+  
 
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/03/02/Activity生命周期/">
-                Activity生命周期
-              </a>
-            
-          
-        </h1>
-      
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Mar 2
-        </span>
+    
+      <header class="post-header">
 
         
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
+        
+          <h1 class="post-title" itemprop="name headline">
             
-              <a href="/categories/Android基础知识/">Android基础知识</a>
+            
+              
+                <a class="post-title-link" href="/2015/03/02/Activity生命周期/" itemprop="url">
+                  Activity生命周期
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-03-02T01:27:23+08:00" content="2015 Mar 2">
+              2015 Mar 2
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android基础知识/" itemprop="url" rel="index">
+                    <span itemprop="name">Android基础知识</span>
+                  </a>
+                </span>
+
+                
+                
 
               
-              
+            </span>
+          
 
+          
             
-          </span>
-        
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/03/02/Activity生命周期/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/02/Activity生命周期/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
 
-        
           
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/03/02/Activity生命周期/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/02/Activity生命周期/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
+
+        </div>
+      </header>
+    
+
 
     <div class="post-body">
 
@@ -747,7 +883,9 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
 
       
         
-          <p>Activity是很熟悉的东西，但是它的生命周期一直掌握的不够完全，所以就其方法和功能介绍一下：</p>
+          <span itemprop="articleBody">
+            
+              <p>Activity是很熟悉的东西，但是它的生命周期一直掌握的不够完全，所以就其方法和功能介绍一下：</p>
 <p>对于Activity来说,本质上就是以下四种状态:</p>
 <ol>
 <li>Activity处于前台,此时它保持活跃的状态.</li>
@@ -805,11 +943,13 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
 <li>前台的生命周期是onResume到onPause,此时用户可以与Activity交互.</li>
 </ol>
 
+            
+          </span>
         
       
     </div>
 
-    <div class="post-footer">
+    <footer class="post-footer">
       
 
       
@@ -818,26 +958,28 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
       
         <div class="post-eof"></div>
       
-    </div>
-  </div>
+    </footer>
+  </article>
 
 
     
-  </div>
+  </section>
 
   
-  <div class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/">&laquo;</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/4/">&raquo;</a>
-  </div>
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
+  </nav>
 
 
-        </div>
+ </div>
+
+        
 
         
       </div>
 
-
       
+        
   
   <div class="sidebar-toggle">
     <div class="sidebar-toggle-line-wrap">
@@ -847,18 +989,20 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
     </div>
   </div>
 
-  <div id="sidebar" class="sidebar">
+  <aside id="sidebar" class="sidebar">
     <div class="sidebar-inner">
 
       
 
-      <div class="site-overview">
-        <div class="site-author motion-element">
-          <img class="site-author-image" src="/images/default_avatar.jpg" alt="Jianqiu" />
-          <p class="site-author-name">Jianqiu</p>
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="Jianqiu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">Jianqiu</p>
         </div>
-        <p class="site-description motion-element">Android | jianqiu's blog</p>
-        <div class="site-state motion-element">
+        <p class="site-description motion-element" itemprop="description">Android | jianqiu's blog</p>
+        <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
               <span class="site-state-item-count">28</span>
@@ -867,24 +1011,32 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
           </div>
 
           <div class="site-state-item site-state-categories">
-            
+            <a href="/categories">
               <span class="site-state-item-count">8</span>
               <span class="site-state-item-name">分类</span>
-              
+              </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">33</span>
+              <span class="site-state-item-count">31</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
 
-        </div>
+        </nav>
 
         
 
         <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/niorgai" target="_blank">
+                  <i class="fa fa-github"></i> github
+                </a>
+              </span>
+            
           
         </div>
 
@@ -894,27 +1046,27 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
         <div class="links-of-author motion-element">
           
         </div>
-        
-      </div>
+
+      </section>
 
       
 
     </div>
-  </div>
+  </aside>
 
 
-    </div>
+      
+    </main>
 
-    <div id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
   
-  &copy; &nbsp; 
-  2015
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2015</span>
   <span class="with-love">
-    <i class="icon-heart"></i>
+    <i class="icon-next-heart fa fa-heart"></i>
   </span>
-  <span class="author">Jianqiu</span>
+  <span class="author" itemprop="copyrightHolder">Jianqiu</span>
 </div>
 
 <div class="powered-by">
@@ -929,9 +1081,8 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
 </div>
 
 
-
-      </div>
-    </div>
+ </div>
+    </footer>
 
     <div class="back-to-top"></div>
   </div>
@@ -940,7 +1091,29 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
 
   
   
+  
+    
 
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"niorgai"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+    
+
+    
+  
   
   <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
   <script type="text/javascript" src="/js/fancy-box.js?v=0.4.3"></script>
@@ -956,7 +1129,9 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
 
 
 
-  <script type="text/javascript" src="/js/search-toggle.js"></script>
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.3"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
 
   
 
@@ -965,46 +1140,29 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
       if (CONFIG.sidebar === 'always') {
         displaySidebar();
       }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+
+      motionIntegrator.bootstrap();
     });
   </script>
 
   
-
   
-  
-
-  
-    
-  
-
-  <script type="text/javascript">
-    var duoshuoQuery = {short_name:"niorgai"};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0]
-      || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-  </script>
-
-  
-
 
   
   
 
   
-  <!-- lazyload -->
   <script type="text/javascript" src="/js/lazyload.js"></script>
-      <script type="text/javascript">
-        jQuery(function() {          
-            jQuery("#posts img").lazyload({
-              placeholder:"http://www.arao.me/loading.gif",  
-                effect:"fadeIn"
-              });
-            });
-    </script>   
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
 </body>
 </html>

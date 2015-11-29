@@ -8,6 +8,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
 
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
 
 
 
@@ -16,6 +22,12 @@
 
 
 
+  
+    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
 
 <link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.3"/>
 
@@ -30,27 +42,34 @@
 
 
 
-  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
 
+
+<meta name="description" content="Android | jianqiu&apos;s blog">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Jianqiu's blog">
+<meta property="og:url" content="http://niorgai.github.io/page/5/index.html">
+<meta property="og:site_name" content="Jianqiu's blog">
+<meta property="og:description" content="Android | jianqiu&apos;s blog">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Jianqiu's blog">
+<meta name="twitter:description" content="Android | jianqiu&apos;s blog">
 
 
 <script type="text/javascript" id="hexo.configuration">
   var CONFIG = {
     scheme: 'Mist',
-    analytics: {
-      google: ''
-    },
     sidebar: 'post'
   };
 </script>
 
 
 
-
   <title> Jianqiu's blog </title>
 </head>
 
-<body>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
   <!--[if lte IE 8]>
   <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
     <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
@@ -60,24 +79,31 @@
     </a>
   </div>
 <![endif]-->
+  
+
+
+
+
+
 
   <div class="container one-column 
    page-home 
 ">
     <div class="headband"></div>
 
-    <div id="header" class="header">
-      <div class="header-inner">
-        <h1 class="site-meta">
-  <span class="logo-line-before"><i></i></span>
-  <a href="/" class="brand">
-      <span class="logo">
-        <i class="icon-logo"></i>
-      </span>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
       <span class="site-title">Jianqiu's blog</span>
-  </a>
-  <span class="logo-line-after"><i></i></span>
-</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Learn More</p>
+</div>
 
 <div class="site-nav-toggle">
   <button>
@@ -87,7 +113,7 @@
   </button>
 </div>
 
-<div class="site-nav">
+<nav class="site-nav">
   
 
   
@@ -95,93 +121,119 @@
       
         
         <li class="menu-item menu-item-home">
-          <a href="/">
-            <i class="menu-item-icon icon-home"></i> <br />
+          <a href="/" rel="section">
+            
             首页
           </a>
         </li>
       
         
         <li class="menu-item menu-item-archives">
-          <a href="/archives">
-            <i class="menu-item-icon icon-archives"></i> <br />
+          <a href="/archives" rel="section">
+            
             归档
           </a>
         </li>
       
         
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+            分类
+          </a>
+        </li>
+      
+        
         <li class="menu-item menu-item-tags">
-          <a href="/tags">
-            <i class="menu-item-icon icon-tags"></i> <br />
+          <a href="/tags" rel="section">
+            
             标签
           </a>
         </li>
+      
+
+      
       
     </ul>
   
 
   
-</div>
+</nav>
 
+ </div>
+    </header>
 
-      </div>
-    </div>
-
-    <div id="main" class="main">
+    <main id="main" class="main">
       <div class="main-inner">
-        <div id="content" class="content">
-          
-  <div id="posts" class="posts-expand">
+        <div id="content" class="content"> 
+  <section id="posts" class="posts-expand">
     
       
 
-  <div class="post post-type-normal ">
-    <div class="post-header">
+  
+  
 
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/12/23/Mac下反编译Android-APK/">
-                Mac下反编译Android APK
-              </a>
-            
-          
-        </h1>
-      
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2014 Dec 23
-        </span>
+    
+      <header class="post-header">
 
         
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
+        
+          <h1 class="post-title" itemprop="name headline">
             
-              <a href="/categories/Android开发经验/">Android开发经验</a>
+            
+              
+                <a class="post-title-link" href="/2014/12/23/Mac下反编译Android-APK/" itemprop="url">
+                  Mac下反编译Android APK
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2014-12-23T16:44:04+08:00" content="2014 Dec 23">
+              2014 Dec 23
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
 
               
-              
+            </span>
+          
 
+          
             
-          </span>
-        
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2014/12/23/Mac下反编译Android-APK/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/23/Mac下反编译Android-APK/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
 
-        
           
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/12/23/Mac下反编译Android-APK/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/23/Mac下反编译Android-APK/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
+
+        </div>
+      </header>
+    
+
 
     <div class="post-body">
 
@@ -190,7 +242,9 @@
 
       
         
-          <ol>
+          <span itemprop="articleBody">
+            
+              <ol>
 <li><p>所需工具：</p>
 <ol>
 <li><p><a href="http://jd.benow.ca/" target="_blank" rel="external">JD-GUI</a>,主要反编译Java源代码。</p>
@@ -236,11 +290,13 @@
 </li>
 </ol>
 
+            
+          </span>
         
       
     </div>
 
-    <div class="post-footer">
+    <footer class="post-footer">
       
 
       
@@ -249,60 +305,77 @@
       
         <div class="post-eof"></div>
       
-    </div>
-  </div>
+    </footer>
+  </article>
 
 
     
       
 
-  <div class="post post-type-normal ">
-    <div class="post-header">
+  
+  
 
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/12/18/Android裁剪图片/">
-                Android裁剪图片
-              </a>
-            
-          
-        </h1>
-      
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2014 Dec 18
-        </span>
+    
+      <header class="post-header">
 
         
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
+        
+          <h1 class="post-title" itemprop="name headline">
             
-              <a href="/categories/Android开发经验/">Android开发经验</a>
+            
+              
+                <a class="post-title-link" href="/2014/12/18/Android裁剪图片/" itemprop="url">
+                  Android裁剪图片
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2014-12-18T20:53:20+08:00" content="2014 Dec 18">
+              2014 Dec 18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
 
               
-              
+            </span>
+          
 
+          
             
-          </span>
-        
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2014/12/18/Android裁剪图片/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/18/Android裁剪图片/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
 
-        
           
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/12/18/Android裁剪图片/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/18/Android裁剪图片/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
+
+        </div>
+      </header>
+    
+
 
     <div class="post-body">
 
@@ -311,7 +384,9 @@
 
       
         
-          <p>使用Intent：</p>
+          <span itemprop="articleBody">
+            
+              <p>使用Intent：</p>
 <p>注意点：</p>
 <ol>
 <li><strong>非官方提供的代码，该方法并不通用，不是所有机器都支持这个intent，不推荐</strong></li>
@@ -407,11 +482,13 @@
 </li>
 </ul>
 
+            
+          </span>
         
       
     </div>
 
-    <div class="post-footer">
+    <footer class="post-footer">
       
 
       
@@ -420,60 +497,77 @@
       
         <div class="post-eof"></div>
       
-    </div>
-  </div>
+    </footer>
+  </article>
 
 
     
       
 
-  <div class="post post-type-normal ">
-    <div class="post-header">
+  
+  
 
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/12/16/PopupWindow相关/">
-                PopupWindow相关
-              </a>
-            
-          
-        </h1>
-      
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2014 Dec 16
-        </span>
+    
+      <header class="post-header">
 
         
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
+        
+          <h1 class="post-title" itemprop="name headline">
             
-              <a href="/categories/Android开发经验/">Android开发经验</a>
+            
+              
+                <a class="post-title-link" href="/2014/12/16/PopupWindow相关/" itemprop="url">
+                  PopupWindow相关
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2014-12-16T15:42:25+08:00" content="2014 Dec 16">
+              2014 Dec 16
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
 
               
-              
+            </span>
+          
 
+          
             
-          </span>
-        
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2014/12/16/PopupWindow相关/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/16/PopupWindow相关/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
 
-        
           
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/12/16/PopupWindow相关/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/16/PopupWindow相关/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
+
+        </div>
+      </header>
+    
+
 
     <div class="post-body">
 
@@ -482,7 +576,9 @@
 
       
         
-          <p>PopupWindow顾名思义，就是一个弹出窗口。不过特性倒是挺好玩的：</p>
+          <span itemprop="articleBody">
+            
+              <p>PopupWindow顾名思义，就是一个弹出窗口。不过特性倒是挺好玩的：</p>
 <ol>
 <li>以弹出窗口的形式展示，可以替代系统的dialog。</li>
 <li>可以在任意位置出现，并且会浮动在当前窗口的顶部(获取焦点)。</li>
@@ -530,11 +626,13 @@
 </code></pre><p>显示效果：<br><img src="http://7sbqys.com1.z0.glb.clouddn.com/alert.png" alt=""></p>
 <p>xml代码没有什么特别的，所以不贴了。</p>
 
+            
+          </span>
         
       
     </div>
 
-    <div class="post-footer">
+    <footer class="post-footer">
       
 
       
@@ -543,60 +641,77 @@
       
         <div class="post-eof"></div>
       
-    </div>
-  </div>
+    </footer>
+  </article>
 
 
     
       
 
-  <div class="post post-type-normal ">
-    <div class="post-header">
+  
+  
 
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/12/13/ListView与BaseAdapter优化/">
-                ListView与BaseAdapter优化
-              </a>
-            
-          
-        </h1>
-      
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2014 Dec 13
-        </span>
+    
+      <header class="post-header">
 
         
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
+        
+          <h1 class="post-title" itemprop="name headline">
             
-              <a href="/categories/Android开发经验/">Android开发经验</a>
+            
+              
+                <a class="post-title-link" href="/2014/12/13/ListView与BaseAdapter优化/" itemprop="url">
+                  ListView与BaseAdapter优化
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2014-12-13T12:39:52+08:00" content="2014 Dec 13">
+              2014 Dec 13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
 
               
-              
+            </span>
+          
 
+          
             
-          </span>
-        
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2014/12/13/ListView与BaseAdapter优化/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/13/ListView与BaseAdapter优化/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
 
-        
           
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/12/13/ListView与BaseAdapter优化/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/13/ListView与BaseAdapter优化/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
+
+        </div>
+      </header>
+    
+
 
     <div class="post-body">
 
@@ -605,7 +720,9 @@
 
       
         
-          <ol>
+          <span itemprop="articleBody">
+            
+              <ol>
 <li><p>ListView使用BaseAdapter作适配器的时候，在初始化获取View或者滚动获取View时，都会调用getView方法返回View添加到ListView中，这也是ListView每一项的item。</p>
 <pre><code><span class="keyword">public</span> View getView(<span class="built_in">int</span> <span class="keyword">position</span>, View convertView, ViewGroup parent)
 </code></pre><p> 所传递的三个参数中，</p>
@@ -714,11 +831,13 @@ public <span class="type">View</span> getView<span class="container">(<span clas
 </code></pre></li>
 </ol>
 
+            
+          </span>
         
       
     </div>
 
-    <div class="post-footer">
+    <footer class="post-footer">
       
 
       
@@ -727,60 +846,77 @@ public <span class="type">View</span> getView<span class="container">(<span clas
       
         <div class="post-eof"></div>
       
-    </div>
-  </div>
+    </footer>
+  </article>
 
 
     
       
 
-  <div class="post post-type-normal ">
-    <div class="post-header">
+  
+  
 
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/12/13/EditText优化/">
-                EditText优化
-              </a>
-            
-          
-        </h1>
-      
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2014 Dec 13
-        </span>
+    
+      <header class="post-header">
 
         
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
+        
+          <h1 class="post-title" itemprop="name headline">
             
-              <a href="/categories/Android开发经验/">Android开发经验</a>
+            
+              
+                <a class="post-title-link" href="/2014/12/13/EditText优化/" itemprop="url">
+                  EditText优化
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2014-12-13T11:23:50+08:00" content="2014 Dec 13">
+              2014 Dec 13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
 
               
-              
+            </span>
+          
 
+          
             
-          </span>
-        
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2014/12/13/EditText优化/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/13/EditText优化/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
 
-        
           
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/12/13/EditText优化/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/13/EditText优化/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
+
+        </div>
+      </header>
+    
+
 
     <div class="post-body">
 
@@ -789,7 +925,9 @@ public <span class="type">View</span> getView<span class="container">(<span clas
 
       
         
-          <ol>
+          <span itemprop="articleBody">
+            
+              <ol>
 <li><p>光标设置</p>
 <p> 如果EditText设置的高度比较大，光标默认会显示在居中的坐标，需要设置android:gravity=”top”。<br>如果光标太贴近边框，只需设置android:paddingLeft即可。</p>
 </li>
@@ -836,11 +974,13 @@ textViewExtras.setMovementMethod(<span class="keyword">new</span> ScrollingMovem
 </li>
 </ol>
 
+            
+          </span>
         
       
     </div>
 
-    <div class="post-footer">
+    <footer class="post-footer">
       
 
       
@@ -849,26 +989,28 @@ textViewExtras.setMovementMethod(<span class="keyword">new</span> ScrollingMovem
       
         <div class="post-eof"></div>
       
-    </div>
-  </div>
+    </footer>
+  </article>
 
 
     
-  </div>
+  </section>
 
   
-  <div class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/6/">&raquo;</a>
-  </div>
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right"></i></a>
+  </nav>
 
 
-        </div>
+ </div>
+
+        
 
         
       </div>
 
-
       
+        
   
   <div class="sidebar-toggle">
     <div class="sidebar-toggle-line-wrap">
@@ -878,18 +1020,20 @@ textViewExtras.setMovementMethod(<span class="keyword">new</span> ScrollingMovem
     </div>
   </div>
 
-  <div id="sidebar" class="sidebar">
+  <aside id="sidebar" class="sidebar">
     <div class="sidebar-inner">
 
       
 
-      <div class="site-overview">
-        <div class="site-author motion-element">
-          <img class="site-author-image" src="/images/default_avatar.jpg" alt="Jianqiu" />
-          <p class="site-author-name">Jianqiu</p>
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="Jianqiu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">Jianqiu</p>
         </div>
-        <p class="site-description motion-element">Android | jianqiu's blog</p>
-        <div class="site-state motion-element">
+        <p class="site-description motion-element" itemprop="description">Android | jianqiu's blog</p>
+        <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
               <span class="site-state-item-count">28</span>
@@ -898,24 +1042,32 @@ textViewExtras.setMovementMethod(<span class="keyword">new</span> ScrollingMovem
           </div>
 
           <div class="site-state-item site-state-categories">
-            
+            <a href="/categories">
               <span class="site-state-item-count">8</span>
               <span class="site-state-item-name">分类</span>
-              
+              </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">33</span>
+              <span class="site-state-item-count">31</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
 
-        </div>
+        </nav>
 
         
 
         <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/niorgai" target="_blank">
+                  <i class="fa fa-github"></i> github
+                </a>
+              </span>
+            
           
         </div>
 
@@ -925,27 +1077,27 @@ textViewExtras.setMovementMethod(<span class="keyword">new</span> ScrollingMovem
         <div class="links-of-author motion-element">
           
         </div>
-        
-      </div>
+
+      </section>
 
       
 
     </div>
-  </div>
+  </aside>
 
 
-    </div>
+      
+    </main>
 
-    <div id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
   
-  &copy; &nbsp; 
-  2015
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2015</span>
   <span class="with-love">
-    <i class="icon-heart"></i>
+    <i class="icon-next-heart fa fa-heart"></i>
   </span>
-  <span class="author">Jianqiu</span>
+  <span class="author" itemprop="copyrightHolder">Jianqiu</span>
 </div>
 
 <div class="powered-by">
@@ -960,9 +1112,8 @@ textViewExtras.setMovementMethod(<span class="keyword">new</span> ScrollingMovem
 </div>
 
 
-
-      </div>
-    </div>
+ </div>
+    </footer>
 
     <div class="back-to-top"></div>
   </div>
@@ -971,7 +1122,29 @@ textViewExtras.setMovementMethod(<span class="keyword">new</span> ScrollingMovem
 
   
   
+  
+    
 
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"niorgai"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+    
+
+    
+  
   
   <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
   <script type="text/javascript" src="/js/fancy-box.js?v=0.4.3"></script>
@@ -987,7 +1160,9 @@ textViewExtras.setMovementMethod(<span class="keyword">new</span> ScrollingMovem
 
 
 
-  <script type="text/javascript" src="/js/search-toggle.js"></script>
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.3"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
 
   
 
@@ -996,46 +1171,29 @@ textViewExtras.setMovementMethod(<span class="keyword">new</span> ScrollingMovem
       if (CONFIG.sidebar === 'always') {
         displaySidebar();
       }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+
+      motionIntegrator.bootstrap();
     });
   </script>
 
   
-
   
-  
-
-  
-    
-  
-
-  <script type="text/javascript">
-    var duoshuoQuery = {short_name:"niorgai"};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0]
-      || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-  </script>
-
-  
-
 
   
   
 
   
-  <!-- lazyload -->
   <script type="text/javascript" src="/js/lazyload.js"></script>
-      <script type="text/javascript">
-        jQuery(function() {          
-            jQuery("#posts img").lazyload({
-              placeholder:"http://www.arao.me/loading.gif",  
-                effect:"fadeIn"
-              });
-            });
-    </script>   
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
 </body>
 </html>

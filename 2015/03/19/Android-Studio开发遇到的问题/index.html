@@ -8,6 +8,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
 
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
 
 
 
@@ -16,6 +22,12 @@
 
 
 
+  
+    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
 
 <link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.3"/>
 
@@ -30,27 +42,51 @@
 
 
 
-  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
 
+
+<meta name="description" content="Android studio卡顿优化
+ 除了机器配置之外,也可以给Android Studio分配更多内存. 打开Android Studio的安装目录,Mac下进入bin目录,打开studio.vmoptions文件, 修改以下配置
+
+-Xms:JVM堆内存,默认是物理内存的1/64.
+-Xmx:JVM最大内存,默认是物理内存的1/4.
+-XX:MaxPermSize:最大非堆内存,默认是物理内">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android Studio开发遇到的问题">
+<meta property="og:url" content="http://niorgai.github.io/2015/03/19/Android-Studio开发遇到的问题/index.html">
+<meta property="og:site_name" content="Jianqiu's blog">
+<meta property="og:description" content="Android studio卡顿优化
+ 除了机器配置之外,也可以给Android Studio分配更多内存. 打开Android Studio的安装目录,Mac下进入bin目录,打开studio.vmoptions文件, 修改以下配置
+
+-Xms:JVM堆内存,默认是物理内存的1/64.
+-Xmx:JVM最大内存,默认是物理内存的1/4.
+-XX:MaxPermSize:最大非堆内存,默认是物理内">
+<meta property="og:image" content="http://7sbqys.com1.z0.glb.clouddn.com/intelTest.jpg">
+<meta property="og:updated_time" content="2015-11-29T13:13:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android Studio开发遇到的问题">
+<meta name="twitter:description" content="Android studio卡顿优化
+ 除了机器配置之外,也可以给Android Studio分配更多内存. 打开Android Studio的安装目录,Mac下进入bin目录,打开studio.vmoptions文件, 修改以下配置
+
+-Xms:JVM堆内存,默认是物理内存的1/64.
+-Xmx:JVM最大内存,默认是物理内存的1/4.
+-XX:MaxPermSize:最大非堆内存,默认是物理内">
 
 
 <script type="text/javascript" id="hexo.configuration">
   var CONFIG = {
     scheme: 'Mist',
-    analytics: {
-      google: ''
-    },
     sidebar: 'post'
   };
 </script>
 
 
 
-
-  <title> Android Studio开发遇到的问题 // Jianqiu's blog </title>
+  <title> Android Studio开发遇到的问题 | Jianqiu's blog </title>
 </head>
 
-<body>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
   <!--[if lte IE 8]>
   <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
     <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
@@ -60,22 +96,29 @@
     </a>
   </div>
 <![endif]-->
+  
+
+
+
+
+
 
   <div class="container one-column page-post-detail">
     <div class="headband"></div>
 
-    <div id="header" class="header">
-      <div class="header-inner">
-        <h1 class="site-meta">
-  <span class="logo-line-before"><i></i></span>
-  <a href="/" class="brand">
-      <span class="logo">
-        <i class="icon-logo"></i>
-      </span>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
       <span class="site-title">Jianqiu's blog</span>
-  </a>
-  <span class="logo-line-after"><i></i></span>
-</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Learn More</p>
+</div>
 
 <div class="site-nav-toggle">
   <button>
@@ -85,7 +128,7 @@
   </button>
 </div>
 
-<div class="site-nav">
+<nav class="site-nav">
   
 
   
@@ -93,91 +136,117 @@
       
         
         <li class="menu-item menu-item-home">
-          <a href="/">
-            <i class="menu-item-icon icon-home"></i> <br />
+          <a href="/" rel="section">
+            
             首页
           </a>
         </li>
       
         
         <li class="menu-item menu-item-archives">
-          <a href="/archives">
-            <i class="menu-item-icon icon-archives"></i> <br />
+          <a href="/archives" rel="section">
+            
             归档
           </a>
         </li>
       
         
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+            分类
+          </a>
+        </li>
+      
+        
         <li class="menu-item menu-item-tags">
-          <a href="/tags">
-            <i class="menu-item-icon icon-tags"></i> <br />
+          <a href="/tags" rel="section">
+            
             标签
           </a>
         </li>
+      
+
+      
       
     </ul>
   
 
   
-</div>
+</nav>
 
+ </div>
+    </header>
 
-      </div>
-    </div>
-
-    <div id="main" class="main">
+    <main id="main" class="main">
       <div class="main-inner">
-        <div id="content" class="content">
-          
+        <div id="content" class="content"> 
 
   <div id="posts" class="posts-expand">
     
 
-  <div class="post post-type-normal ">
-    <div class="post-header">
+  
+  
 
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              Android Studio开发遇到的问题
-            
-          
-        </h1>
-      
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Mar 19
-        </span>
+    
+      <header class="post-header">
 
         
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
+        
+          <h1 class="post-title" itemprop="name headline">
             
-              <a href="/categories/Android开发工具/">Android开发工具</a>
+            
+              
+                Android Studio开发遇到的问题
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-03-19T10:14:47+08:00" content="2015 Mar 19">
+              2015 Mar 19
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发工具/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发工具</span>
+                  </a>
+                </span>
+
+                
+                
 
               
-              
+            </span>
+          
 
+          
             
-          </span>
-        
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/03/19/Android-Studio开发遇到的问题/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/19/Android-Studio开发遇到的问题/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
 
-        
           
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/03/19/Android-Studio开发遇到的问题/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/19/Android-Studio开发遇到的问题/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
+
+        </div>
+      </header>
+    
+
 
     <div class="post-body">
 
@@ -185,7 +254,7 @@
       
 
       
-        <ol>
+        <span itemprop="articleBody"><ol>
 <li><p>Android studio卡顿优化</p>
 <p> 除了机器配置之外,也可以给Android Studio分配更多内存.<br> 打开Android Studio的安装目录,Mac下进入bin目录,打开studio.vmoptions文件,<br> 修改以下配置</p>
 <ol>
@@ -251,30 +320,34 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
 </ul>
 </li>
 </ol>
-
+</span>
       
     </div>
 
-    <div class="post-footer">
+    <footer class="post-footer">
       
         <div class="post-tags">
           
-            <a href="/tags/Android-Studio/"> #Android Studio </a>
+            <a href="/tags/Android-Studio/" rel="tag">#Android Studio</a>
           
         </div>
       
 
       
         <div class="post-nav">
-          <div class="post-nav-prev post-nav-item">
+          <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/03/19/Handler原理浅析/">Handler原理浅析</a>
+              <a href="/2015/03/14/ScrollView中放置ListView/" rel="next" title="ScrollView中放置ListView">
+                <i class="fa fa-chevron-left"></i> ScrollView中放置ListView
+              </a>
             
           </div>
 
-          <div class="post-nav-next post-nav-item">
+          <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/03/14/ScrollView中放置ListView/">ScrollView中放置ListView</a>
+              <a href="/2015/03/19/Handler原理浅析/" rel="prev" title="Handler原理浅析">
+                Handler原理浅析 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -282,34 +355,33 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
 
       
       
-    </div>
-  </div>
+    </footer>
+  </article>
 
 
 
     <div class="post-spread">
       
     </div>
+  </div>
 
-    
-      <div class="comments" id="comments">
+ </div>
+
         
-          <div class="ds-thread" data-thread-key="2015/03/19/Android-Studio开发遇到的问题/"
-               data-title="Android Studio开发遇到的问题" data-url="http://niorgai.github.io/2015/03/19/Android-Studio开发遇到的问题/">
+
+        
+          <div class="comments" id="comments">
+            
+              <div class="ds-thread" data-thread-key="2015/03/19/Android-Studio开发遇到的问题/"
+                   data-title="Android Studio开发遇到的问题" data-url="http://niorgai.github.io/2015/03/19/Android-Studio开发遇到的问题/">
+              </div>
+            
           </div>
         
       </div>
-    
-  </div>
-
-
-        </div>
-
-        
-      </div>
-
 
       
+        
   
   <div class="sidebar-toggle">
     <div class="sidebar-toggle-line-wrap">
@@ -319,27 +391,20 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
     </div>
   </div>
 
-  <div id="sidebar" class="sidebar">
+  <aside id="sidebar" class="sidebar">
     <div class="sidebar-inner">
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
+
       
 
-      <div class="site-overview">
-        <div class="site-author motion-element">
-          <img class="site-author-image" src="/images/default_avatar.jpg" alt="Jianqiu" />
-          <p class="site-author-name">Jianqiu</p>
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="Jianqiu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">Jianqiu</p>
         </div>
-        <p class="site-description motion-element">Android | jianqiu's blog</p>
-        <div class="site-state motion-element">
+        <p class="site-description motion-element" itemprop="description">Android | jianqiu's blog</p>
+        <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
               <span class="site-state-item-count">28</span>
@@ -348,24 +413,32 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
           </div>
 
           <div class="site-state-item site-state-categories">
-            
+            <a href="/categories">
               <span class="site-state-item-count">8</span>
               <span class="site-state-item-name">分类</span>
-              
+              </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">33</span>
+              <span class="site-state-item-count">31</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
 
-        </div>
+        </nav>
 
         
 
         <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/niorgai" target="_blank">
+                  <i class="fa fa-github"></i> github
+                </a>
+              </span>
+            
           
         </div>
 
@@ -375,38 +448,27 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
         <div class="links-of-author motion-element">
           
         </div>
-        
-      </div>
 
-      
-        <div class="post-toc-wrap sidebar-panel-active">
-          <div class="post-toc-indicator-top post-toc-indicator"></div>
-          <div class="post-toc">
-            
-            
-              <p class="post-toc-empty">此文章未包含目录</p>
-            
-          </div>
-          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
-        </div>
+      </section>
+
       
 
     </div>
-  </div>
+  </aside>
 
 
-    </div>
+      
+    </main>
 
-    <div id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
   
-  &copy; &nbsp; 
-  2015
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2015</span>
   <span class="with-love">
-    <i class="icon-heart"></i>
+    <i class="icon-next-heart fa fa-heart"></i>
   </span>
-  <span class="author">Jianqiu</span>
+  <span class="author" itemprop="copyrightHolder">Jianqiu</span>
 </div>
 
 <div class="powered-by">
@@ -421,9 +483,8 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
 </div>
 
 
-
-      </div>
-    </div>
+ </div>
+    </footer>
 
     <div class="back-to-top"></div>
   </div>
@@ -432,7 +493,29 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
 
   
   
+  
+    
 
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"niorgai"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+    
+
+    
+  
   
   <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
   <script type="text/javascript" src="/js/fancy-box.js?v=0.4.3"></script>
@@ -448,7 +531,9 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
 
 
 
-  <script type="text/javascript" src="/js/search-toggle.js"></script>
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.3"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
 
   
   
@@ -485,7 +570,6 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
     }
 
     function getTOCMaxHeight () {
-      var $sidebarInner = $('.sidebar-inner');
       var height = $('.sidebar').height() -
                    $tocSelector.position().top -
                    $('.post-toc-indicator-bottom').height();
@@ -507,7 +591,7 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
       )
     }
 
-    $(document).on('sidebar.didShow', function () {
+    $(document).on('sidebar.motion.complete', function () {
       processTOC();
     });
 
@@ -524,7 +608,6 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
       element.on('mousewheel DOMMouseScroll', function (event) {
           var oe = event.originalEvent;
           var delta = oe.wheelDelta || -oe.detail;
-          var self = this;
 
           this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
           event.preventDefault();
@@ -534,60 +617,82 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
     }
 
     function tocOverflowIndicator (indicator, action) {
-      $(indicator).velocity('stop').velocity({
-        opacity: action === 'show' ? 0.4 : 0
-      }, { duration: 100 });
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
     }
 
   });
 </script>
 
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
 
-  <script type="text/javascript" id="sidebar.nav">
-    $(document).ready(function () {
-      var html = $('html');
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
 
-      $('.sidebar-nav li').on('click', function () {
-        var item = $(this);
-        var activeTabClassName = 'sidebar-nav-active';
-        var activePanelClassName = 'sidebar-panel-active';
-        if (item.hasClass(activeTabClassName)) {
-          return;
-        }
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
 
-        var currentTarget = $('.' + activePanelClassName);
-        var target = $('.' + item.data('target'));
-
-        currentTarget.velocity('transition.slideUpOut', 200, function () {
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
           target
             .velocity('stop')
-            .velocity('transition.slideDownIn', 200)
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
             .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
         });
 
-        item.siblings().removeClass(activeTabClassName);
-        item.addClass(activeTabClassName);
-      });
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
 
-      $('.post-toc a').on('click', function (e) {
-        e.preventDefault();
-        var offset = $(escapeSelector(this.getAttribute('href'))).offset().top;
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
         html.velocity('stop').velocity('scroll', {
           offset: offset  + 'px',
           mobileHA: false
-        });
-      });
-
-      // Expand sidebar on post detail page by default, when post has a toc.
-      var $tocContent = $('.post-toc-content');
-      if (isDesktop() && CONFIG.sidebar === 'post') {
-        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
-          displaySidebar();
-        }
-      }
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
     });
-  </script>
 
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
 
 
 
@@ -596,46 +701,29 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
       if (CONFIG.sidebar === 'always') {
         displaySidebar();
       }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+
+      motionIntegrator.bootstrap();
     });
   </script>
 
   
-
   
-  
-
-  
-    
-  
-
-  <script type="text/javascript">
-    var duoshuoQuery = {short_name:"niorgai"};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0]
-      || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-  </script>
-
-  
-
 
   
   
 
   
-  <!-- lazyload -->
   <script type="text/javascript" src="/js/lazyload.js"></script>
-      <script type="text/javascript">
-        jQuery(function() {          
-            jQuery("#posts img").lazyload({
-              placeholder:"http://www.arao.me/loading.gif",  
-                effect:"fadeIn"
-              });
-            });
-    </script>   
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
 </body>
 </html>

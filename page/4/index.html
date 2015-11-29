@@ -8,6 +8,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
 
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
 
 
 
@@ -16,6 +22,12 @@
 
 
 
+  
+    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
 
 <link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.3"/>
 
@@ -30,27 +42,34 @@
 
 
 
-  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
 
+
+<meta name="description" content="Android | jianqiu&apos;s blog">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Jianqiu's blog">
+<meta property="og:url" content="http://niorgai.github.io/page/4/index.html">
+<meta property="og:site_name" content="Jianqiu's blog">
+<meta property="og:description" content="Android | jianqiu&apos;s blog">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Jianqiu's blog">
+<meta name="twitter:description" content="Android | jianqiu&apos;s blog">
 
 
 <script type="text/javascript" id="hexo.configuration">
   var CONFIG = {
     scheme: 'Mist',
-    analytics: {
-      google: ''
-    },
     sidebar: 'post'
   };
 </script>
 
 
 
-
   <title> Jianqiu's blog </title>
 </head>
 
-<body>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
   <!--[if lte IE 8]>
   <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
     <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
@@ -60,24 +79,31 @@
     </a>
   </div>
 <![endif]-->
+  
+
+
+
+
+
 
   <div class="container one-column 
    page-home 
 ">
     <div class="headband"></div>
 
-    <div id="header" class="header">
-      <div class="header-inner">
-        <h1 class="site-meta">
-  <span class="logo-line-before"><i></i></span>
-  <a href="/" class="brand">
-      <span class="logo">
-        <i class="icon-logo"></i>
-      </span>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
       <span class="site-title">Jianqiu's blog</span>
-  </a>
-  <span class="logo-line-after"><i></i></span>
-</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Learn More</p>
+</div>
 
 <div class="site-nav-toggle">
   <button>
@@ -87,7 +113,7 @@
   </button>
 </div>
 
-<div class="site-nav">
+<nav class="site-nav">
   
 
   
@@ -95,93 +121,119 @@
       
         
         <li class="menu-item menu-item-home">
-          <a href="/">
-            <i class="menu-item-icon icon-home"></i> <br />
+          <a href="/" rel="section">
+            
             首页
           </a>
         </li>
       
         
         <li class="menu-item menu-item-archives">
-          <a href="/archives">
-            <i class="menu-item-icon icon-archives"></i> <br />
+          <a href="/archives" rel="section">
+            
             归档
           </a>
         </li>
       
         
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+            分类
+          </a>
+        </li>
+      
+        
         <li class="menu-item menu-item-tags">
-          <a href="/tags">
-            <i class="menu-item-icon icon-tags"></i> <br />
+          <a href="/tags" rel="section">
+            
             标签
           </a>
         </li>
+      
+
+      
       
     </ul>
   
 
   
-</div>
+</nav>
 
+ </div>
+    </header>
 
-      </div>
-    </div>
-
-    <div id="main" class="main">
+    <main id="main" class="main">
       <div class="main-inner">
-        <div id="content" class="content">
-          
-  <div id="posts" class="posts-expand">
+        <div id="content" class="content"> 
+  <section id="posts" class="posts-expand">
     
       
 
-  <div class="post post-type-normal ">
-    <div class="post-header">
+  
+  
 
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/03/02/Loading界面简单实现/">
-                Loading界面简单实现
-              </a>
-            
-          
-        </h1>
-      
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Mar 2
-        </span>
+    
+      <header class="post-header">
 
         
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
+        
+          <h1 class="post-title" itemprop="name headline">
             
-              <a href="/categories/Android开发tips/">Android开发tips</a>
+            
+              
+                <a class="post-title-link" href="/2015/03/02/Loading界面简单实现/" itemprop="url">
+                  Loading界面简单实现
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-03-02T00:54:38+08:00" content="2015 Mar 2">
+              2015 Mar 2
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发tips/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发tips</span>
+                  </a>
+                </span>
+
+                
+                
 
               
-              
+            </span>
+          
 
+          
             
-          </span>
-        
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/03/02/Loading界面简单实现/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/02/Loading界面简单实现/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
 
-        
           
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/03/02/Loading界面简单实现/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/02/Loading界面简单实现/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
+
+        </div>
+      </header>
+    
+
 
     <div class="post-body">
 
@@ -190,7 +242,9 @@
 
       
         
-          <p>应用经常会涉及一些耗时操作，尽管经常会开新线程去处理，但总是会耗时。所以就希望有一个loading界面,<br>想来想去觉得使用自定义的Dialog比较好。</p>
+          <span itemprop="articleBody">
+            
+              <p>应用经常会涉及一些耗时操作，尽管经常会开新线程去处理，但总是会耗时。所以就希望有一个loading界面,<br>想来想去觉得使用自定义的Dialog比较好。</p>
 <p>思路：</p>
 <ol>
 <li>使用Dialog，自定义其布局。</li>
@@ -362,11 +416,13 @@
 dialog.show()<span class="comment">;</span>
 dialog.dismiss()<span class="comment">;</span>
 </code></pre>
+            
+          </span>
         
       
     </div>
 
-    <div class="post-footer">
+    <footer class="post-footer">
       
 
       
@@ -375,60 +431,77 @@ dialog.dismiss()<span class="comment">;</span>
       
         <div class="post-eof"></div>
       
-    </div>
-  </div>
+    </footer>
+  </article>
 
 
     
       
 
-  <div class="post post-type-normal ">
-    <div class="post-header">
+  
+  
 
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/01/31/Android拍照选取图片/">
-                Android拍照选取图片
-              </a>
-            
-          
-        </h1>
-      
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Jan 31
-        </span>
+    
+      <header class="post-header">
 
         
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
+        
+          <h1 class="post-title" itemprop="name headline">
             
-              <a href="/categories/Android开发经验/">Android开发经验</a>
+            
+              
+                <a class="post-title-link" href="/2015/01/31/Android拍照选取图片/" itemprop="url">
+                  Android拍照选取图片
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-01-31T00:44:05+08:00" content="2015 Jan 31">
+              2015 Jan 31
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
 
               
-              
+            </span>
+          
 
+          
             
-          </span>
-        
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/01/31/Android拍照选取图片/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/31/Android拍照选取图片/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
 
-        
           
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/01/31/Android拍照选取图片/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/31/Android拍照选取图片/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
+
+        </div>
+      </header>
+    
+
 
     <div class="post-body">
 
@@ -437,7 +510,9 @@ dialog.dismiss()<span class="comment">;</span>
 
       
         
-          <p>Android经常会需要拍照、裁剪及图库中选择图片，其实都是通过intent调用系统相机或者系统图册，然后在onActivityResult中捕捉返回即可。</p>
+          <span itemprop="articleBody">
+            
+              <p>Android经常会需要拍照、裁剪及图库中选择图片，其实都是通过intent调用系统相机或者系统图册，然后在onActivityResult中捕捉返回即可。</p>
 <h5 id="正常拍照选择图片的代码：">正常拍照选择图片的代码：</h5><pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(MediaStore.ACTION_IMAGE_CAPTURE);
 </code></pre><p>在onActivityResult中通过返回的<code>intent.getExtras().get(&quot;data&quot;)</code>便可以获取图片，但Android默认可用的应用内存大约为16M.所以Android为了不超出内存限制，在拍照返回时通过intent返回的bitmap会被压缩，这样导致一直都是获取的小图。所以在拍照时如果想返回大图需要通过Uri返回。</p>
 <h5 id="拍照选择大图代码(tampUri为路径，开发者文档提供的代码)：">拍照选择大图代码(tampUri为路径，开发者文档提供的代码)：</h5><pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -463,11 +538,13 @@ intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</spa
 <li><code>intent.putExtra(&quot;android.intent.extras.CAMERA_FACING&quot;,1);</code>，系统默认开启的是后置摄像头，如果希望选择前置摄像头可以加这句。</li>
 </ol>
 
+            
+          </span>
         
       
     </div>
 
-    <div class="post-footer">
+    <footer class="post-footer">
       
 
       
@@ -476,60 +553,77 @@ intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</spa
       
         <div class="post-eof"></div>
       
-    </div>
-  </div>
+    </footer>
+  </article>
 
 
     
       
 
-  <div class="post post-type-normal ">
-    <div class="post-header">
+  
+  
 
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/01/31/Android相册选取图片/">
-                Android相册选取图片
-              </a>
-            
-          
-        </h1>
-      
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Jan 31
-        </span>
+    
+      <header class="post-header">
 
         
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
+        
+          <h1 class="post-title" itemprop="name headline">
             
-              <a href="/categories/Android开发经验/">Android开发经验</a>
+            
+              
+                <a class="post-title-link" href="/2015/01/31/Android相册选取图片/" itemprop="url">
+                  Android相册选取图片
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-01-31T00:39:36+08:00" content="2015 Jan 31">
+              2015 Jan 31
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
 
               
-              
+            </span>
+          
 
+          
             
-          </span>
-        
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/01/31/Android相册选取图片/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/31/Android相册选取图片/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
 
-        
           
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/01/31/Android相册选取图片/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/31/Android相册选取图片/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
+
+        </div>
+      </header>
+    
+
 
     <div class="post-body">
 
@@ -538,7 +632,9 @@ intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</spa
 
       
         
-          <p>目前从图库选择图片可以有两种方法：</p>
+          <span itemprop="articleBody">
+            
+              <p>目前从图库选择图片可以有两种方法：</p>
 <p><strong>以下结果属于vivo Xplay,Android Version 4.4.4测试结果，如果有其他机型测试我会补充</strong><br>1.<strong>Intent.ACTION_PICK：</strong></p>
 <pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(<span class="type">Intent</span>.ACTION_PICK,
             android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -581,11 +677,13 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
 <li>Uri获取bitmap的方法可以参考<a href="http://niorgai.github.io/2015/02/22/Bitmap%E7%9B%B8%E5%85%B3-%E8%AF%BB%E5%8F%96%E5%A4%A7%E5%9B%BE%E7%89%87/">Bitmap相关:读取大图片</a>.</li>
 </ol>
 
+            
+          </span>
         
       
     </div>
 
-    <div class="post-footer">
+    <footer class="post-footer">
       
 
       
@@ -594,60 +692,77 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
       
         <div class="post-eof"></div>
       
-    </div>
-  </div>
+    </footer>
+  </article>
 
 
     
       
 
-  <div class="post post-type-normal ">
-    <div class="post-header">
+  
+  
 
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/01/12/Android序列化对象/">
-                Android序列化对象
-              </a>
-            
-          
-        </h1>
-      
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Jan 12
-        </span>
+    
+      <header class="post-header">
 
         
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
+        
+          <h1 class="post-title" itemprop="name headline">
             
-              <a href="/categories/Android基础知识/">Android基础知识</a>
+            
+              
+                <a class="post-title-link" href="/2015/01/12/Android序列化对象/" itemprop="url">
+                  Android序列化对象
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-01-12T18:48:05+08:00" content="2015 Jan 12">
+              2015 Jan 12
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android基础知识/" itemprop="url" rel="index">
+                    <span itemprop="name">Android基础知识</span>
+                  </a>
+                </span>
+
+                
+                
 
               
-              
+            </span>
+          
 
+          
             
-          </span>
-        
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/01/12/Android序列化对象/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/12/Android序列化对象/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
 
-        
           
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/01/12/Android序列化对象/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/12/Android序列化对象/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
+
+        </div>
+      </header>
+    
+
 
     <div class="post-body">
 
@@ -656,7 +771,9 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
 
       
         
-          <p>默认情况下，Activity之间只能传递基本数据类型，如果需要传递某个对象，则需要将其序列化，Android中序列化便是实现Serializable或则Parcelable接口。</p>
+          <span itemprop="articleBody">
+            
+              <p>默认情况下，Activity之间只能传递基本数据类型，如果需要传递某个对象，则需要将其序列化，Android中序列化便是实现Serializable或则Parcelable接口。</p>
 <p>序列化:永久性保存对象,即保存对象的字节序列到本地文件中。</p>
 <p>Serializable的作用是<strong>将对象的属性保存到本地文件、数据库、网络流以方便传输</strong>。Parcelable的设计初衷是因为Serializable的效率太慢，为了**在程序内不同组件间及不同Android程序间(AIDL)高效传输而设计。</p>
 <p>使用的选择：</p>
@@ -735,11 +852,13 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
 </li>
 </ol>
 
+            
+          </span>
         
       
     </div>
 
-    <div class="post-footer">
+    <footer class="post-footer">
       
 
       
@@ -748,60 +867,77 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
       
         <div class="post-eof"></div>
       
-    </div>
-  </div>
+    </footer>
+  </article>
 
 
     
       
 
-  <div class="post post-type-normal ">
-    <div class="post-header">
+  
+  
 
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/12/26/Android代码混淆/">
-                Android代码混淆
-              </a>
-            
-          
-        </h1>
-      
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2014 Dec 26
-        </span>
+    
+      <header class="post-header">
 
         
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
+        
+          <h1 class="post-title" itemprop="name headline">
             
-              <a href="/categories/Android开发经验/">Android开发经验</a>
+            
+              
+                <a class="post-title-link" href="/2014/12/26/Android代码混淆/" itemprop="url">
+                  Android代码混淆
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2014-12-26T19:58:07+08:00" content="2014 Dec 26">
+              2014 Dec 26
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
 
               
-              
+            </span>
+          
 
+          
             
-          </span>
-        
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2014/12/26/Android代码混淆/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/26/Android代码混淆/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
 
-        
           
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/12/26/Android代码混淆/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/26/Android代码混淆/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
+
+        </div>
+      </header>
+    
+
 
     <div class="post-body">
 
@@ -810,7 +946,9 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
 
       
         
-          <p>在<a href="http://niorgai.github.io/2014/12/23/Mac%E4%B8%8B%E5%8F%8D%E7%BC%96%E8%AF%91Android-APK/">这篇文章</a>中说了反编译Android APK的方法，当然作为开发者很多时候不希望某些涉及机密的代码被别人看到，于是需要在打包APK的时候做一些代码混淆。</p>
+          <span itemprop="articleBody">
+            
+              <p>在<a href="http://niorgai.github.io/2014/12/23/Mac%E4%B8%8B%E5%8F%8D%E7%BC%96%E8%AF%91Android-APK/">这篇文章</a>中说了反编译Android APK的方法，当然作为开发者很多时候不希望某些涉及机密的代码被别人看到，于是需要在打包APK的时候做一些代码混淆。</p>
 <p>混淆技巧(感谢<a href="http://www.cnblogs.com/qianxudetianxia/p/4948499.html" target="_blank" rel="external">Android打包的那些事</a>):</p>
 <ol>
 <li><p>默认的混淆:</p>
@@ -867,11 +1005,13 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
 </code></pre></li>
 </ol>
 
+            
+          </span>
         
       
     </div>
 
-    <div class="post-footer">
+    <footer class="post-footer">
       
 
       
@@ -880,26 +1020,28 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
       
         <div class="post-eof"></div>
       
-    </div>
-  </div>
+    </footer>
+  </article>
 
 
     
-  </div>
+  </section>
 
   
-  <div class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/5/">&raquo;</a>
-  </div>
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
+  </nav>
 
 
-        </div>
+ </div>
+
+        
 
         
       </div>
 
-
       
+        
   
   <div class="sidebar-toggle">
     <div class="sidebar-toggle-line-wrap">
@@ -909,18 +1051,20 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
     </div>
   </div>
 
-  <div id="sidebar" class="sidebar">
+  <aside id="sidebar" class="sidebar">
     <div class="sidebar-inner">
 
       
 
-      <div class="site-overview">
-        <div class="site-author motion-element">
-          <img class="site-author-image" src="/images/default_avatar.jpg" alt="Jianqiu" />
-          <p class="site-author-name">Jianqiu</p>
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="Jianqiu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">Jianqiu</p>
         </div>
-        <p class="site-description motion-element">Android | jianqiu's blog</p>
-        <div class="site-state motion-element">
+        <p class="site-description motion-element" itemprop="description">Android | jianqiu's blog</p>
+        <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
               <span class="site-state-item-count">28</span>
@@ -929,24 +1073,32 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
           </div>
 
           <div class="site-state-item site-state-categories">
-            
+            <a href="/categories">
               <span class="site-state-item-count">8</span>
               <span class="site-state-item-name">分类</span>
-              
+              </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">33</span>
+              <span class="site-state-item-count">31</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
 
-        </div>
+        </nav>
 
         
 
         <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/niorgai" target="_blank">
+                  <i class="fa fa-github"></i> github
+                </a>
+              </span>
+            
           
         </div>
 
@@ -956,27 +1108,27 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
         <div class="links-of-author motion-element">
           
         </div>
-        
-      </div>
+
+      </section>
 
       
 
     </div>
-  </div>
+  </aside>
 
 
-    </div>
+      
+    </main>
 
-    <div id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
   
-  &copy; &nbsp; 
-  2015
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2015</span>
   <span class="with-love">
-    <i class="icon-heart"></i>
+    <i class="icon-next-heart fa fa-heart"></i>
   </span>
-  <span class="author">Jianqiu</span>
+  <span class="author" itemprop="copyrightHolder">Jianqiu</span>
 </div>
 
 <div class="powered-by">
@@ -991,9 +1143,8 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
 </div>
 
 
-
-      </div>
-    </div>
+ </div>
+    </footer>
 
     <div class="back-to-top"></div>
   </div>
@@ -1002,7 +1153,29 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
 
   
   
+  
+    
 
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"niorgai"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+    
+
+    
+  
   
   <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
   <script type="text/javascript" src="/js/fancy-box.js?v=0.4.3"></script>
@@ -1018,7 +1191,9 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
 
 
 
-  <script type="text/javascript" src="/js/search-toggle.js"></script>
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.3"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
 
   
 
@@ -1027,46 +1202,29 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
       if (CONFIG.sidebar === 'always') {
         displaySidebar();
       }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+
+      motionIntegrator.bootstrap();
     });
   </script>
 
   
-
   
-  
-
-  
-    
-  
-
-  <script type="text/javascript">
-    var duoshuoQuery = {short_name:"niorgai"};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0]
-      || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-  </script>
-
-  
-
 
   
   
 
   
-  <!-- lazyload -->
   <script type="text/javascript" src="/js/lazyload.js"></script>
-      <script type="text/javascript">
-        jQuery(function() {          
-            jQuery("#posts img").lazyload({
-              placeholder:"http://www.arao.me/loading.gif",  
-                effect:"fadeIn"
-              });
-            });
-    </script>   
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
 </body>
 </html>
