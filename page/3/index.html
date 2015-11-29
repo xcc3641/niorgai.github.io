@@ -161,7 +161,7 @@
           <span class="post-category">
             &nbsp; | &nbsp; 分类于
             
-              <a href="/categories/Android/">Android</a>
+              <a href="/categories/Android基础知识/">Android基础知识</a>
 
               
               
@@ -441,7 +441,7 @@ mAsynchronous = async;
           <span class="post-category">
             &nbsp; | &nbsp; 分类于
             
-              <a href="/categories/Android/">Android</a>
+              <a href="/categories/Android开发工具/">Android开发工具</a>
 
               
               
@@ -484,27 +484,6 @@ mAsynchronous = async;
 </li>
 </ol>
 <ol>
-<li><p>Gradle运行失败：</p>
-<pre><code><span class="string">Error:</span>Execution failed <span class="keyword">for</span> task <span class="string">':app:dexDebug'</span>.
-com.android.ide.common.internal.<span class="string">LoggedErrorException:</span> Failed to run <span class="string">command:</span>
-      <span class="regexp">/Users/</span>qiu<span class="regexp">/Library/</span>Android<span class="regexp">/sdk/</span>build-tools<span class="regexp">/21.1.1/</span>dx --dex --no-optimize --output <span class="regexp">/Users/</span>qiu<span class="regexp">/svn/</span>mam<span class="regexp">/trunk/</span>app<span class="regexp">/build/</span>intermediates<span class="regexp">/dex/</span>debug --input-list=<span class="regexp">/Users/</span>qiu<span class="regexp">/svn/</span>mam<span class="regexp">/trunk/</span>app<span class="regexp">/build/</span>intermediates<span class="regexp">/tmp/</span>dex<span class="regexp">/debug/</span>inputList.txt
-      Error <span class="string">Code:</span>
-          <span class="number">2</span>
-<span class="label">      Output:</span>
-  UNEXPECTED TOP-LEVEL <span class="string">EXCEPTION:</span>
-  com.android.dex.<span class="string">DexException:</span> Multiple dex files define Landroid<span class="regexp">/support/</span>v4<span class="regexp">/accessibilityservice/</span>AccessibilityServiceInfoCompatIcs;
-      at com.android.dx.merge.DexMerger.readSortableTypes(DexMerger.<span class="string">java:</span><span class="number">596</span>)
-      at com.android.dx.merge.DexMerger.getSortedTypes(DexMerger.<span class="string">java:</span><span class="number">554</span>)
-      at com.android.dx.merge.DexMerger.mergeClassDefs(DexMerger.<span class="string">java:</span><span class="number">535</span>)
-      at com.android.dx.merge.DexMerger.mergeDexes(DexMerger.<span class="string">java:</span><span class="number">171</span>)
-      at com.android.dx.merge.DexMerger.merge(DexMerger.<span class="string">java:</span><span class="number">189</span>)
-      at com.android.dx.command.dexer.Main.mergeLibraryDexBuffers(Main.<span class="string">java:</span><span class="number">454</span>)
-      at com.android.dx.command.dexer.Main.runMonoDex(Main.<span class="string">java:</span><span class="number">302</span>)
-      at com.android.dx.command.dexer.Main.run(Main.<span class="string">java:</span><span class="number">245</span>)
-      at com.android.dx.command.dexer.Main.main(Main.<span class="string">java:</span><span class="number">214</span>)
-      at com.android.dx.command.Main.main(Main.<span class="string">java:</span><span class="number">106</span>)
-</code></pre><p>   此时删除<code>app/build</code>目录下的全部文件,然后重新gradle即可。</p>
-</li>
 <li><p>Gradle没有自动下载dependence包。</p>
 <p> 解决方法：</p>
 <ol>
@@ -753,7 +732,7 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
           <span class="post-category">
             &nbsp; | &nbsp; 分类于
             
-              <a href="/categories/Android/">Android</a>
+              <a href="/categories/Android开发经验/">Android开发经验</a>
 
               
               
@@ -782,8 +761,7 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
 
       
         
-          <hr>
-<h4 id="&lt;include&gt;标签复用布局"><code>&lt;include&gt;</code>标签复用布局</h4><p>Android布局中经常可以发现能够重用的layout，如果每次都复制粘贴，第一是不方便，第二是可维护性不高，改动一个地方要改好几处，所以最直接的方法是复用layout。</p>
+          <h2 id="&lt;include&gt;标签复用布局"><code>&lt;include&gt;</code>标签复用布局</h2><p>Android布局中经常可以发现能够重用的layout，如果每次都复制粘贴，第一是不方便，第二是可维护性不高，改动一个地方要改好几处，所以最直接的方法是复用layout。</p>
 <p>如果原布局为：</p>
 <pre><code><span class="tag">&lt;LinearLayout..&gt;</span>
     <span class="tag">&lt;LinearLayout..&gt;</span>
@@ -815,21 +793,21 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
 </code></pre><hr>
 <h4 id="抽取通用layout作为View">抽取通用layout作为View</h4><p>可以新建一个ReuseView</p>
 <pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReuseView</span> <span class="keyword">extends</span> <span class="title">LinearLayout</span></span>{
-    <span class="keyword">private</span> Context context;
 
     <span class="function"><span class="keyword">public</span> <span class="title">MainPageInterface</span><span class="params">(Context context)</span> </span>{
-        <span class="keyword">super</span>(context);
+        <span class="keyword">this</span>(context, <span class="keyword">null</span>);
     }
 
     <span class="function"><span class="keyword">public</span> <span class="title">MainPageInterface</span><span class="params">(Context context, AttributeSet attrs)</span> </span>{
-        <span class="keyword">super</span>(context, attrs);
+        <span class="keyword">this</span>(context, attrs, <span class="number">0</span>);
     }
 
     <span class="function"><span class="keyword">public</span> <span class="title">MainPageInterface</span><span class="params">(Context context, AttributeSet attrs, <span class="keyword">int</span> defStyleAttr)</span> </span>{
         <span class="keyword">super</span>(context, attrs, defStyleAttr);
+        init();
     }
 
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>{
+    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>{
         inflate(getContext(), R.layout.reuse, ReuseView.<span class="keyword">this</span>);
     }
 }
@@ -912,7 +890,7 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
           <span class="post-category">
             &nbsp; | &nbsp; 分类于
             
-              <a href="/categories/Android/">Android</a>
+              <a href="/categories/Android开发经验/">Android开发经验</a>
 
               
               
@@ -996,7 +974,7 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
 
   
   <div class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/">&laquo;</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/4/">&raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/2/">&laquo;</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/4/">&raquo;</a>
   </div>
 
 
@@ -1030,21 +1008,21 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">48</span>
+              <span class="site-state-item-count">30</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             
-              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-count">8</span>
               <span class="site-state-item-name">分类</span>
               
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">41</span>
+              <span class="site-state-item-count">32</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

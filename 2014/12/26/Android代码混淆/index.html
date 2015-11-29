@@ -157,7 +157,7 @@
           <span class="post-category">
             &nbsp; | &nbsp; 分类于
             
-              <a href="/categories/Android/">Android</a>
+              <a href="/categories/Android开发经验/">Android开发经验</a>
 
               
               
@@ -186,53 +186,60 @@
 
       
         <p>在<a href="http://niorgai.github.io/2014/12/23/Mac%E4%B8%8B%E5%8F%8D%E7%BC%96%E8%AF%91Android-APK/">这篇文章</a>中说了反编译Android APK的方法，当然作为开发者很多时候不希望某些涉及机密的代码被别人看到，于是需要在打包APK的时候做一些代码混淆。</p>
-<p>混淆步骤：</p>
+<p>混淆技巧(感谢<a href="http://www.cnblogs.com/qianxudetianxia/p/4948499.html" target="_blank" rel="external">Android打包的那些事</a>):</p>
 <ol>
-<li><p>在项目的project.properties文件中一般已经默认注释了混淆的代码，代码为</p>
-<pre><code>proguard.config=<span class="envvar">${sdk.dir}</span>/tools/proguard/proguard-android.txt:proguard-<span class="keyword">project</span>.txt
-</code></pre><p> 这是利用Android自带sdk的规则来混淆代码的，如果需要根据自己的规则来混淆代码，需要这样做：</p>
+<li><p>默认的混淆:</p>
+<p> sdk目录下的android-sdk/tools/proguard/proguard-android.txt文件包含了buildTools对应版本的混淆配置,不需要再改动.</p>
+</li>
+<li><p>project路径下的<code>proguard-rules.pro</code>文件(最新Android Studio新建的工程可能不叫这个名字)对应自己项目的混淆配置.</p>
 <ol>
-<li><p>在项目中新建一个名为proguard.cfg的文件,并向其中添加自定义的规则。</p>
-</li>
-<li><p>在project.properties添加以下代码：</p>
-<pre><code><span class="attribute">proguard.config</span>=<span class="string">proguard.cfg</span>
-</code></pre><p> 即将混淆的规则制定为proguard.cfg文件。</p>
-</li>
-<li><p>按照正常流程打包APK即可，同时会在项目中生成proguard文件夹。</p>
-</li>
+<li><p>第三方的包可以直接不混淆包名.如友盟(com.umeng):</p>
+<pre><code>-dontwarn com.umeng.<span class="keyword">*</span><span class="keyword">*</span>
+-keep class com.umeng.<span class="keyword">*</span><span class="keyword">*</span> { <span class="keyword">*</span>; }
+</code></pre></li>
+<li><p>混淆后友盟错误统计需要上传mapping文件,追查bug很不好,所以建议开启行数.</p>
+<pre><code><span class="preprocessor">#不混淆行数,方便debug</span>
+-keepattributes SourceFile,LineNumberTable
+</code></pre></li>
 </ol>
 </li>
-</ol>
-<p>这是一些混淆的规则(其他的可以到<a href="http://proguard.sourceforge.net/" target="_blank" rel="external">这里</a>查询)：</p>
-<pre><code>-keepattributes <span class="type">Signature</span>
-
-<span class="comment">//不进行混淆保持原样 </span>
--keep public <span class="class"><span class="keyword">class</span> <span class="title">*</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">android</span>.<span class="title">app</span>.<span class="title">Activity</span> 
+<li><p>其他技巧,这都是可以在proguard的文档上查到的.</p>
+<pre><code>#指定代码的压缩级别
+-<span class="ruby">optimizationpasses <span class="number">5</span>
 </span>
-<span class="comment">//保护指定的类和类的成员的名称，如果所有指定的类成员出席 </span>
--keepclasseswithmembernames <span class="class"><span class="keyword">class</span> <span class="title">*</span> {</span> 
-    native &lt;methods&gt;; 
-} 
-
-<span class="comment">//保护指定的类和类的成员，但条件是所有指定的类和类成员是要存在 </span>
--keepclasseswithmembers <span class="class"><span class="keyword">class</span> <span class="title">*</span> {</span> 
-    public &lt;init&gt;(android.content.<span class="type">Context</span>, android.util.<span class="type">AttributeSet</span>); 
-} 
-
-<span class="comment">//保护指定类的成员，如果此类受到保护他们会保护的更好 </span>
--keepclassmembers <span class="class"><span class="keyword">class</span> <span class="title">*</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">android</span>.<span class="title">app</span>.<span class="title">Activity</span> {</span> 
-       public void *(android.view.<span class="type">View</span>); 
-} 
-
-<span class="comment">//保护指定的类文件和类成员 </span>
--keep <span class="class"><span class="keyword">class</span> <span class="title">*</span> <span class="title">implements</span> <span class="title">android</span>.<span class="title">os</span>.<span class="title">Parcelable</span> {</span> 
-     public static <span class="keyword">final</span> android.os.<span class="type">Parcelable</span>$<span class="type">Creator</span> *; 
-} 
-</code></pre><p>如果在打包的过程中出现以下错误：</p>
-<ol>
-<li><p>Proguard returned with error code 1. See console </p>
-<p> 解决方法为：在<a href="http://proguard.sourceforge.net/" target="_blank" rel="external">Proguard官网</a>下载最新的压缩包，解压后将lib和bin文件夹替换到sdk/tool/proguard文件夹中。</p>
-</li>
+#包明不混合大小写
+-<span class="ruby">dontusemixedcaseclassnames
+</span>
+#不去忽略非公共的库类
+-<span class="ruby">dontskipnonpubliclibraryclasses
+</span>
+ #不优化输入的类文件
+-<span class="ruby">dontoptimize
+</span>
+ #预校验
+-<span class="ruby">dontpreverify
+</span>
+ #混淆时是否记录日志
+-<span class="ruby">verbose
+</span>
+ # 混淆时所采用的算法
+-<span class="ruby">optimizations !code/simplification/arithmetic,!field/*,!<span class="class"><span class="keyword">class</span>/<span class="title">merging</span>/*</span>
+</span>
+#保护注解
+-<span class="ruby">keepattributes *<span class="constant">Annotation</span>*
+</span>
+#忽略警告
+-<span class="ruby">ignorewarning
+</span>
+#apk 包内所有 class 的内部结构
+-<span class="ruby">dump class_files.txt
+</span>#未混淆的类和成员
+-<span class="ruby">printseeds seeds.txt
+</span>#列出从 apk 中删除的代码
+-<span class="ruby">printusage unused.txt
+</span>#混淆前后的映射
+-<span class="ruby">printmapping mapping.txt</span>
+</code></pre></li>
 </ol>
 
       
@@ -251,7 +258,7 @@
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2014/12/30/OpenFileOutput-OpenFileIntput-使用/">OpenFileOutput & OpenFileIntput 使用</a>
+              <a href="/2015/01/12/Android序列化对象/">Android序列化对象</a>
             
           </div>
 
@@ -325,21 +332,21 @@
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">48</span>
+              <span class="site-state-item-count">30</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             
-              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-count">8</span>
               <span class="site-state-item-name">分类</span>
               
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">41</span>
+              <span class="site-state-item-count">32</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

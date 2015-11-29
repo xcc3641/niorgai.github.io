@@ -144,8 +144,8 @@
           
           
             
-              <a class="post-title-link" href="/2015/01/31/Android相册选取图片/">
-                Android相册选取图片
+              <a class="post-title-link" href="/2014/12/13/EditText优化/">
+                EditText优化
               </a>
             
           
@@ -154,14 +154,14 @@
 
       <div class="post-meta">
         <span class="post-time">
-          发表于 2015 Jan 31
+          发表于 2014 Dec 13
         </span>
 
         
           <span class="post-category">
             &nbsp; | &nbsp; 分类于
             
-              <a href="/categories/Android/">Android</a>
+              <a href="/categories/Android开发经验/">Android开发经验</a>
 
               
               
@@ -174,8 +174,8 @@
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/01/31/Android相册选取图片/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/31/Android相册选取图片/"></span>
+            <a href="/2014/12/13/EditText优化/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/13/EditText优化/"></span>
             </a>
           </span>
           
@@ -190,47 +190,51 @@
 
       
         
-          <p>目前从图库选择图片可以有两种方法：</p>
-<p><strong>以下结果属于vivo Xplay,Android Version 4.4.4测试结果，如果有其他机型测试我会补充</strong><br>1.<strong>Intent.ACTION_PICK：</strong></p>
-<pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(<span class="type">Intent</span>.ACTION_PICK,
-            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
-</code></pre><p> onActivityResult返回的Intent中：</p>
-<ul>
-<li><code>intent.getData()</code>会返回所选图片的Uri，格式为<code>content://media/external/images/media/919</code></li>
-<li><code>intent.getExtras()</code>返回的bundle中包含一个boolean变量，通过<code>data.getExtras().get(&quot;isFinishGallery&quot;)</code>获取,应该是指是否获取完毕，查询文档没有官方结果。</li>
-<li><code>intent.putExtra(&quot;return-data&quot;,false)</code>对返回值没有影响。</li>
-</ul>
-<p>2.<strong>Intent.ACTION_GET_CONTENT</strong></p>
-<pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(<span class="type">Intent</span>.ACTION_GET_CONTENT);
-<span class="type">intent</span>.setType(<span class="string">"image/*"</span>);//不加会导致crash
-</code></pre><p>  onActivityResult返回的Intent中：</p>
-<ul>
-<li><code>intent.getData()</code>返回所选图片的Uri：</li>
-</ul>
-<hr>
-<p>关于返回Uri格式的说明：</p>
-<ul>
-<li><p>系统版本大于等于19(KitKat):<code>content://com.android.providers.media.documents/document/image%3A919</code></p>
+          <ol>
+<li><p>光标设置</p>
+<p> 如果EditText设置的高度比较大，光标默认会显示在居中的坐标，需要设置android:gravity=”top”。<br>如果光标太贴近边框，只需设置android:paddingLeft即可。</p>
 </li>
-<li><p>系统版本低于19:<code>content://media/external/images/media/919</code></p>
+<li><p>多行输入</p>
+<p> 在多行输入后光标会水平往右滚动，为了保持换行输入的习惯，还要设置</p>
+<pre><code><span class="label">android:</span>inputType=<span class="string">"textMultiLine"</span>
+<span class="label">android:</span>singleLine=<span class="string">"false"</span>
+<span class="label">android:</span>scrollHorizontally=<span class="string">"false"</span>    
+</code></pre><p> 为了直观显示，可以设置</p>
+<pre><code><span class="label">android:</span>scrollbars=<span class="string">"vertical"</span>
+<span class="label">android:</span>scrollbarStyle=<span class="string">"insideInset"</span>
+</code></pre><p> 但输入框满了后，如果继续输入，EditText会不断增加高度，这样会隐藏上面的控件，最好设置    android:minLines和 android:maxLines确认最大最小行数。</p>
 </li>
-</ul>
-<p>可以通过以下函数获取真实路径：</p>
-<pre><code><span class="keyword">private</span> <span class="keyword">String</span> getRealPathFromURI(Context context,Uri contentUri) {
-    <span class="keyword">String</span>[] proj = { MediaStore.Images.Media.DATA };
-    Cursor <span class="built_in">cursor</span> = context.getContentResolver().query(contentUri, proj, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);
-    <span class="keyword">if</span> (<span class="built_in">cursor</span> != <span class="keyword">null</span>) {
-        <span class="built_in">cursor</span>.moveToFirst();
-        <span class="built_in">int</span> columnIndex = <span class="built_in">cursor</span>.getColumnIndex(proj[<span class="number">0</span>]);
-        <span class="keyword">String</span> path = <span class="built_in">cursor</span>.getString(columnIndex);
-        <span class="built_in">cursor</span>.close();
-        <span class="keyword">return</span> path;
+<li><p>软键盘遮挡<br> 可以在AndroidManifext.xml中设置Activity的软键盘：</p>
+<pre><code>android:windowSoftInputMode=<span class="string">"adjustPan</span>
+</code></pre><p> 最后为了软键盘不挡住下方控件，最好还是全部添加一个scrollView。</p>
+<p> 为了防止ScorllView和EditText(TextView)的滚动相冲突：<br> 除了在xml中设置editText：</p>
+<pre><code><span class="label">android:</span>scrollbars=<span class="string">"vertical"</span>
+<span class="label">android:</span>scrollbarStyle=<span class="string">"insideInset"</span>
+</code></pre><p> 还需要在代码中设置：</p>
+<pre><code>scrollView.setOnTouchListener(<span class="keyword">new</span> View.OnTouchListener() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onTouch</span><span class="params">(View v, MotionEvent event)</span> </span>{
+        textViewExtras.getParent().requestDisallowInterceptTouchEvent(<span class="keyword">false</span>);
+        <span class="keyword">return</span> <span class="keyword">false</span>;
     }
-    <span class="keyword">return</span> contentUri.getPath();
-   }
-</code></pre><ol>
-<li>Uri获取bitmap的方法可以参考<a href="http://niorgai.github.io/2015/02/22/Bitmap%E7%9B%B8%E5%85%B3-%E8%AF%BB%E5%8F%96%E5%A4%A7%E5%9B%BE%E7%89%87/">Bitmap相关:读取大图片</a>.</li>
+});
+
+textViewExtras.setOnTouchListener(<span class="keyword">new</span> View.OnTouchListener() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onTouch</span><span class="params">(View v, MotionEvent event)</span> </span>{
+        textViewExtras.getParent().requestDisallowInterceptTouchEvent(<span class="keyword">true</span>);
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    }
+});
+textViewExtras.setMovementMethod(<span class="keyword">new</span> ScrollingMovementMethod());
+</code></pre></li>
+<li><ol>
+<li>中划线 : textview.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG );</li>
+<li>底部横线: textview.getPaint().setFlags(Paint. UNDERLINE_TEXT_FLAG )或者\<u>\</u></li>
+</ol>
+</li>
+<li><p>设置<code>android:imeOptions</code>属性时,有可能会失效.只需要再设置<code>android:singleLine</code>为true或者设置<code>android:inputType</code>为text,就可以修复~</p>
+</li>
 </ol>
 
         
@@ -262,8 +266,8 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
           
           
             
-              <a class="post-title-link" href="/2015/01/16/AsyncTask实现异步执行任务/">
-                简单使用AsyncTask实现异步执行任务
+              <a class="post-title-link" href="/2014/12/08/Activity中launchMode的值/">
+                Activity中launchMode的值
               </a>
             
           
@@ -272,14 +276,14 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
 
       <div class="post-meta">
         <span class="post-time">
-          发表于 2015 Jan 16
+          发表于 2014 Dec 8
         </span>
 
         
           <span class="post-category">
             &nbsp; | &nbsp; 分类于
             
-              <a href="/categories/Android/">Android</a>
+              <a href="/categories/Android基础知识/">Android基础知识</a>
 
               
               
@@ -292,8 +296,8 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/01/16/AsyncTask实现异步执行任务/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/16/AsyncTask实现异步执行任务/"></span>
+            <a href="/2014/12/08/Activity中launchMode的值/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/08/Activity中launchMode的值/"></span>
             </a>
           </span>
           
@@ -308,38 +312,174 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
 
       
         
-          <p>包android.os.AsyncTask用于执行异步任务，使用AsyncTask必须继承AsyncTask类，并传入三个泛型参数：</p>
-<pre><code><span class="attribute">Params</span>: <span class="string">新建任务时的参数。</span>
-<span class="attribute">Progress</span>: <span class="string">任务在后台执行的进度值类型，一般是Integer。</span>
-<span class="attribute">Result</span>: <span class="string">任务执行后的返回值类型。</span>
-</code></pre><p>同时必须实现doInBackground方法，顾名思义执行后台任务。</p>
-<p>AsyncTask还有一些方法：</p>
-<pre><code><span class="comment">//任务开始前调用</span>
-protected void <span class="function"><span class="title">onPreExecute</span><span class="params">()</span></span>
+          <p>Activity ： A,B,C,D。<br>回退栈： s1,s2.</p>
+<p>正常的生命周期：<br>开始－退出 ： onCreate -&gt; onStart -&gt; onResume -&gt; onPause -&gt; onStop -&gt; onDestroy</p>
+<p>启动Activity时，都会将Activity压入当前Application的回退栈中。</p>
+<h4 id="四种启动模式:standard，singleTop，singleTask，singleInstance。">四种启动模式:standard，singleTop，singleTask，singleInstance。</h4><h5 id="standard模式">standard模式</h5><p>launchMode属性的默认值，每次通过startActivity调用该Activity时都会new一个新对象。例如A1-&gt;A2.</p>
+<p>生命周期(点击时)： A1 onPause -&gt; A2 onCreate -&gt; A2 onStart -&gt; A2 onResume -&gt; A1 onSaveInstanceState -&gt; A1 onStop.</p>
+<h5 id="singleTop模式">singleTop模式</h5><ol>
+<li><p>如果当前Activity在回退栈的栈顶，则直接使用该Activity，同时调用该Activity的onNewIntent方法。</p>
+<p> 生命周期(点击时)：A1 onPause -&gt; A1 onNewIntent -&gt; A1 onResume.</p>
+</li>
+<li><p>如果不在栈顶，则与standard模式相同。</p>
+</li>
+</ol>
+<h5 id="singleTask模式">singleTask模式</h5><p>保证同一个窗口类在多个回退栈中只能有一个实例。</p>
+<ol>
+<li><p>调用同一应用程序内的Activity：</p>
+<ol>
+<li>如果Activity在栈顶，则直接使用并调用onNewIntent方法。</li>
+<li><p>如果Activity不在栈顶，则将该Activity之上的Activity全部出栈，并调用onNewIntent方法。</p>
+<p>生命周期(点击时)：A1 onPause -&gt; A1 onNewIntent -&gt; A1 onResume.</p>
+</li>
+</ol>
+</li>
+<li><p>调用不同应用程序内的Activity：<br> 同上，但是此时涉及到其他应用程序的切换，而不是单纯的出入栈操作。</p>
+</li>
+</ol>
+<h5 id="singleInstance模式">singleInstance模式</h5><p>同singleTask模式，但是新建立的任务只能有一个Activity对象。不能在该任务栈中启动其他Activity。</p>
+<p>生命周期(点击时)：A1 onPause -&gt; A1 onNewIntent -&gt; A1 onResume.</p>
 
-<span class="comment">//后台任务执行,Params泛型数组作为参数传入，Result泛型作为返回值。</span>
-protected Result <span class="function"><span class="title">doInBackground</span><span class="params">(Params... params)</span></span>
+        
+      
+    </div>
 
-<span class="comment">//通过AsyncTask.publishProgress调用，Progress泛型数组会当做参数传入。</span>
-protected void <span class="function"><span class="title">onProgressUpdate</span><span class="params">(Progress... values)</span></span> 
+    <div class="post-footer">
+      
 
-<span class="comment">//任务运行后(doInBackground方法结束后)调用，doInBackground方法的返回值作为参数。</span>
-protected void <span class="function"><span class="title">onPostExecute</span><span class="params">(Result result)</span></span>
+      
 
-<span class="comment">//通过AsyncTask.cancel方法调用，doInBackground方法的返回值作为参数。</span>
-<span class="comment">//先调用cancel方法1，再调用cancel方法2.</span>
-<span class="number">1</span><span class="class">.protected</span> void <span class="function"><span class="title">onCancelled</span><span class="params">(Result result)</span></span>
-<span class="number">2</span><span class="class">.protected</span> void <span class="function"><span class="title">onCancelled</span><span class="params">()</span></span>
-</code></pre><p>在使用AsyncTask时，<strong>除了doInBackground方法</strong>，其他方法<strong>都可以访问UI控件</strong>。</p>
-<p>使用AsyncTask：</p>
-<pre><code><span class="comment">//AsyncTask定义</span>
-<span class="class"><span class="keyword">class</span> <span class="title">MyTask</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">AsyncTask&lt;String</span>,<span class="title">Integer</span>,<span class="title">Long&gt;</span>
-</span><span class="comment">//新建AsyncTask</span>
-<span class="type">MyTask</span> myTask = <span class="keyword">new</span> <span class="type">MyTask</span>();
-myTask.execute(<span class="string">"task1"</span>,<span class="string">"task2"</span>);
-</code></pre><p>取消AsyncTask：</p>
-<pre><code><span class="comment">//通过mayInterruptIfRunning参数决定是否会在任务运行时结束任务。</span>
-myTask.cancel(<span class="keyword">boolean</span> mayInterruptIfRunning);
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/12/06/Android壁纸设置/">
+                Android壁纸设置
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2014 Dec 6
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android开发经验/">Android开发经验</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/12/06/Android壁纸设置/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/06/Android壁纸设置/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <ol>
+<li><h4 id="设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下：">设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下：</h4><p> WallpaperManager wallpaperManager = WallpaperManager.getInstance(DisplayPicture.this);</p>
+<pre><code><span class="tag">wallpaperManager</span><span class="class">.suggestDesiredDimensions</span>(<span class="tag">bitmap</span><span class="class">.getWidth</span>(),<span class="tag">bitmap</span><span class="class">.getHeight</span>());
+</code></pre><p> wallpaperManager.setBitmap(bitmap);</p>
+</li>
+</ol>
+<p>注意这里的</p>
+<pre><code><span class="tag">wallpaperManager</span><span class="class">.suggestDesiredDimensions</span>(<span class="tag">bitmap</span><span class="class">.getWidth</span>(),<span class="tag">bitmap</span><span class="class">.getHeight</span>());
+</code></pre><p>是表示设置目前的像素是图片的像素，最好先获取手机屏幕像素大小，然后传递宽度和高度作为参数。</p>
+<pre><code>WallpaperManager wallpaperManager = WallpaperManager.getInstance<span class="params">(DisplayPicture.this)</span>;
+        wallpaperManager.suggestDesiredDimensions<span class="params">(Utils.getDisplayWidth<span class="params">()</span>,Utils.getDisplayHeight<span class="params">()</span>)</span>;
+</code></pre><p>因为某些手机是可以设置壁纸跟桌面一起滑动的，这样所需的壁纸长宽跟手机屏幕的长宽是不一样的，所以需要这样设置。</p>
+<h3 id="但是问题来了，这样加载的bitmap需要裁减，并且加载后非常容易out_of_memory。所以尝试以下的解决方法：">但是问题来了，这样加载的bitmap需要裁减，并且加载后非常容易out of memory。所以尝试以下的解决方法：</h3><ol>
+<li><h4 id="通过系统intent来设置，即传递一个image对象，系统luancher选择相应的程序来处理，这种方法还可以设置锁屏壁纸~~">通过系统intent来设置，即传递一个image对象，系统luancher选择相应的程序来处理，这种方法还可以设置锁屏壁纸~~</h4></li>
+</ol>
+<p>传递的sendUri为图片的Uri，代码如下：</p>
+<pre><code>Intent setAs = new Intent<span class="params">(Intent.ACTION_ATTACH_DATA)</span>;
+        setAs.setDataAndType<span class="params">(sendUri, <span class="string">"image/jpg"</span>)</span>;
+        setAs.putExtra<span class="params">(<span class="string">"mimeType"</span>,<span class="string">"image/jpg"</span>)</span>;
+        startActivity<span class="params">(Intent.createChooser<span class="params">(setAs, <span class="string">"set As"</span>)</span>)</span>;
+</code></pre><p>其中</p>
+<pre><code>setAs.<span class="function"><span class="title">putExtra</span><span class="params">(<span class="string">"mineType"</span>,<span class="string">"image/jpg"</span>)</span></span>
+</code></pre><p>非常重要，通过这句告诉intent的Filter当前intent的data传递的是什么内容，不加这一句会导致某些机型的相册程序崩溃。如vivo。。</p>
+<p>另外关于mineType的其他可以参考<a href="http://www.apkbus.com/blog-56077-44963.html" target="_blank" rel="external">这里</a></p>
+<ol>
+<li><h4 id="将bitmap传入系统裁减intent，裁减至手机屏幕大小，然后在onActivitiyResult中捕捉bitmap并设置壁纸（强行避免OOM）">将bitmap传入系统裁减intent，裁减至手机屏幕大小，然后在onActivitiyResult中捕捉bitmap并设置壁纸（强行避免OOM）</h4><pre><code>Intent intent = new Intent<span class="params">(<span class="string">"com.android.camera.action.CROP"</span>)</span>;
+    intent.setDataAndType<span class="params">(sendUri, <span class="string">"image/*"</span>)</span>;
+    intent.putExtra<span class="params">(<span class="string">"crop"</span>, <span class="string">"true"</span>)</span>;
+    <span class="comment">//裁剪框的比例，1：1</span>
+    DisplayMetrics dm = new DisplayMetrics<span class="params">()</span>;
+    dm = getResources<span class="params">()</span>.getDisplayMetrics<span class="params">()</span>;
+    <span class="comment">// float scale = (float)dm.heightPixels / (float)dm.widthPixels;</span>
+    intent.putExtra<span class="params">(<span class="string">"aspectX"</span>, dm.widthPixels)</span>;
+    intent.putExtra<span class="params">(<span class="string">"aspectY"</span>, dm.heightPixels)</span>;
+    intent.putExtra<span class="params">(<span class="string">"scale"</span>,<span class="literal">true</span>)</span>;
+    <span class="comment">//裁剪后输出图片的尺寸大小</span>
+    intent.putExtra<span class="params">(<span class="string">"outputX"</span>, dm.widthPixels)</span>;
+    intent.putExtra<span class="params">(<span class="string">"outputY"</span>, dm.heightPixels)</span>;
+    Uri uri = Uri.fromFile<span class="params">(file)</span>;
+    intent.putExtra<span class="params">(MediaStore.EXTRA_OUTPUT,uri)</span>;
+    <span class="comment">//图片格式</span>
+    intent.putExtra<span class="params">(<span class="string">"outputFormat"</span>, <span class="string">"JPEG"</span>)</span>;
+    intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</span>, <span class="literal">true</span>)</span>;
+    intent.putExtra<span class="params">(<span class="string">"return-data"</span>,<span class="literal">false</span>)</span>;
+    startActivityForResult<span class="params">(intent, <span class="number">1</span>)</span>;
+</code></pre></li>
+</ol>
+<p>返回这里(file是通过sendUri new出来的)：</p>
+<pre><code>@Override
+protected void onActivityResult<span class="params">(int requestCode, int resultCode, Intent data)</span> {
+    <span class="keyword">if</span><span class="params">(requestCode == <span class="number">1</span>)</span>{
+        Uri uri = Uri.fromFile<span class="params">(file)</span>;
+         Bitmap bitmap = null;
+        <span class="keyword">if</span><span class="params">(uri != null)</span>{
+            try {
+                bitmap= imgLoader.getBitmapByPath<span class="params">(uri.getPath<span class="params">()</span>)</span>;
+                WallpaperManager wallpaperManager = WallpaperManager.getInstance<span class="params">(DisplayPicture.this)</span>;
+                wallpaperManager.suggestDesiredDimensions<span class="params">(bitmap.getWidth<span class="params">()</span>,bitmap.getHeight<span class="params">()</span>)</span>;
+                wallpaperManager.setBitmap<span class="params">(bitmap)</span>;
+            }catch <span class="params">(Exception e)</span>{
+                e.printStackTrace<span class="params">()</span>;
+            }
+        }
+    super.onActivityResult<span class="params">(requestCode, resultCode, data)</span>;
+}
 </code></pre>
         
       
@@ -370,8 +510,8 @@ myTask.cancel(<span class="keyword">boolean</span> mayInterruptIfRunning);
           
           
             
-              <a class="post-title-link" href="/2015/01/14/Android线程相关/">
-                Android线程相关
+              <a class="post-title-link" href="/2014/12/06/手机屏幕单位/">
+                手机屏幕单位
               </a>
             
           
@@ -380,7 +520,7 @@ myTask.cancel(<span class="keyword">boolean</span> mayInterruptIfRunning);
 
       <div class="post-meta">
         <span class="post-time">
-          发表于 2015 Jan 14
+          发表于 2014 Dec 6
         </span>
 
         
@@ -400,8 +540,8 @@ myTask.cancel(<span class="keyword">boolean</span> mayInterruptIfRunning);
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/01/14/Android线程相关/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/14/Android线程相关/"></span>
+            <a href="/2014/12/06/手机屏幕单位/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/06/手机屏幕单位/"></span>
             </a>
           </span>
           
@@ -416,74 +556,25 @@ myTask.cancel(<span class="keyword">boolean</span> mayInterruptIfRunning);
 
       
         
-          <p>Android经常会需要处理一些耗时操作(比如下载，上传等)，执行这些耗时操作的时候，UI是没有反应的，如果时间很久会报ANR，所以需要开启新线程来执行耗时操作。</p>
-<p><strong>正确的开启新线程的方法：</strong></p>
-<pre><code><span class="tag">new</span> <span class="tag">Thread</span>(new <span class="function">Runnable</span>() {
-    <span class="variable">@Override</span>
-    public void <span class="function">run</span>() {
-        <span class="comment">//此处进行耗时操作</span>
-    }
-})<span class="class">.start</span>();
-</code></pre><hr>
-<p>Android中Activity所在窗口的线程叫做主线程(Main Thread),因此所有在窗口上显示的控件(UI控件)都是在主线程中创建的，而在主线程创建的新线程中是不允许访问非当前线程(主要是主线程)创建的控件的。所以才会有很多Android坑是<strong>不能在非UI线程中访问UI控件。</strong></p>
-<p>通常会有以下几种解决方法：</p>
-<ol>
-<li><p>View.post方法</p>
-<pre><code>view.post(<span class="keyword">new</span> Runnable() {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
-        <span class="comment">//对该view进行操作</span>
-    }
-});
-</code></pre></li>
-<li><p>Activity.runOnUiThread方法</p>
-<pre><code>MainActivity.<span class="keyword">this</span>.runOnUiThread(<span class="keyword">new</span> Runnable() {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
-        <span class="comment">//该方法如果在UI线程中执行，Runnale.run方法会立即执行</span>
-        <span class="comment">//如果在非UI线程中执行，系统会将该方法的引用加入UI线程的任务队列中</span>
-    }
-});
-</code></pre></li>
-<li><p>使用android.os.handler对象，handler将访问UI线程的代码的引用压入UI线程的处理队列，在其他代码执行完后执行handleMessage方法。</p>
-<pre><code><span class="keyword">Message</span> <span class="keyword">message</span> = new <span class="keyword">Message</span>();  <span class="comment">//Message对象可以放一些参数</span>
-handler.sendMessage(<span class="keyword">message</span>);    <span class="comment">//sendMessage方法通知handle</span>
-</code></pre></li>
-</ol>
-<pre><code>Handler <span class="keyword">handler</span> = <span class="keyword">new</span> Handler(){
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>{
-        <span class="comment">//可以在这里进行UI操作</span>
-        <span class="keyword">super</span>.handleMessage(msg);
-    }
-
-};
-</code></pre><hr>
-<h4 id="以上总结了开启新线程的方法和进行UI操作的方法，那么综合起来比较好的解决方法是：">以上总结了开启新线程的方法和进行UI操作的方法，那么综合起来比较好的解决方法是：</h4><ol>
-<li><p>先定义Handler对象</p>
-<pre><code>private <span class="operator"><span class="keyword">Handler</span> <span class="keyword">handler</span> = <span class="literal">null</span>;</span>
-</code></pre></li>
-<li><p>然后创建新线程，并在线程结束时进行调用hanlder.sendMessage方法。</p>
-<pre><code><span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
-        <span class="comment">//此处进行耗时操作</span>
-        <span class="keyword">handler</span>.sendMessage(msg);
-    }
-}).start(); 
-</code></pre></li>
-<li><p>在handler.handleMessage方法中进行UI操作。</p>
-<pre><code><span class="keyword">handler</span> = <span class="keyword">new</span> Handler(){
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>{
-        <span class="comment">//可以在这里进行UI操作</span>
-        <span class="keyword">super</span>.handleMessage(msg);
-    }
-
-};
-</code></pre></li>
-</ol>
-
+          <p>先插一句比较小白的话。。<br>点动成线，其实我们看到的屏幕是一个个像素点显示的，密集的点显示成所看到的图像。</p>
+<h3 id="常见的单位：in、px、dpi(ppi、density)、dp(dip)、sp">常见的单位：in、px、dpi(ppi、density)、dp(dip)、sp</h3><p>in：inch，英寸，每英寸大约是2.54厘米，一般手机所说的屏幕多少寸都是指对角线的长度。</p>
+<p>px：Pixel，像素，最小单位，指每一个像素点。通常所说的分辨率1920*1080就是指各个方向上的像素点的数量。</p>
+<p>dpi(ppi、density)：<br>dpi为Dots Per Inch的缩写，表示每英寸点的个数，一般用于打印分辨率。<br>ppi为Pixels Per Inch的缩写，表示每英寸像素点的个数，一般用于显示分辨率。<br>density，密度，表示每Inch点的个数。<br>计算方法为px/in即可。</p>
+<p>安卓的资源列表文件夹与其对应：</p>
+<pre><code>drawable-ldpi         <span class="list">(<span class="keyword">dpi=120</span> , density = <span class="number">0.75</span>)</span>
+drawable-mdpi         <span class="list">(<span class="keyword">dpi=160</span> , density = <span class="number">1</span>,这也是默认的layout文件夹)</span>
+drawable-hdpi         <span class="list">(<span class="keyword">dpi=240</span> , density = <span class="number">1.5</span>)</span>
+drawable-xhdpi         <span class="list">(<span class="keyword">dpi=320</span> , density = <span class="number">2</span>)</span>
+drawable-xxhdpi     <span class="list">(<span class="keyword">dpi=480</span> , density = <span class="number">3</span>)</span>
+</code></pre><p>dp(dip)：设备独立像素，Device Independent Pixels的缩写，Android特有的单位。不会因为像素而导致显示效果不同。</p>
+<p>sp：主要用于调整字体大小,转换方法与dp一样,但是会随着系统设置而变化字体大小.</p>
+<p><strong>默认的icon大小为48dp*48dp</strong></p>
+<p><strong>默认的通知栏icon大小为24dp*24dp</strong></p>
+<p>适配时建议根据设计图计算密度，如iphone5的设备分辨率为640X1164, 屏幕尺寸为4英寸，那么由勾股定理对角线平方为640*640+1164*1164=1764496,开根号得出对角线分辨率为1328，1328/4=332,这就是iphone5的”dpi”,所以可以把iphone5的对应设计图放在xhdpi文件夹中。</p>
+<p>加载资源时，Android会先根据屏幕的dpi在dpi相同的资源文件夹中找资源，然后从最大的资源文件夹开始找。<br>所以推荐在dpi最高的文件夹放置一套资源文件即可，对资源的长高设定wrap_content，系统会自动缩放保持显示效果。如100px*100px的图放在xhdpi中，那么mdpi的设备显示时,100<em>1/2 = 50px,那么该图就会以50px\</em>50px的大小显示。 </p>
+<p>LayoutParams实例化时传的参数为px，需要将布局的dp转为px才能使效果一样。<br>LayoutParams初始化时需要初始化为父布局的类型<br>dp转px的方法为：</p>
+<pre><code><span class="built_in">int</span> dip = (<span class="built_in">int</span>)<span class="type">TypedValue</span>.applyDimension(<span class="type">TypedValue</span>.<span class="type">COMPLEX_UNIT_DIP</span>,<span class="number">60</span>,getResources<span class="literal">()</span>.getDisplayMetrics<span class="literal">()</span>);
+</code></pre>
         
       
     </div>
@@ -513,8 +604,8 @@ handler.sendMessage(<span class="keyword">message</span>);    <span class="comme
           
           
             
-              <a class="post-title-link" href="/2015/01/12/Android序列化对象/">
-                Android序列化对象
+              <a class="post-title-link" href="/2014/12/06/sharedPreference使用心得/">
+                sharedPreference使用心得
               </a>
             
           
@@ -523,7 +614,7 @@ handler.sendMessage(<span class="keyword">message</span>);    <span class="comme
 
       <div class="post-meta">
         <span class="post-time">
-          发表于 2015 Jan 12
+          发表于 2014 Dec 6
         </span>
 
         
@@ -543,8 +634,8 @@ handler.sendMessage(<span class="keyword">message</span>);    <span class="comme
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/01/12/Android序列化对象/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/12/Android序列化对象/"></span>
+            <a href="/2014/12/06/sharedPreference使用心得/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/06/sharedPreference使用心得/"></span>
             </a>
           </span>
           
@@ -559,238 +650,31 @@ handler.sendMessage(<span class="keyword">message</span>);    <span class="comme
 
       
         
-          <p>默认情况下，Activity之间只能传递基本数据类型，如果需要传递某个对象，则需要将其序列化，Android中序列化便是实现Serializable或则Parcelable接口。</p>
-<p>序列化:永久性保存对象,即保存对象的字节序列到本地文件中。</p>
-<p>Serializable的作用是<strong>将对象的属性保存到本地文件、数据库、网络流以方便传输</strong>。Parcelable的设计初衷是因为Serializable的效率太慢，为了**在程序内不同组件间及不同Android程序间(AIDL)高效传输而设计。</p>
-<p>使用的选择：</p>
+          <p>sharedPreference非常适合key-value形式的数据存储，它会将这些字段一起以文件的形式保存在本地，是一种比较可靠的数据保存方式。</p>
+<h3 id="存储位置为：">存储位置为：</h3><pre><code>/<span class="type">data</span>/<span class="type">data</span>/&lt;package <span class="keyword">name</span>&gt;/shared_prefs
+</code></pre><h2 id="使用方法如下：">使用方法如下：</h2><p>name字段为自己定义的String，实际上便是本地保存所保存数据的文件名(不包括拓展名)。<br>如这里便是</p>
+<pre><code>/<span class="type">data</span>/<span class="type">data</span>/&lt;package <span class="keyword">name</span>&gt;/shared_prefs/<span class="keyword">name</span>.xml
+</code></pre><h3 id="读：">读：</h3><pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">boolean</span> <span class="title">getLogin</span><span class="params">(Context context)</span></span>{  
+    SharedPreferences preferences = context.getSharedPreferences(name,Context.MODE_PRIVATE);  
+    <span class="function"><span class="keyword">return</span> preferences.<span class="title">getBoolean</span><span class="params">(<span class="string">"login"</span>, <span class="keyword">false</span>)</span></span>;  
+} 
+</code></pre><h3 id="写：">写：</h3><pre><code>public static void setLogin<span class="params">(Context context, boolean login)</span>{  
+    SharedPreferences preferences = context.getSharedPreferences<span class="params">(name,Context.MODE_PRIVATE)</span>;  
+    SharedPreferences.Editor editor = preferences.edit<span class="params">()</span>;  
+    editor.putBoolean<span class="params">(<span class="string">"login"</span>,login)</span>;  
+    editor.commit<span class="params">()</span>;  <span class="comment">//同步</span>
+    editor.apply<span class="params">()</span>;     <span class="comment">//异步</span>
+}  
+</code></pre><p><code>SharedPreferences.Editor</code>提供了两种提交的方法，分别是<code>commit</code>和<code>apply</code>，两种方法都是原子过程(即改过程不可拆分，如同a＝0)，但两种方法有区别：</p>
 <ol>
-<li>在内存间传递数据时，推荐使用Parcelable，因为其内存开销小，性能高。</li>
-<li>在需要保存时，推荐使用Serializable，因为Parcelable不适合做持久化存储。</li>
-<li>Serializable使用IO读写存储在硬盘上，而Parcelable是直接在内存中读写，很明显内存的读写速度通常大于IO读写，所以在Android中通常优先选择Parcelable。</li>
+<li>commit会同步提交数据到磁盘，同时给出boolean返回值代表是否成功。<strong>多个并发的commit同时执行时，commit会等待正在运行的commit运行完毕再运行，从而较低效率。</strong></li>
+<li>apply先将数据提交到内存，再异步提交到磁盘，<strong>apply并发操作时后面的apply会覆盖前面的apply，提高效率</strong>，但apply方法没有返回值，因此不会有错误的提示。</li>
 </ol>
-<p>接下来利用一个例子说明如何实现这些接口。首先是初始对象：</p>
-<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Test</span> {
-    <span class="keyword">int</span> num;
-    String <span class="keyword">string</span>;
-}
-</code></pre><hr>
-<p>如果实现Serializable接口，只需要继承java.io.Serializable，并提供一个serialVersionUID即可。</p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>{
-
-    <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">12345678</span>l;
-    <span class="keyword">int</span> num;
-    String string;
-}
-</code></pre><hr>
-<p>如果实现Parcelable,需要继承android.os.Parcelable，重写describeContents方法和writeToParcel方法，并定义一个Parcelable.Creator类型的静态变量，在该静态变量中实现readFromParcel方法(自己定义的名字)。</p>
-<p><strong>注意：</strong></p>
-<ol>
-<li>writeToParcel方法中将变量<strong>按顺序</strong>写入Parcel</li>
-<li><p>Parcelable.Creator的createFromParcel方法，从Parcel读入变量时<strong>必须按照writeToParcel方法中的顺序</strong>读入。</p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">implements</span> <span class="title">Parcelable</span></span>{
-    <span class="keyword">int</span> num;
-    String string;
-
-    <span class="annotation">@Override</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">describeContents</span><span class="params">()</span> </span>{
-            <span class="keyword">return</span> <span class="number">0</span>;
-        }
-
-        <span class="annotation">@Override</span>
-        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeToParcel</span><span class="params">(Parcel dest, <span class="keyword">int</span> flags)</span> </span>{
-            dest.writeInt(num);
-             dest.writeString(string);
-        }
-
-    <span class="keyword">public</span> <span class="keyword">static</span> Creator&lt;Test&gt; creator = <span class="keyword">new</span> Creator&lt;Test&gt;() {
-            <span class="annotation">@Override</span>
-        <span class="function"><span class="keyword">public</span> Test <span class="title">createFromParcel</span><span class="params">(Parcel source)</span> </span>{
-            <span class="keyword">return</span> <span class="keyword">new</span> Test(source);
-        }
-
-        <span class="annotation">@Override</span>
-        <span class="keyword">public</span> Test[] newArray(<span class="keyword">int</span> size) {
-            <span class="keyword">return</span> <span class="keyword">new</span> Test[size];
-        }
-    };
-
-    Test(){}
-
-    Test(Parcel source){
-                readFromParcel(source);
-        }
-
-    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readFromParcel</span><span class="params">(Parcel source)</span></span>{
-        <span class="comment">//读取对象数据，必须按照writeToParcel方法中</span>
-        <span class="comment">//写入数据的顺序依次读取数据</span>
-        num = source.readInt();
-        string = source.readString();
-    }
-
-}
-</code></pre></li>
-<li><p>如果需要序列化自定义的数据，该数据也需要实现Parcelable接口。</p>
-<p> 例如希望通过序列化类TestA，类TestA中有一个List存放类TestB。</p>
-<pre><code><span class="class"><span class="keyword">class</span> <span class="title">TestA</span></span>{
-    <span class="keyword">List</span>&lt;TestB&gt; <span class="keyword">list</span>;
-}
-</code></pre><p> 那么TestA与TestB都需要实现Parcelable接口。且类TestA通过<code>parcel.writeTypedList</code>写入list，通过<code>parcel.readTypedList(list,TestB.creator)</code>读取list。</p>
-</li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/01/10/Android-Service-三/">
-                Android Service (三)
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2015 Jan 10
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/Android/">Android</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/01/10/Android-Service-三/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/10/Android-Service-三/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>在前面有关服务的<a href="http://niorgai.github.io/2015/01/06/Android-Service-%E4%B8%80/">第一篇</a>和<a href="http://niorgai.github.io/2015/01/08/Android-Service-%E4%BA%8C/">第二篇</a>中已经说明了怎么开启一个服务，但之前的描述都是指一个应用内的服务，这些服务不能被其他应用程序调用。</p>
-<p>Android采用了远程过程调用(Remote Procedure Call,RPC)来使其他应用程序也可以访问本应用程序内的服务。与其他基于RPC的解决方案一样，Android使用接口定义语言(Interface Definition Language)来公开服务的接口，所以跨进程访问的服务便称为<strong>AIDL(Android Interface Definition Language)</strong>服务。</p>
-<p>一般创建AIDL服务的步骤如下(以Ant构建的项目为例)：</p>
-<ol>
-<li>在项目的src文件夹下任意包中新建一个XX.aidl文件，文件内容为相应包名及接口定义。如果aidl文件内容正确，gen目录下回自动生成一个同名的Java接口文件(gradle构建的项目没有找到。。)。</li>
-<li>建立一个Service类并实现aidl文件定义的Java接口。</li>
-<li>在AndroidManiFest.xml文件中注册AIDL服务。</li>
-</ol>
-<p>下面用一个例子来介绍：</p>
-<ol>
-<li><p>新建一个ITest.aidl文件,接口只有一个getData方法。</p>
-<pre><code><span class="keyword">package</span> qiu.test
-
-<span class="class"><span class="keyword">interface</span> <span class="title">ITest</span></span>{
-    <span class="function">String <span class="title">getData</span><span class="params">()</span></span>;
-}
-</code></pre></li>
-<li><p>编写一个TestService类。</p>
-<pre><code>public <span class="class"><span class="keyword">class</span> <span class="title">TestService</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">Service</span>{</span>
-
-    public <span class="class"><span class="keyword">class</span> <span class="title">TestServiceeImp</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">ITest</span>.<span class="title">Stub</span>{</span>
-
-        <span class="annotation">@Override</span>
-         public <span class="type">String</span> getData() <span class="keyword">throws</span> <span class="type">RemoteException</span>{
-            <span class="keyword">return</span> <span class="string">"Here is data"</span>;
-        }
-    }
-
-    <span class="annotation">@Override</span>
-    public <span class="type">IBinder</span> onBind(<span class="type">Intent</span> intent) {
-        <span class="keyword">return</span> <span class="keyword">new</span> <span class="type">TestServiceImp</span>();
-    }
-}
-</code></pre><p> Stub为IBinder的子类，通过onBind方法返回TestServiceImp对象，客户端便可以获取Service对象。</p>
-</li>
-<li><p>在AndroidManiFest.xml文件中配置Service。</p>
-<pre><code><span class="tag">&lt;<span class="title">service</span> <span class="attribute">android:name</span>=<span class="value">".TestService"</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">intent-filter</span>&gt;</span>
-        <span class="tag">&lt;<span class="title">action</span> <span class="attribute">android:name</span>=<span class="value">"qiu.test.ITest"</span>/&gt;</span>
-    <span class="tag">&lt;/<span class="title">intent-filter</span>&gt;</span>
-<span class="tag">&lt;/<span class="title">service</span>&gt;</span>
-</code></pre><p> 其实qiu.test.ITest便是客户端用于访问AIDL服务的ID。</p>
-</li>
-</ol>
-<hr>
-<h3 id="以上就是服务端的代码，也可以理解为另一程序的Service代码。下面来编写客户端，或者说调用端的代码。">以上就是服务端的代码，也可以理解为另一程序的Service代码。下面来编写客户端，或者说调用端的代码。</h3><hr>
-<p>首先需要将服务端自动生成的ITest.java文件连同包目录一起复制到src文件中。</p>
-<p>接下来实现MainActivity类。</p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>{
-
-    <span class="annotation">@Override</span>
-    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>{
-        <span class="keyword">super</span>.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        <span class="comment">//获取的服务端Service对象，通过该对象可以调用任意共有方法</span>
-        ITest service = <span class="keyword">null</span>;
-
-        ServiceConnection connection = <span class="keyword">new</span> ServiceConnection() {
-            <span class="annotation">@Override</span>
-            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceConnected</span><span class="params">(ComponentName name, IBinder service)</span> </span>{
-                <span class="comment">//初始化服务端Service对象</span>
-                service = ITest.Stub.asInterface(service);
-            }
-
-            <span class="annotation">@Override</span>
-            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceDisconnected</span><span class="params">(ComponentName name)</span> </span>{
-
-            }
-        };
-
-        <span class="comment">//绑定服务,使用隐式Intent</span>
-        bindService(<span class="keyword">new</span> Intent(<span class="string">"qiu.test.ITest"</span>), connection, BIND_AUTO_CREATE);
-
-        <span class="comment">//绑定后就可以调用ITest的任意方法，比如getData。</span>
-        System.out.println(<span class="string">"Data is : "</span> + service.getData());
-
-    }
+<p>注意写的方式不能这么写：</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> setLogin(Context context, <span class="keyword">boolean</span> login){  
+    SharedPreferences preferences = context.getSharedPreferences(name,Context.MODE_PRIVATE);  
+    preferences.<span class="keyword">edit</span>().putBoolean(<span class="string">"login"</span>,login);  
+    preferences.<span class="keyword">edit</span>().commit();  
 }
 </code></pre>
         
@@ -815,7 +699,7 @@ handler.sendMessage(<span class="keyword">message</span>);    <span class="comme
 
   
   <div class="pagination">
-    <a class="extend prev" rel="prev" href="/page/5/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/7/">&raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/5/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span>
   </div>
 
 
@@ -849,21 +733,21 @@ handler.sendMessage(<span class="keyword">message</span>);    <span class="comme
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">48</span>
+              <span class="site-state-item-count">30</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             
-              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-count">8</span>
               <span class="site-state-item-name">分类</span>
               
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">41</span>
+              <span class="site-state-item-count">32</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

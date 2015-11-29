@@ -24,7 +24,7 @@
 
 
 
-  <meta name="keywords" content="Gradle," />
+  <meta name="keywords" content="Android Studio," />
 
 
 
@@ -157,7 +157,7 @@
           <span class="post-category">
             &nbsp; | &nbsp; 分类于
             
-              <a href="/categories/Android/">Android</a>
+              <a href="/categories/Android开发工具/">Android开发工具</a>
 
               
               
@@ -199,27 +199,6 @@
 </li>
 </ol>
 <ol>
-<li><p>Gradle运行失败：</p>
-<pre><code><span class="string">Error:</span>Execution failed <span class="keyword">for</span> task <span class="string">':app:dexDebug'</span>.
-com.android.ide.common.internal.<span class="string">LoggedErrorException:</span> Failed to run <span class="string">command:</span>
-      <span class="regexp">/Users/</span>qiu<span class="regexp">/Library/</span>Android<span class="regexp">/sdk/</span>build-tools<span class="regexp">/21.1.1/</span>dx --dex --no-optimize --output <span class="regexp">/Users/</span>qiu<span class="regexp">/svn/</span>mam<span class="regexp">/trunk/</span>app<span class="regexp">/build/</span>intermediates<span class="regexp">/dex/</span>debug --input-list=<span class="regexp">/Users/</span>qiu<span class="regexp">/svn/</span>mam<span class="regexp">/trunk/</span>app<span class="regexp">/build/</span>intermediates<span class="regexp">/tmp/</span>dex<span class="regexp">/debug/</span>inputList.txt
-      Error <span class="string">Code:</span>
-          <span class="number">2</span>
-<span class="label">      Output:</span>
-  UNEXPECTED TOP-LEVEL <span class="string">EXCEPTION:</span>
-  com.android.dex.<span class="string">DexException:</span> Multiple dex files define Landroid<span class="regexp">/support/</span>v4<span class="regexp">/accessibilityservice/</span>AccessibilityServiceInfoCompatIcs;
-      at com.android.dx.merge.DexMerger.readSortableTypes(DexMerger.<span class="string">java:</span><span class="number">596</span>)
-      at com.android.dx.merge.DexMerger.getSortedTypes(DexMerger.<span class="string">java:</span><span class="number">554</span>)
-      at com.android.dx.merge.DexMerger.mergeClassDefs(DexMerger.<span class="string">java:</span><span class="number">535</span>)
-      at com.android.dx.merge.DexMerger.mergeDexes(DexMerger.<span class="string">java:</span><span class="number">171</span>)
-      at com.android.dx.merge.DexMerger.merge(DexMerger.<span class="string">java:</span><span class="number">189</span>)
-      at com.android.dx.command.dexer.Main.mergeLibraryDexBuffers(Main.<span class="string">java:</span><span class="number">454</span>)
-      at com.android.dx.command.dexer.Main.runMonoDex(Main.<span class="string">java:</span><span class="number">302</span>)
-      at com.android.dx.command.dexer.Main.run(Main.<span class="string">java:</span><span class="number">245</span>)
-      at com.android.dx.command.dexer.Main.main(Main.<span class="string">java:</span><span class="number">214</span>)
-      at com.android.dx.command.Main.main(Main.<span class="string">java:</span><span class="number">106</span>)
-</code></pre><p>   此时删除<code>app/build</code>目录下的全部文件,然后重新gradle即可。</p>
-</li>
 <li><p>Gradle没有自动下载dependence包。</p>
 <p> 解决方法：</p>
 <ol>
@@ -280,7 +259,7 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
       
         <div class="post-tags">
           
-            <a href="/tags/Gradle/"> #Gradle </a>
+            <a href="/tags/Android-Studio/"> #Android Studio </a>
           
         </div>
       
@@ -363,21 +342,21 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">48</span>
+              <span class="site-state-item-count">30</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             
-              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-count">8</span>
               <span class="site-state-item-name">分类</span>
               
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">41</span>
+              <span class="site-state-item-count">32</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

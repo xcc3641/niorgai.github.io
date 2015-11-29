@@ -714,7 +714,7 @@ public boolean onTouchEvent<span class="params">(MotionEvent ev)</span> {
           
             
               <a class="post-title-link" href="/2015/09/10/Android-Tips/">
-                未命名
+                Android Tips
               </a>
             
           
@@ -726,6 +726,17 @@ public boolean onTouchEvent<span class="params">(MotionEvent ev)</span> {
           发表于 2015 Sep 10
         </span>
 
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Android开发经验/">Android开发经验</a>
+
+              
+              
+
+            
+          </span>
         
 
         
@@ -797,6 +808,14 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
 </code></pre></li>
 </ol>
 </li>
+<li><p><strong>注意使用shape来画line时，注意以下两点：</strong></p>
+<ol>
+<li>引用该shape的View的layout_height的值必须大于shape中<stroke>标签下android:width的值。</stroke></li>
+<li><p>必须关闭硬件加速，可以在AndroidMainfest中修改，也可以调用<code>view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);</code></p>
+<p><strong>这样才会显示line</strong></p>
+</li>
+</ol>
+</li>
 </ol>
 
         
@@ -821,7 +840,7 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
 
   
   <div class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/2/">&raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/">&raquo;</a>
   </div>
 
 
@@ -855,21 +874,21 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">48</span>
+              <span class="site-state-item-count">30</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             
-              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-count">8</span>
               <span class="site-state-item-name">分类</span>
               
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">41</span>
+              <span class="site-state-item-count">32</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
