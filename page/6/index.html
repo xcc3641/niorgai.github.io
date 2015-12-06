@@ -184,6 +184,149 @@
             
             
               
+                <a class="post-title-link" href="/2014/12/13/EditText优化/" itemprop="url">
+                  EditText优化
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2014-12-13T11:23:50+08:00" content="2014 Dec 13">
+              2014 Dec 13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2014/12/13/EditText优化/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/13/EditText优化/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <ol>
+<li><p>光标设置</p>
+<p> 如果EditText设置的高度比较大，光标默认会显示在居中的坐标，需要设置android:gravity=”top”。<br>如果光标太贴近边框，只需设置android:paddingLeft即可。</p>
+</li>
+<li><p>多行输入</p>
+<p> 在多行输入后光标会水平往右滚动，为了保持换行输入的习惯，还要设置</p>
+<pre><code><span class="label">android:</span>inputType=<span class="string">"textMultiLine"</span>
+<span class="label">android:</span>singleLine=<span class="string">"false"</span>
+<span class="label">android:</span>scrollHorizontally=<span class="string">"false"</span>    
+</code></pre><p> 为了直观显示，可以设置</p>
+<pre><code><span class="label">android:</span>scrollbars=<span class="string">"vertical"</span>
+<span class="label">android:</span>scrollbarStyle=<span class="string">"insideInset"</span>
+</code></pre><p> 但输入框满了后，如果继续输入，EditText会不断增加高度，这样会隐藏上面的控件，最好设置    android:minLines和 android:maxLines确认最大最小行数。</p>
+</li>
+<li><p>软键盘遮挡<br> 可以在AndroidManifext.xml中设置Activity的软键盘：</p>
+<pre><code>android:windowSoftInputMode=<span class="string">"adjustPan</span>
+</code></pre><p> 最后为了软键盘不挡住下方控件，最好还是全部添加一个scrollView。</p>
+<p> 为了防止ScorllView和EditText(TextView)的滚动相冲突：<br> 除了在xml中设置editText：</p>
+<pre><code><span class="label">android:</span>scrollbars=<span class="string">"vertical"</span>
+<span class="label">android:</span>scrollbarStyle=<span class="string">"insideInset"</span>
+</code></pre><p> 还需要在代码中设置：</p>
+<pre><code>scrollView.setOnTouchListener(<span class="keyword">new</span> View.OnTouchListener() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onTouch</span><span class="params">(View v, MotionEvent event)</span> </span>{
+        textViewExtras.getParent().requestDisallowInterceptTouchEvent(<span class="keyword">false</span>);
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    }
+});
+
+textViewExtras.setOnTouchListener(<span class="keyword">new</span> View.OnTouchListener() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onTouch</span><span class="params">(View v, MotionEvent event)</span> </span>{
+        textViewExtras.getParent().requestDisallowInterceptTouchEvent(<span class="keyword">true</span>);
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    }
+});
+textViewExtras.setMovementMethod(<span class="keyword">new</span> ScrollingMovementMethod());
+</code></pre></li>
+<li><ol>
+<li>中划线 : textview.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG );</li>
+<li>底部横线: textview.getPaint().setFlags(Paint. UNDERLINE_TEXT_FLAG )或者\<u>\</u></li>
+</ol>
+</li>
+<li><p>设置<code>android:imeOptions</code>属性时,有可能会失效.只需要再设置<code>android:singleLine</code>为true或者设置<code>android:inputType</code>为text,就可以修复~</p>
+</li>
+</ol>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
                 <a class="post-title-link" href="/2014/12/08/Activity中launchMode的值/" itemprop="url">
                   Activity中launchMode的值
                 </a>
@@ -611,21 +754,21 @@ drawable-xxhdpi     <span class="list">(<span class="keyword">dpi=480</span> , d
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">28</span>
+              <span class="site-state-item-count">29</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">8</span>
+              <span class="site-state-item-count">9</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">31</span>
+              <span class="site-state-item-count">34</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
