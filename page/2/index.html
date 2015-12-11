@@ -184,6 +184,202 @@
             
             
               
+                <a class="post-title-link" href="/2015/09/17/ToastUtil工具类/" itemprop="url">
+                  ToastUtil工具类
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-09-17T23:01:14+08:00" content="2015 Sep 17">
+              2015 Sep 17
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/09/17/ToastUtil工具类/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/09/17/ToastUtil工具类/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>Android开发固然会用到Toast,如果每次都Toast.makeToast来显示Toast的话,一方面写法麻烦,第二是多次调用Toast会使Toast一直浮在界面最上层,影响交互,最好的方式是封装一个ToastUtil:</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ToastUtil</span> </span>{
+
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> ToastUtil sToastUtil = <span class="keyword">null</span>;
+
+    <span class="keyword">private</span> Toast mToast = <span class="keyword">null</span>;
+
+    <span class="comment">/**
+     * 获取实例
+     *
+     * <span class="doctag">@return</span>
+     */</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function">ToastUtil <span class="title">getInstance</span><span class="params">()</span> </span>{
+        <span class="keyword">if</span> (sToastUtil == <span class="keyword">null</span>) {
+            <span class="keyword">synchronized</span> (ToastUtil.class) {
+                <span class="keyword">if</span> (sToastUtil == <span class="keyword">null</span>) {
+                    sToastUtil = <span class="keyword">new</span> ToastUtil();
+                }
+            }
+        }
+        <span class="keyword">return</span> sToastUtil;
+    }
+
+    <span class="keyword">protected</span> Handler <span class="keyword">handler</span> = <span class="keyword">new</span> Handler(Looper.getMainLooper());
+
+    <span class="comment">/**
+     * 显示Toast，多次调用此函数时，Toast显示的时间不会累计，并且显示内容为最后一次调用时传入的内容
+     * 持续时间默认为short
+     * <span class="doctag">@param</span> tips 要显示的内容
+     *            {<span class="doctag">@link</span> Toast#LENGTH_LONG}
+     */</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">showToast</span><span class="params">(<span class="keyword">final</span> String tips)</span></span>{
+        showToast(tips, Toast.LENGTH_SHORT);
+    }
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">showToast</span><span class="params">(<span class="keyword">final</span> <span class="keyword">int</span> tips)</span></span>{
+        showToast(tips, Toast.LENGTH_SHORT);
+    }
+    <span class="comment">/**
+     * 显示Toast，多次调用此函数时，Toast显示的时间不会累计，并且显示内容为最后一次调用时传入的内容
+     *
+     * <span class="doctag">@param</span> tips 要显示的内容
+     * <span class="doctag">@param</span> duration 持续时间，参见{<span class="doctag">@link</span> Toast#LENGTH_SHORT}和
+     *            {<span class="doctag">@link</span> Toast#LENGTH_LONG}
+     */</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">showToast</span><span class="params">(<span class="keyword">final</span> String tips, <span class="keyword">final</span> <span class="keyword">int</span> duration)</span> </span>{
+        <span class="keyword">if</span> (android.text.TextUtils.isEmpty(tips)) {
+            <span class="keyword">return</span>;
+        }
+        <span class="keyword">handler</span>.post(<span class="keyword">new</span> Runnable() {
+            <span class="annotation">@Override</span>
+            <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
+                <span class="keyword">if</span> (mToast == <span class="keyword">null</span>) {
+                    mToast = Toast.makeText(MyApplication.getMyApplicationContext(), tips, duration);
+                    mToast.show();
+                } <span class="keyword">else</span> {
+                    <span class="comment">//mToast.cancel();</span>
+                    <span class="comment">//mToast.setView(mToast.getView());</span>
+                    mToast.setText(tips);
+                    mToast.setDuration(duration);
+                    mToast.show();
+                }
+            }
+        });
+    }
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">showToast</span><span class="params">(<span class="keyword">final</span> <span class="keyword">int</span> tips, <span class="keyword">final</span> <span class="keyword">int</span> duration)</span> </span>{
+        <span class="keyword">handler</span>.post(<span class="keyword">new</span> Runnable() {
+            <span class="annotation">@Override</span>
+            <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
+                <span class="keyword">if</span> (mToast == <span class="keyword">null</span>) {
+                    mToast = Toast.makeText(MyApplication.getMyApplicationContext(), tips, duration);
+                    mToast.show();
+                } <span class="keyword">else</span> {
+                    <span class="comment">//mToast.cancel();</span>
+                    <span class="comment">//mToast.setView(mToast.getView());</span>
+                    mToast.setText(tips);
+                    mToast.setDuration(duration);
+                    mToast.show();
+                }
+            }
+        });
+    }
+}
+</code></pre><p>其实Toast调用的Context为ApplicationContext,在Application中初始化即可.</p>
+<pre><code>public <span class="class"><span class="keyword">class</span> <span class="title">MyApplication</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">Application</span> {</span>
+
+    <span class="keyword">private</span> static <span class="type">Context</span> myContext;
+
+    <span class="annotation">@Override</span>
+    public void onCreate() {
+        <span class="keyword">super</span>.onCreate();
+        myContext = <span class="keyword">this</span>.getApplicationContext();
+    }
+
+    public static <span class="type">Context</span> getMyApplicationContext(){
+        <span class="keyword">return</span> myContext;
+    }
+}
+</code></pre>
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
                 <a class="post-title-link" href="/2015/09/10/Android-Tips/" itemprop="url">
                   Android Tips
                 </a>
@@ -693,203 +889,6 @@ gridView.setEmptyView<span class="params">(view)</span>;
 
 
     
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2015/03/23/Android文件存储/" itemprop="url">
-                  Android文件存储
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-03-23T10:04:39+08:00" content="2015 Mar 23">
-              2015 Mar 23
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Android基础知识/" itemprop="url" rel="index">
-                    <span itemprop="name">Android基础知识</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/03/23/Android文件存储/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/23/Android文件存储/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>文件存储分内部文件存储和外部存储。</p>
-<p>默认情况下应用安装到内部存储，可以通过<code>AndroidMainfest.xml</code>文件下<code>application</code>的<code>android:installLocation</code>属性设置安装位置。</p>
-<table>
-<thead>
-<tr>
-<th>类别</th>
-<th>内部存储</th>
-<th>外部存储</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>可用</td>
-<td>一直可用</td>
-<td>没有挂载时不可用</td>
-</tr>
-<tr>
-<td>可访问性</td>
-<td>只能被自己的APP访问</td>
-<td>全部可读</td>
-</tr>
-<tr>
-<td>删除</td>
-<td>卸载应用时清除</td>
-<td>只有通过<code>getExternalFilesDir()</code>方法返回的路径的文件才会被删除</td>
-</tr>
-</tbody>
-</table>
-<p>读取外部存储时,需要添加以下权限:</p>
-<pre><code>写入的权限已经在SDK&gt;<span class="number">18</span>的版本中默认拥有了
-&lt;uses-permission android:<span class="variable">name=</span><span class="string">"android.permission.WRITE_EXTERNAL_STORAGE"</span>
-                 android:<span class="variable">maxSdkVersion=</span><span class="string">"18"</span> /&gt;
-
-&lt;uses-permission android:<span class="variable">name=</span><span class="string">"android.permission.READ_EXTERNAL_STORAGE"</span> /&gt;
-</code></pre><hr>
-<p>内部存储</p>
-<ol>
-<li><p><code>getFilesDir()</code> </p>
-<p> 返回app可用的内部存储文件地址。</p>
-</li>
-<li><p><code>getCacheDir()</code> </p>
-<p> 返回app可用的缓存文件地址。当缓存较大并且系统空间不足时会删除其中的文件。</p>
-</li>
-</ol>
-<p>内部存储保存文件：</p>
-<pre><code><span class="type">File</span> file = <span class="keyword">new</span> <span class="type">File</span>(context.getFilesDir<span class="literal">()</span>, filename);
-<span class="type">String</span> filename = <span class="string">"myfile"</span>;
-<span class="type">String</span> <span class="built_in">string</span> = <span class="string">"Hello world!"</span>;
-<span class="type">FileOutputStream</span> outputStream;
-
-<span class="keyword">try</span> {
-      outputStream = openFileOutput(filename, <span class="type">Context</span>.<span class="type">MODE_PRIVATE</span>);
-      outputStream.write(<span class="built_in">string</span>.getBytes<span class="literal">()</span>);
-      outputStream.close<span class="literal">()</span>;
-    } catch (<span class="type">Exception</span> e) {
-          e.printStackTrace<span class="literal">()</span>;
-}
-</code></pre><p>设置<code>MODE_PRIVATE</code>可以使其他应用无法访问文件。</p>
-<p>内部存储保存缓存文件：</p>
-<pre><code><span class="keyword">public</span> <span class="keyword">File</span> getTempFile(Context context, String url) {
-    <span class="keyword">File</span> <span class="keyword">file</span>;
-    <span class="keyword">try</span> {
-        String fileName = Uri.parse(url).getLastPathSegment();
-        <span class="keyword">file</span> = <span class="keyword">File</span>.createTempFile(fileName, <span class="keyword">null</span>, context.getCacheDir());
-    <span class="keyword">catch</span> (IOException e) {
-        <span class="comment">// Error while creating file</span>
-    }
-    <span class="keyword">return</span> <span class="keyword">file</span>;
-}
-</code></pre><hr>
-<p>外部存储</p>
-<p>因为外部存储可能没有被挂载，所以需要先判断是否可用：</p>
-<pre><code>/* Checks if external storage is available <span class="keyword">for</span> read and write */
-public boolean isExternalStorageWritable() {
-    String <span class="keyword">state</span> = Environment.getExternalStorageState();
-    if (Environment.MEDIA_MOUNTED.equals(<span class="keyword">state</span>)) {
-        return true;
-    }
-    return false;
-}
-
-/* Checks if external storage is available <span class="keyword">to</span> at least read */
-public boolean isExternalStorageReadable() {
-    String <span class="keyword">state</span> = Environment.getExternalStorageState();
-    if (Environment.MEDIA_MOUNTED.equals(<span class="keyword">state</span>) ||
-        Environment.MEDIA_MOUNTED_READ_ONLY.equals(<span class="keyword">state</span>)) {
-        return true;
-    }
-    return false;
-}
-</code></pre><ol>
-<li><p><code>getExternalStoragePublicDirectory()</code></p>
-<p> 返回可以任意访问的外部存储路径，删除应用时不会清除该路径。</p>
-</li>
-<li><p><code>getExternalFilesDir()</code></p>
-<p> 返回只能自己访问的外部存储路径，删除应用时该目录下的文件会被删除。</p>
-</li>
-</ol>
-<hr>
-<p><code>getFreeSpace ()</code>和<code>getTotalSpace ()</code>会返回路径下的可用空间和全部空间的字节。</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -932,7 +931,7 @@ public boolean isExternalStorageReadable() {
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">29</span>
+              <span class="site-state-item-count">30</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

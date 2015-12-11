@@ -36,7 +36,7 @@
 
 
 
-  <meta name="keywords" content="获取图片," />
+  <meta name="keywords" content="Hexo,next" />
 
 
 
@@ -45,40 +45,40 @@
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
 
 
-<meta name="description" content="使用Intent：
-注意点：
+<meta name="description" content="关于界面加载,为了更快的打开Activity,应该注意:
 
-非官方提供的代码，该方法并不通用，不是所有机器都支持这个intent，不推荐
-裁剪时putExtra设置crop为true即可。
-Uri必须以file://开头，不然会导致“无法保存剪裁的图片”的错误。
+尽量上一个Activity的onPause()的执行时间,因为上一个Activity的onPause()执行后才会执行下一个Activity的onStart()
+参考Android应用启动优化:一种DelayLoad的实现和原理中提到的延迟加载,在第一帧绘制结束后开始业务动作.
 
-可以封装这样一段代码：
-private void cropImageUri(Uri uri, int outputX, int outputY, int requ">
+
+Activity的界面刷新与加载:
+
+进入Activit">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android裁剪图片">
-<meta property="og:url" content="http://niorgai.github.io/2014/12/18/Android裁剪图片/index.html">
+<meta property="og:title" content="Android体验提升">
+<meta property="og:url" content="http://niorgai.github.io/2015/12/09/Android体验提升/index.html">
 <meta property="og:site_name" content="Jianqiu's blog">
-<meta property="og:description" content="使用Intent：
-注意点：
+<meta property="og:description" content="关于界面加载,为了更快的打开Activity,应该注意:
 
-非官方提供的代码，该方法并不通用，不是所有机器都支持这个intent，不推荐
-裁剪时putExtra设置crop为true即可。
-Uri必须以file://开头，不然会导致“无法保存剪裁的图片”的错误。
+尽量上一个Activity的onPause()的执行时间,因为上一个Activity的onPause()执行后才会执行下一个Activity的onStart()
+参考Android应用启动优化:一种DelayLoad的实现和原理中提到的延迟加载,在第一帧绘制结束后开始业务动作.
 
-可以封装这样一段代码：
-private void cropImageUri(Uri uri, int outputX, int outputY, int requ">
-<meta property="og:updated_time" content="2015-11-29T13:20:34.000Z">
+
+Activity的界面刷新与加载:
+
+进入Activit">
+<meta property="og:updated_time" content="2015-12-08T17:24:45.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android裁剪图片">
-<meta name="twitter:description" content="使用Intent：
-注意点：
+<meta name="twitter:title" content="Android体验提升">
+<meta name="twitter:description" content="关于界面加载,为了更快的打开Activity,应该注意:
 
-非官方提供的代码，该方法并不通用，不是所有机器都支持这个intent，不推荐
-裁剪时putExtra设置crop为true即可。
-Uri必须以file://开头，不然会导致“无法保存剪裁的图片”的错误。
+尽量上一个Activity的onPause()的执行时间,因为上一个Activity的onPause()执行后才会执行下一个Activity的onStart()
+参考Android应用启动优化:一种DelayLoad的实现和原理中提到的延迟加载,在第一帧绘制结束后开始业务动作.
 
-可以封装这样一段代码：
-private void cropImageUri(Uri uri, int outputX, int outputY, int requ">
+
+Activity的界面刷新与加载:
+
+进入Activit">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -90,7 +90,7 @@ private void cropImageUri(Uri uri, int outputX, int outputY, int requ">
 
 
 
-  <title> Android裁剪图片 | Jianqiu's blog </title>
+  <title> Android体验提升 | Jianqiu's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -207,7 +207,7 @@ private void cropImageUri(Uri uri, int outputX, int outputY, int requ">
             
             
               
-                Android裁剪图片
+                Android体验提升
               
             
           </h1>
@@ -216,8 +216,8 @@ private void cropImageUri(Uri uri, int outputX, int outputY, int requ">
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2014-12-18T20:53:20+08:00" content="2014 Dec 18">
-              2014 Dec 18
+            <time itemprop="dateCreated" datetime="2015-12-09T00:54:46+08:00" content="2015 Dec 9">
+              2015 Dec 9
             </time>
           </span>
 
@@ -226,8 +226,8 @@ private void cropImageUri(Uri uri, int outputX, int outputY, int requ">
               &nbsp; | &nbsp; 分类于
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
-                    <span itemprop="name">Android开发经验</span>
+                  <a href="/categories/Android开发闲谈/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发闲谈</span>
                   </a>
                 </span>
 
@@ -242,8 +242,8 @@ private void cropImageUri(Uri uri, int outputX, int outputY, int requ">
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2014/12/18/Android裁剪图片/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/18/Android裁剪图片/" itemprop="commentsCount"></span>
+                <a href="/2015/12/09/Android体验提升/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/09/Android体验提升/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -262,129 +262,42 @@ private void cropImageUri(Uri uri, int outputX, int outputY, int requ">
       
 
       
-        <span itemprop="articleBody"><p>使用Intent：</p>
-<p>注意点：</p>
+        <span itemprop="articleBody"><ol>
+<li><p>关于界面加载,为了更快的打开Activity,应该注意:</p>
 <ol>
-<li><strong>非官方提供的代码，该方法并不通用，不是所有机器都支持这个intent，不推荐</strong></li>
-<li>裁剪时putExtra设置crop为true即可。</li>
-<li><strong>Uri必须以file://开头，不然会导致“无法保存剪裁的图片”的错误。</strong></li>
+<li>尽量上一个Activity的<code>onPause()</code>的执行时间,因为上一个Activity的<code>onPause()</code>执行后才会执行下一个Activity的<code>onStart()</code></li>
+<li>参考<a href="http://www.androidperformance.com/2015/11/18/Android-app-lunch-optimize-delay-load.html" target="_blank" rel="external">Android应用启动优化:一种DelayLoad的实现和原理</a>中提到的延迟加载,在第一帧绘制结束后开始业务动作.</li>
 </ol>
-<p>可以封装这样一段代码：</p>
-<pre><code>private void cropImageUri<span class="params">(Uri uri, int outputX, int outputY, int requestCode,Uri outputUri)</span>{
-    Intent intent = new Intent<span class="params">(<span class="string">"com.android.camera.action.CROP"</span>)</span>;
-    intent.setDataAndType<span class="params">(uri, <span class="string">"image/*"</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"crop"</span>, <span class="string">"true"</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"aspectX"</span>, <span class="number">2</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"aspectY"</span>, <span class="number">1</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"outputX"</span>, outputX)</span>;
-    intent.putExtra<span class="params">(<span class="string">"outputY"</span>, outputY)</span>;
-    intent.putExtra<span class="params">(<span class="string">"scale"</span>, <span class="literal">true</span>)</span>;
-    intent.putExtra<span class="params">(MediaStore.EXTRA_OUTPUT, outputUri)</span>;
-    intent.putExtra<span class="params">(<span class="string">"return-data"</span>, <span class="literal">false</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"outputFormat"</span>, Bitmap.CompressFormat.JPEG.toString<span class="params">()</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</span>, <span class="literal">true</span>)</span>; <span class="comment">// no face detection</span>
-    startActivityForResult<span class="params">(intent, requestCode)</span>;
-}
-</code></pre><p>另外关于putExtra的信号：</p>
-<table>
-<thead>
-<tr>
-<th>附加选项</th>
-<th>数据类型</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>crop</td>
-<td>String</td>
-<td>发送裁剪信号</td>
-</tr>
-<tr>
-<td>aspectX</td>
-<td>int</td>
-<td>X方向上的比例</td>
-</tr>
-<tr>
-<td>aspectY</td>
-<td>int</td>
-<td>Y方向上的比例</td>
-</tr>
-<tr>
-<td>outputX</td>
-<td>int</td>
-<td>裁剪区的宽</td>
-</tr>
-<tr>
-<td>outputY</td>
-<td>int</td>
-<td>裁剪区的高</td>
-</tr>
-<tr>
-<td>scale</td>
-<td>boolean</td>
-<td>是否保留比例</td>
-</tr>
-<tr>
-<td>return-data</td>
-<td>boolean</td>
-<td>是否将数据保留在Bitmap中返回</td>
-</tr>
-<tr>
-<td>data</td>
-<td>Parcelable</td>
-<td>相应的Bitmap数据</td>
-</tr>
-<tr>
-<td>circleCrop</td>
-<td>String</td>
-<td>圆形裁剪区域？</td>
-</tr>
-<tr>
-<td>MediaStore.EXTRA_OUTPUT (“output”)</td>
-<td>URI</td>
-<td>将URI指向相应的file:///…</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>使用Github lib,<br>以下是一些star比较高的lib：</p>
-<ul>
-<li><p><a href="https://github.com/lvillani/android-cropimage" target="_blank" rel="external">https://github.com/lvillani/android-cropimage</a></p>
-<p>  这是基于Gradle的，可以收到加上com.android.camera这个包里面的代码，加上resource即可使用，example里面有使用示例。</p>
 </li>
-<li><p><a href="https://github.com/biokys/cropimage" target="_blank" rel="external">https://github.com/biokys/cropimage</a></p>
-<p>  提供ant及gradle的lib，但在我机器(vivo Xplay)上crash了。。</p>
+<li><p>Activity的界面刷新与加载:</p>
+<ol>
+<li>进入Activity时显示空白界面(但是要有title).</li>
+<li>刷新过程中显示LoadingView.</li>
+<li>刷新完毕如果没有数据显示EmptyView.</li>
+<li>加载数据时最好使用自动加载,加载结束后底部露出新数据告知用户有更多数据.</li>
+</ol>
 </li>
-</ul>
+<li><p>click事件需要触发网络请求时,最好在调用请求前<code>view.setClickable(false);</code>,网络请求结束后<code>view.setClickable(true)</code>.</p>
+</li>
+</ol>
 </span>
       
     </div>
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/获取图片/" rel="tag">#获取图片</a>
-          
-        </div>
-      
 
       
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2014/12/16/PopupWindow相关/" rel="next" title="PopupWindow相关">
-                <i class="fa fa-chevron-left"></i> PopupWindow相关
+              <a href="/2015/12/05/我眼中的刷新与加载/" rel="next" title="我眼中的刷新与加载">
+                <i class="fa fa-chevron-left"></i> 我眼中的刷新与加载
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2014/12/23/Mac下反编译Android-APK/" rel="prev" title="Mac下反编译Android APK">
-                Mac下反编译Android APK <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -409,8 +322,8 @@ private void cropImageUri(Uri uri, int outputX, int outputY, int requ">
         
           <div class="comments" id="comments">
             
-              <div class="ds-thread" data-thread-key="2014/12/18/Android裁剪图片/"
-                   data-title="Android裁剪图片" data-url="http://niorgai.github.io/2014/12/18/Android裁剪图片/">
+              <div class="ds-thread" data-thread-key="2015/12/09/Android体验提升/"
+                   data-title="Android体验提升" data-url="http://niorgai.github.io/2015/12/09/Android体验提升/">
               </div>
             
           </div>

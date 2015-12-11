@@ -63,7 +63,7 @@ native进程：采用C/C++实现，不包含dalvik实例的进程。
 java进程：Android中运行于dalvik虚拟机之上的进程。每一个java进程都是存在于一个native进程中。
 
 内存空间是一定的，所以在对象无用时就要回收一些对象来留出空间。当Java Garbage C">
-<meta property="og:updated_time" content="2015-11-29T13:13:47.000Z">
+<meta property="og:updated_time" content="2015-12-11T10:21:53.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android内存泄漏">
 <meta name="twitter:description" content="以下内容提取于Android进程的内存管理分析及Android内存泄漏分析及调试.
@@ -281,6 +281,7 @@ java进程：Android中运行于dalvik虚拟机之上的进程。每一个java�
 }
 </code></pre></li>
 <li>WebView的泄露问题:在魅族上面发现webView打开再关闭就会内存泄露..目前使用的解决方法是在webview外面嵌套一层layout作为container.在Activity的<code>onDestroy</code>中调用<code>container.removeAllViews()</code>方法.</li>
+<li>Dialog导致Window泄露,如果需要在dialog依附的Activity销毁前没有调用dialog.dismiss().会导致Activity泄露</li>
 </ol>
 <h2 id="检测内存泄露的方法">检测内存泄露的方法</h2><ol>
 <li>Android Studio自带的Memory Monitor,手动触发GC可以看得比较直观</li>
@@ -375,7 +376,7 @@ java进程：Android中运行于dalvik虚拟机之上的进程。每一个java�
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">29</span>
+              <span class="site-state-item-count">30</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
