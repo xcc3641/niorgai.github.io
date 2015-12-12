@@ -184,6 +184,150 @@
             
             
               
+                <a class="post-title-link" href="/2014/12/16/PopupWindow相关/" itemprop="url">
+                  PopupWindow相关
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2014-12-16T15:42:25+08:00" content="2014 Dec 16">
+              2014 Dec 16
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2014/12/16/PopupWindow相关/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/16/PopupWindow相关/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>PopupWindow顾名思义，就是一个弹出窗口。不过特性倒是挺好玩的：</p>
+<ol>
+<li>以弹出窗口的形式展示，可以替代系统的dialog。</li>
+<li>可以在任意位置出现，并且会浮动在当前窗口的顶部(获取焦点)。</li>
+<li>可以用来装载任意的view。</li>
+<li>通过设置背景颜色0xaa000000可以实现半透明效果</li>
+<li><p>关于点击消失：</p>
+<ol>
+<li><p>如果需要点击外部消失，只需设置背景，foucs，outSideTouchable。</p>
+<pre><code><span class="keyword">this</span>.setBackgroundDrawable(<span class="keyword">new</span> ColorDrawable(<span class="number">0xaa000000</span>));
+<span class="keyword">this</span>.setFocusable(<span class="literal">true</span>);
+<span class="keyword">this</span>.setOutsideTouchable(<span class="literal">true</span>);
+</code></pre></li>
+<li><p>如果需要点击自身(非按钮控件)消失，在自身设置onclick就好。</p>
+<pre><code>mWindow.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>{
+        GetExpressAlert.<span class="keyword">this</span>.dismiss();
+    }
+});
+</code></pre></li>
+</ol>
+</li>
+<li><p>因为某些机型是虚拟按键的,所以要加上以下设置防止挡住按键.</p>
+<pre><code><span class="tag">this</span><span class="class">.setSoftInputMode</span>(<span class="tag">WindowManager</span><span class="class">.LayoutParams</span><span class="class">.SOFT_INPUT_ADJUST_RESIZE</span>);
+</code></pre></li>
+</ol>
+<p>整个类也特别简单：</p>
+<pre><code>public <span class="class"><span class="keyword">class</span> <span class="title">GetExpressAlert</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">PopupWindow</span> {</span>
+    <span class="type">Context</span> mContext;
+    <span class="type">View</span> mWindow;
+
+    public <span class="type">GetExpressAlert</span>(<span class="type">Context</span> context) {
+    mContext = context;
+    <span class="type">LayoutInflater</span> inflater = (<span class="type">LayoutInflater</span>) context
+            .getSystemService(<span class="type">Context</span>.<span class="type">LAYOUT_INFLATER_SERVICE</span>);
+    mWindow = inflater.inflate(<span class="type">R</span>.layout.get_express_alert, <span class="literal">null</span>);
+    <span class="keyword">this</span>.setContentView(mWindow);
+    <span class="keyword">this</span>.setWidth(<span class="type">LayoutParams</span>.<span class="type">FILL_PARENT</span>);
+    <span class="keyword">this</span>.setHeight(<span class="type">LayoutParams</span>.<span class="type">FILL_PARENT</span>);
+
+    <span class="keyword">this</span>.setBackgroundDrawable(<span class="keyword">new</span> <span class="type">ColorDrawable</span>(<span class="number">0xaa000000</span>));
+    }
+
+}
+</code></pre><p>显示效果：<br><img src="http://7sbqys.com1.z0.glb.clouddn.com/alert.png" alt=""></p>
+<p>xml代码没有什么特别的，所以不贴了。</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
                 <a class="post-title-link" href="/2014/12/13/ListView与BaseAdapter优化/" itemprop="url">
                   ListView与BaseAdapter优化
                 </a>
@@ -802,126 +946,11 @@ protected void onActivityResult<span class="params">(int requestCode, int result
 
 
     
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2014/12/06/手机屏幕单位/" itemprop="url">
-                  手机屏幕单位
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2014-12-06T13:31:42+08:00" content="2014 Dec 6">
-              2014 Dec 6
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Android基础知识/" itemprop="url" rel="index">
-                    <span itemprop="name">Android基础知识</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2014/12/06/手机屏幕单位/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/06/手机屏幕单位/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>先插一句比较小白的话。。<br>点动成线，其实我们看到的屏幕是一个个像素点显示的，密集的点显示成所看到的图像。</p>
-<h3 id="常见的单位：in、px、dpi(ppi、density)、dp(dip)、sp">常见的单位：in、px、dpi(ppi、density)、dp(dip)、sp</h3><p>in：inch，英寸，每英寸大约是2.54厘米，一般手机所说的屏幕多少寸都是指对角线的长度。</p>
-<p>px：Pixel，像素，最小单位，指每一个像素点。通常所说的分辨率1920*1080就是指各个方向上的像素点的数量。</p>
-<p>dpi(ppi、density)：<br>dpi为Dots Per Inch的缩写，表示每英寸点的个数，一般用于打印分辨率。<br>ppi为Pixels Per Inch的缩写，表示每英寸像素点的个数，一般用于显示分辨率。<br>density，密度，表示每Inch点的个数。<br>计算方法为px/in即可。</p>
-<p>安卓的资源列表文件夹与其对应：</p>
-<pre><code>drawable-ldpi         <span class="list">(<span class="keyword">dpi=120</span> , density = <span class="number">0.75</span>)</span>
-drawable-mdpi         <span class="list">(<span class="keyword">dpi=160</span> , density = <span class="number">1</span>,这也是默认的layout文件夹)</span>
-drawable-hdpi         <span class="list">(<span class="keyword">dpi=240</span> , density = <span class="number">1.5</span>)</span>
-drawable-xhdpi         <span class="list">(<span class="keyword">dpi=320</span> , density = <span class="number">2</span>)</span>
-drawable-xxhdpi     <span class="list">(<span class="keyword">dpi=480</span> , density = <span class="number">3</span>)</span>
-</code></pre><p>dp(dip)：设备独立像素，Device Independent Pixels的缩写，Android特有的单位。不会因为像素而导致显示效果不同。</p>
-<p>sp：主要用于调整字体大小,转换方法与dp一样,但是会随着系统设置而变化字体大小.</p>
-<p><strong>默认的icon大小为48dp*48dp</strong></p>
-<p><strong>默认的通知栏icon大小为24dp*24dp</strong></p>
-<p>适配时建议根据设计图计算密度，如iphone5的设备分辨率为640X1164, 屏幕尺寸为4英寸，那么由勾股定理对角线平方为640*640+1164*1164=1764496,开根号得出对角线分辨率为1328，1328/4=332,这就是iphone5的”dpi”,所以可以把iphone5的对应设计图放在xhdpi文件夹中。</p>
-<p>加载资源时，Android会先根据屏幕的dpi在dpi相同的资源文件夹中找资源，然后从最大的资源文件夹开始找。<br>所以推荐在dpi最高的文件夹放置一套资源文件即可，对资源的长高设定wrap_content，系统会自动缩放保持显示效果。如100px*100px的图放在xhdpi中，那么mdpi的设备显示时,100<em>1/2 = 50px,那么该图就会以50px\</em>50px的大小显示。 </p>
-<p>LayoutParams实例化时传的参数为px，需要将布局的dp转为px才能使效果一样。<br>LayoutParams初始化时需要初始化为父布局的类型<br>dp转px的方法为：</p>
-<pre><code><span class="built_in">int</span> dip = (<span class="built_in">int</span>)<span class="type">TypedValue</span>.applyDimension(<span class="type">TypedValue</span>.<span class="type">COMPLEX_UNIT_DIP</span>,<span class="number">60</span>,getResources<span class="literal">()</span>.getDisplayMetrics<span class="literal">()</span>);
-</code></pre>
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span>
+    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -959,7 +988,7 @@ drawable-xxhdpi     <span class="list">(<span class="keyword">dpi=480</span> , d
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">30</span>
+              <span class="site-state-item-count">31</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

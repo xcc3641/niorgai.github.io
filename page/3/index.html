@@ -184,6 +184,123 @@
             
             
               
+                <a class="post-title-link" href="/2015/04/24/ListView的一些坑/" itemprop="url">
+                  ListView的一些坑
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-04-24T18:06:17+08:00" content="2015 Apr 24">
+              2015 Apr 24
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/04/24/ListView的一些坑/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/04/24/ListView的一些坑/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <ol>
+<li>setEmptyView需要listView与emptyView在一个Layout下，所以需要这样加入（获取ViewParent加入emptyView）：</li>
+</ol>
+<pre><code>View view = <span class="params">(LayoutInflater.from<span class="params">(context)</span>.inflate<span class="params">(R.layout.empty_goods,null,<span class="literal">false</span>)</span>)</span>;
+<span class="params">(<span class="params">(ViewGroup)</span>gridView.getParent<span class="params">()</span>)</span>.addView<span class="params">(view, new ViewGroup.LayoutParams<span class="params">(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)</span>)</span>;
+gridView.setEmptyView<span class="params">(view)</span>;
+</code></pre><ol>
+<li><p>ListView <code>setSelection</code>方法有时候可能会失效,原因一个是没有焦点,一个是没有在主线程中执行.解决方法是:</p>
+<pre><code>listView.<span class="params">(new Runnable<span class="params">()</span> {
+    @Override
+    public void run<span class="params">()</span> {
+        listView.requestFocusFromTouch<span class="params">()</span>;
+        listView.setItemChecked<span class="params">(i, <span class="literal">true</span>)</span>;
+        listView.setSelection<span class="params">(i)</span>;
+    }
+})</span>;
+</code></pre></li>
+<li><p>ListView.addView(View view)方法传入的是View, 通过<code>View.inflate(context, R.layout.file, null)</code>方法获取,在4.4(API 19)之前只能在<code>setAdapter</code>之前调用.</p>
+</li>
+</ol>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
                 <a class="post-title-link" href="/2015/03/23/Android文件存储/" itemprop="url">
                   Android文件存储
                 </a>
@@ -999,190 +1116,11 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
 
 
     
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2015/03/11/Android复用Layout/" itemprop="url">
-                  Android复用Layout
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-03-11T22:07:12+08:00" content="2015 Mar 11">
-              2015 Mar 11
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
-                    <span itemprop="name">Android开发经验</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/03/11/Android复用Layout/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/11/Android复用Layout/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <h2 id="&lt;include&gt;标签复用布局"><code>&lt;include&gt;</code>标签复用布局</h2><p>Android布局中经常可以发现能够重用的layout，如果每次都复制粘贴，第一是不方便，第二是可维护性不高，改动一个地方要改好几处，所以最直接的方法是复用layout。</p>
-<p>如果原布局为：</p>
-<pre><code><span class="tag">&lt;LinearLayout..&gt;</span>
-    <span class="tag">&lt;LinearLayout..&gt;</span>
-        <span class="tag">&lt;TextView..&gt;</span>
-        <span class="tag">&lt;TextView..&gt;</span>
-    <span class="tag">&lt;/LinearLayout&gt;</span>
-    <span class="tag">&lt;LinearLayout..&gt;</span>
-        <span class="tag">&lt;TextView..&gt;</span>
-        <span class="tag">&lt;TextView..&gt;</span>
-    <span class="tag">&lt;/LinearLayout&gt;</span>
-<span class="tag">&lt;/LinearLayout&gt;</span>
-</code></pre><p>那么可以抽取出复用布局reuse.xml：</p>
-<pre><code><span class="tag">&lt;LinearLayout..&gt;</span>
-    <span class="tag">&lt;TextView..&gt;</span>
-    <span class="tag">&lt;TextView..&gt;</span>
-<span class="tag">&lt;/LinearLayout&gt;</span>
-</code></pre><p>复用时使用<code>&lt;layout&gt;</code>标签，设置<code>layout=&quot;@layout/layoutId&quot;</code>即可。</p>
-<pre><code>&lt;include
-    android:<span class="variable">layout_width=</span><span class="string">"fill_parent"</span>
-    android:<span class="variable">layout_height=</span><span class="string">"0dp"</span>
-    android:<span class="variable">layout_weight=</span><span class="string">"1"</span>
-    <span class="variable">layout=</span><span class="string">"@layout/reuse.xml"</span>/&gt;
-</code></pre><p><strong>注意如果需要设置width或height一定要两个一起设置才会生效</strong></p>
-<p>如果希望减少reuse.xml中的LinearLayout嵌套(即在include时去掉根布局)，可以使用<code>&lt;merge&gt;</code>标签，即：</p>
-<pre><code><span class="tag">&lt;Merge..&gt;</span>
-    <span class="tag">&lt;TextView..&gt;</span>
-    <span class="tag">&lt;TextView..&gt;</span>
-<span class="tag">&lt;/Merge..&gt;</span>
-</code></pre><hr>
-<h4 id="抽取通用layout作为View">抽取通用layout作为View</h4><p>可以新建一个ReuseView</p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReuseView</span> <span class="keyword">extends</span> <span class="title">LinearLayout</span></span>{
-
-    <span class="function"><span class="keyword">public</span> <span class="title">MainPageInterface</span><span class="params">(Context context)</span> </span>{
-        <span class="keyword">this</span>(context, <span class="keyword">null</span>);
-    }
-
-    <span class="function"><span class="keyword">public</span> <span class="title">MainPageInterface</span><span class="params">(Context context, AttributeSet attrs)</span> </span>{
-        <span class="keyword">this</span>(context, attrs, <span class="number">0</span>);
-    }
-
-    <span class="function"><span class="keyword">public</span> <span class="title">MainPageInterface</span><span class="params">(Context context, AttributeSet attrs, <span class="keyword">int</span> defStyleAttr)</span> </span>{
-        <span class="keyword">super</span>(context, attrs, defStyleAttr);
-        init();
-    }
-
-    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>{
-        inflate(getContext(), R.layout.reuse, ReuseView.<span class="keyword">this</span>);
-    }
-}
-</code></pre><p>这样主布局便变成</p>
-<pre><code><span class="tag">&lt;LinearLayout..&gt;</span>
-    <span class="tag">&lt;ReuseView ../&gt;</span>
-<span class="tag">&lt;/LinearLayout&gt;</span>
-</code></pre><p>这样的好处便是可以在View中实现功能，模块分离方便业务调整。</p>
-<p>LayoutInflater的inflate方法原型为：<code>View inflate (Context context, int resource, ViewGroup root)</code></p>
-<p>注意：</p>
-<ol>
-<li>inflate方法返回的view的默认layoutParams为null。</li>
-<li>返回值为The root View of the inflated hierarchy。</li>
-<li>如果设置了第二个参数root <ol>
-<li>attachToRoot为false，则只会返回设置了LayoutParams的view的root。</li>
-<li>attachToRoot为true，则会返回将该view作为root返回。</li>
-</ol>
-</li>
-<li>这样当R.layout.reuse为<merge>时,会少掉一层layout.</merge></li>
-</ol>
-<hr>
-<p>惰性布局ViewStub</p>
-<p>ViewStub用于显示本来不需要显示，只有特殊情况下才会显示的布局。虽然inflate一个布局的内存耗费较大，ViewStub会相对少一点。</p>
-<pre><code>&lt;ViewStub
-    android:<span class="variable">id=</span><span class="string">"@+id/stub_import"</span>
-    android:<span class="variable">inflatedId=</span><span class="string">"@+id/panel_import"</span>
-    android:<span class="variable">layout=</span><span class="string">"@layout/progress_overlay"</span>
-    android:<span class="variable">layout_width=</span><span class="string">"fill_parent"</span>
-    android:<span class="variable">layout_height=</span><span class="string">"wrap_content"</span>/&gt;
-</code></pre><p>使用时设置visible或者inflate布局。</p>
-<pre><code><span class="params">(<span class="params">(ViewStub)</span> findViewById<span class="params">(R.id.stub_import)</span>)</span>.setVisibility<span class="params">(View.VISIBLE)</span>;
-<span class="comment">// or</span>
-View importPanel = <span class="params">(<span class="params">(ViewStub)</span> findViewById<span class="params">(R.id.stub_import)</span>)</span>.inflate<span class="params">()</span>;
-</code></pre><p>一旦ViewStub被显示或inflate，ViewStub将不再属于该布局，会被其inflate的layout取代。此时可以通过inflatedId去寻找该View。</p>
-<p><strong>注意viewStub不支持</strong><code>&lt;merge&gt;</code><strong>标签</strong></p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1220,7 +1158,7 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">30</span>
+              <span class="site-state-item-count">31</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

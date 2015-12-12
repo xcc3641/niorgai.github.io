@@ -48,7 +48,7 @@
 <meta name="description" content="Android | jianqiu&apos;s blog">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Jianqiu's blog">
-<meta property="og:url" content="http://niorgai.github.io/archives/2014/12/index.html">
+<meta property="og:url" content="http://niorgai.github.io/page/7/index.html">
 <meta property="og:site_name" content="Jianqiu's blog">
 <meta property="og:description" content="Android | jianqiu&apos;s blog">
 <meta name="twitter:card" content="summary">
@@ -65,7 +65,7 @@
 
 
 
-  <title> 归档 | Jianqiu's blog </title>
+  <title> Jianqiu's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -86,7 +86,9 @@
 
 
 
-  <div class="container one-column  page-archive ">
+  <div class="container one-column 
+   page-home 
+">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -164,217 +166,129 @@
     <main id="main" class="main">
       <div class="main-inner">
         <div id="content" class="content"> 
+  <section id="posts" class="posts-expand">
+    
+      
 
-  <section id="posts" class="posts-collapse">
-    <span class="archive-move-on"></span>
+  
+  
 
-    <span class="archive-page-counter">
-      
-      
-       
-      
-      OK! 目前共计 31 篇日志。 继续努力。
-    </span>
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
     
+      <header class="post-header">
 
-      
-      
-      
-
-      
         
-        <div class="collection-title">
-          <h2 class="archive-year motion-element" id="archive-year-2014">2014</h2>
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                <a class="post-title-link" href="/2014/12/06/手机屏幕单位/" itemprop="url">
+                  手机屏幕单位
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2014-12-06T13:31:42+08:00" content="2014 Dec 6">
+              2014 Dec 6
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android基础知识/" itemprop="url" rel="index">
+                    <span itemprop="name">Android基础知识</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2014/12/06/手机屏幕单位/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/06/手机屏幕单位/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
         </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
       
       
 
       
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
         
-            <a class="post-title-link" href="/2014/12/26/Android代码混淆/" itemprop="url">
-              
-                <span itemprop="name">Android代码混淆</span>
-              
-            </a>
+          <span itemprop="articleBody">
+            
+              <p>先插一句比较小白的话。。<br>点动成线，其实我们看到的屏幕是一个个像素点显示的，密集的点显示成所看到的图像。</p>
+<h3 id="常见的单位：in、px、dpi(ppi、density)、dp(dip)、sp">常见的单位：in、px、dpi(ppi、density)、dp(dip)、sp</h3><p>in：inch，英寸，每英寸大约是2.54厘米，一般手机所说的屏幕多少寸都是指对角线的长度。</p>
+<p>px：Pixel，像素，最小单位，指每一个像素点。通常所说的分辨率1920*1080就是指各个方向上的像素点的数量。</p>
+<p>dpi(ppi、density)：<br>dpi为Dots Per Inch的缩写，表示每英寸点的个数，一般用于打印分辨率。<br>ppi为Pixels Per Inch的缩写，表示每英寸像素点的个数，一般用于显示分辨率。<br>density，密度，表示每Inch点的个数。<br>计算方法为px/in即可。</p>
+<p>安卓的资源列表文件夹与其对应：</p>
+<pre><code>drawable-ldpi         <span class="list">(<span class="keyword">dpi=120</span> , density = <span class="number">0.75</span>)</span>
+drawable-mdpi         <span class="list">(<span class="keyword">dpi=160</span> , density = <span class="number">1</span>,这也是默认的layout文件夹)</span>
+drawable-hdpi         <span class="list">(<span class="keyword">dpi=240</span> , density = <span class="number">1.5</span>)</span>
+drawable-xhdpi         <span class="list">(<span class="keyword">dpi=320</span> , density = <span class="number">2</span>)</span>
+drawable-xxhdpi     <span class="list">(<span class="keyword">dpi=480</span> , density = <span class="number">3</span>)</span>
+</code></pre><p>dp(dip)：设备独立像素，Device Independent Pixels的缩写，Android特有的单位。不会因为像素而导致显示效果不同。</p>
+<p>sp：主要用于调整字体大小,转换方法与dp一样,但是会随着系统设置而变化字体大小.</p>
+<p><strong>默认的icon大小为48dp*48dp</strong></p>
+<p><strong>默认的通知栏icon大小为24dp*24dp</strong></p>
+<p>适配时建议根据设计图计算密度，如iphone5的设备分辨率为640X1164, 屏幕尺寸为4英寸，那么由勾股定理对角线平方为640*640+1164*1164=1764496,开根号得出对角线分辨率为1328，1328/4=332,这就是iphone5的”dpi”,所以可以把iphone5的对应设计图放在xhdpi文件夹中。</p>
+<p>加载资源时，Android会先根据屏幕的dpi在dpi相同的资源文件夹中找资源，然后从最大的资源文件夹开始找。<br>所以推荐在dpi最高的文件夹放置一套资源文件即可，对资源的长高设定wrap_content，系统会自动缩放保持显示效果。如100px*100px的图放在xhdpi中，那么mdpi的设备显示时,100<em>1/2 = 50px,那么该图就会以50px\</em>50px的大小显示。 </p>
+<p>LayoutParams实例化时传的参数为px，需要将布局的dp转为px才能使效果一样。<br>LayoutParams初始化时需要初始化为父布局的类型<br>dp转px的方法为：</p>
+<pre><code><span class="built_in">int</span> dip = (<span class="built_in">int</span>)<span class="type">TypedValue</span>.applyDimension(<span class="type">TypedValue</span>.<span class="type">COMPLEX_UNIT_DIP</span>,<span class="number">60</span>,getResources<span class="literal">()</span>.getDisplayMetrics<span class="literal">()</span>);
+</code></pre>
+            
+          </span>
         
-      </h1>
+      
+    </div>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2014-12-26T19:58:07+08:00"
-              content="2014 Dec 26" >
-          12-26
-        </time>
-      </div>
+    <footer class="post-footer">
+      
 
-    </header>
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
   </article>
 
 
-
     
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2014/12/23/Mac下反编译Android-APK/" itemprop="url">
-              
-                <span itemprop="name">Mac下反编译Android APK</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2014-12-23T16:44:04+08:00"
-              content="2014 Dec 23" >
-          12-23
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2014/12/18/Android裁剪图片/" itemprop="url">
-              
-                <span itemprop="name">Android裁剪图片</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2014-12-18T20:53:20+08:00"
-              content="2014 Dec 18" >
-          12-18
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2014/12/16/PopupWindow相关/" itemprop="url">
-              
-                <span itemprop="name">PopupWindow相关</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2014-12-16T15:42:25+08:00"
-              content="2014 Dec 16" >
-          12-16
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2014/12/13/ListView与BaseAdapter优化/" itemprop="url">
-              
-                <span itemprop="name">ListView与BaseAdapter优化</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2014-12-13T12:39:52+08:00"
-              content="2014 Dec 13" >
-          12-13
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/archives/2014/12/page/2/">2</a><a class="extend next" rel="next" href="/archives/2014/12/page/2/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span>
   </nav>
-
 
 
  </div>
@@ -498,12 +412,6 @@
   
   
   
-    <script type="text/javascript">
-      postMotionOptions = {stagger: 100, drag: true};
-    </script>
-  
-
-  
     
 
   
@@ -546,12 +454,6 @@
   <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
 
   
-  
-    <script type="text/javascript" id="motion.page.archive">
-      $('.archive-year').velocity('transition.slideLeftIn');
-    </script>
-  
-
 
   <script type="text/javascript">
     $(document).ready(function () {

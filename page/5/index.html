@@ -184,6 +184,145 @@
             
             
               
+                <a class="post-title-link" href="/2015/01/31/Android相册选取图片/" itemprop="url">
+                  Android相册选取图片
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-01-31T00:39:36+08:00" content="2015 Jan 31">
+              2015 Jan 31
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/01/31/Android相册选取图片/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/31/Android相册选取图片/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>目前从图库选择图片可以有两种方法：</p>
+<p><strong>以下结果属于vivo Xplay,Android Version 4.4.4测试结果，如果有其他机型测试我会补充</strong><br>1.<strong>Intent.ACTION_PICK：</strong></p>
+<pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(<span class="type">Intent</span>.ACTION_PICK,
+            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
+</code></pre><p> onActivityResult返回的Intent中：</p>
+<ul>
+<li><code>intent.getData()</code>会返回所选图片的Uri，格式为<code>content://media/external/images/media/919</code></li>
+<li><code>intent.getExtras()</code>返回的bundle中包含一个boolean变量，通过<code>data.getExtras().get(&quot;isFinishGallery&quot;)</code>获取,应该是指是否获取完毕，查询文档没有官方结果。</li>
+<li><code>intent.putExtra(&quot;return-data&quot;,false)</code>对返回值没有影响。</li>
+</ul>
+<p>2.<strong>Intent.ACTION_GET_CONTENT</strong></p>
+<pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(<span class="type">Intent</span>.ACTION_GET_CONTENT);
+<span class="type">intent</span>.setType(<span class="string">"image/*"</span>);//不加会导致crash
+</code></pre><p>  onActivityResult返回的Intent中：</p>
+<ul>
+<li><code>intent.getData()</code>返回所选图片的Uri：</li>
+</ul>
+<hr>
+<p>关于返回Uri格式的说明：</p>
+<ul>
+<li><p>系统版本大于等于19(KitKat):<code>content://com.android.providers.media.documents/document/image%3A919</code></p>
+</li>
+<li><p>系统版本低于19:<code>content://media/external/images/media/919</code></p>
+</li>
+</ul>
+<p>可以通过以下函数获取真实路径：</p>
+<pre><code><span class="keyword">private</span> <span class="keyword">String</span> getRealPathFromURI(Context context,Uri contentUri) {
+    <span class="keyword">String</span>[] proj = { MediaStore.Images.Media.DATA };
+    Cursor <span class="built_in">cursor</span> = context.getContentResolver().query(contentUri, proj, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);
+    <span class="keyword">if</span> (<span class="built_in">cursor</span> != <span class="keyword">null</span>) {
+        <span class="built_in">cursor</span>.moveToFirst();
+        <span class="built_in">int</span> columnIndex = <span class="built_in">cursor</span>.getColumnIndex(proj[<span class="number">0</span>]);
+        <span class="keyword">String</span> path = <span class="built_in">cursor</span>.getString(columnIndex);
+        <span class="built_in">cursor</span>.close();
+        <span class="keyword">return</span> path;
+    }
+    <span class="keyword">return</span> contentUri.getPath();
+   }
+</code></pre><ol>
+<li>Uri获取bitmap的方法可以参考<a href="http://niorgai.github.io/2015/02/22/Bitmap%E7%9B%B8%E5%85%B3-%E8%AF%BB%E5%8F%96%E5%A4%A7%E5%9B%BE%E7%89%87/">Bitmap相关:读取大图片</a>.</li>
+</ol>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
                 <a class="post-title-link" href="/2015/01/12/Android序列化对象/" itemprop="url">
                   Android序列化对象
                 </a>
@@ -830,155 +969,11 @@
 
 
     
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2014/12/16/PopupWindow相关/" itemprop="url">
-                  PopupWindow相关
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2014-12-16T15:42:25+08:00" content="2014 Dec 16">
-              2014 Dec 16
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
-                    <span itemprop="name">Android开发经验</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2014/12/16/PopupWindow相关/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/16/PopupWindow相关/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>PopupWindow顾名思义，就是一个弹出窗口。不过特性倒是挺好玩的：</p>
-<ol>
-<li>以弹出窗口的形式展示，可以替代系统的dialog。</li>
-<li>可以在任意位置出现，并且会浮动在当前窗口的顶部(获取焦点)。</li>
-<li>可以用来装载任意的view。</li>
-<li>通过设置背景颜色0xaa000000可以实现半透明效果</li>
-<li><p>关于点击消失：</p>
-<ol>
-<li><p>如果需要点击外部消失，只需设置背景，foucs，outSideTouchable。</p>
-<pre><code><span class="keyword">this</span>.setBackgroundDrawable(<span class="keyword">new</span> ColorDrawable(<span class="number">0xaa000000</span>));
-<span class="keyword">this</span>.setFocusable(<span class="literal">true</span>);
-<span class="keyword">this</span>.setOutsideTouchable(<span class="literal">true</span>);
-</code></pre></li>
-<li><p>如果需要点击自身(非按钮控件)消失，在自身设置onclick就好。</p>
-<pre><code>mWindow.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>{
-        GetExpressAlert.<span class="keyword">this</span>.dismiss();
-    }
-});
-</code></pre></li>
-</ol>
-</li>
-<li><p>因为某些机型是虚拟按键的,所以要加上以下设置防止挡住按键.</p>
-<pre><code><span class="tag">this</span><span class="class">.setSoftInputMode</span>(<span class="tag">WindowManager</span><span class="class">.LayoutParams</span><span class="class">.SOFT_INPUT_ADJUST_RESIZE</span>);
-</code></pre></li>
-</ol>
-<p>整个类也特别简单：</p>
-<pre><code>public <span class="class"><span class="keyword">class</span> <span class="title">GetExpressAlert</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">PopupWindow</span> {</span>
-    <span class="type">Context</span> mContext;
-    <span class="type">View</span> mWindow;
-
-    public <span class="type">GetExpressAlert</span>(<span class="type">Context</span> context) {
-    mContext = context;
-    <span class="type">LayoutInflater</span> inflater = (<span class="type">LayoutInflater</span>) context
-            .getSystemService(<span class="type">Context</span>.<span class="type">LAYOUT_INFLATER_SERVICE</span>);
-    mWindow = inflater.inflate(<span class="type">R</span>.layout.get_express_alert, <span class="literal">null</span>);
-    <span class="keyword">this</span>.setContentView(mWindow);
-    <span class="keyword">this</span>.setWidth(<span class="type">LayoutParams</span>.<span class="type">FILL_PARENT</span>);
-    <span class="keyword">this</span>.setHeight(<span class="type">LayoutParams</span>.<span class="type">FILL_PARENT</span>);
-
-    <span class="keyword">this</span>.setBackgroundDrawable(<span class="keyword">new</span> <span class="type">ColorDrawable</span>(<span class="number">0xaa000000</span>));
-    }
-
-}
-</code></pre><p>显示效果：<br><img src="http://7sbqys.com1.z0.glb.clouddn.com/alert.png" alt=""></p>
-<p>xml代码没有什么特别的，所以不贴了。</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1016,7 +1011,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">30</span>
+              <span class="site-state-item-count">31</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
