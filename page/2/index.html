@@ -673,21 +673,8 @@ webSettings.setGeolocationDatabasePath<span class="params">(context.getFilesDir<
      callback.invoke(origin, <span class="keyword">true</span>, <span class="keyword">false</span>);
  }
 </code></pre></li>
-<li><p>设置Alpha时,直接设置View的Alpha是性能最差的.</p>
-<ol>
-<li><p>TextView: <code>setTextColor</code>更好:</p>
-<pre><code><span class="keyword">int</span> newTextColor = (<span class="keyword">int</span>) (<span class="number">0xFF</span> * alpha) &lt;&lt; <span class="number">24</span> | baseTextColor &amp; <span class="number">0xFFFFFF</span><span class="comment">;</span>
-textView.setTextColor(newTextColor)<span class="comment">;</span>
-</code></pre></li>
-<li><p>ImageView: <code>setImageAlpha</code></p>
-<pre><code>imageView.setImageAlpha<span class="params">(<span class="params">(int)</span> alpha * <span class="number">255</span>)</span>;
-</code></pre></li>
-<li><p>自定义View: 设置<code>paint</code>的alpha</p>
-<pre><code>paint.setAlpha<span class="params">(<span class="params">(int)</span> alpha * <span class="number">255</span>)</span>;
-canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</span>;
-</code></pre></li>
 </ol>
-</li>
+<ol>
 <li><p><strong>注意使用shape来画line时，注意以下两点：</strong></p>
 <ol>
 <li>引用该shape的View的layout_height的值必须大于shape中<stroke>标签下android:width的值。</stroke></li>

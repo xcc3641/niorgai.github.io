@@ -45,16 +45,31 @@
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
 
 
-<meta name="description" content="Activity中最外层布局不设置background的颜色,使用theme中的background来填充防止过度绘制.">
+<meta name="description" content="Activity中最外层布局不设置background的颜色,使用theme中的background来填充防止过度绘制.
+继承LinearLayout等布局自定义View时,可以在xml最外层使用&amp;lt;merge&amp;gt;标签减少layout层数.
+设置Alpha时,直接设置View的Alpha是性能最差的.
+
+TextView: setTextColor更好:
+int newTextColor">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android性能提升">
 <meta property="og:url" content="http://niorgai.github.io/2015/12/11/Android性能提升/index.html">
 <meta property="og:site_name" content="Jianqiu's blog">
-<meta property="og:description" content="Activity中最外层布局不设置background的颜色,使用theme中的background来填充防止过度绘制.">
-<meta property="og:updated_time" content="2015-12-11T15:08:28.000Z">
+<meta property="og:description" content="Activity中最外层布局不设置background的颜色,使用theme中的background来填充防止过度绘制.
+继承LinearLayout等布局自定义View时,可以在xml最外层使用&amp;lt;merge&amp;gt;标签减少layout层数.
+设置Alpha时,直接设置View的Alpha是性能最差的.
+
+TextView: setTextColor更好:
+int newTextColor">
+<meta property="og:updated_time" content="2015-12-13T13:49:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android性能提升">
-<meta name="twitter:description" content="Activity中最外层布局不设置background的颜色,使用theme中的background来填充防止过度绘制.">
+<meta name="twitter:description" content="Activity中最外层布局不设置background的颜色,使用theme中的background来填充防止过度绘制.
+继承LinearLayout等布局自定义View时,可以在xml最外层使用&amp;lt;merge&amp;gt;标签减少layout层数.
+设置Alpha时,直接设置View的Alpha是性能最差的.
+
+TextView: setTextColor更好:
+int newTextColor">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -240,6 +255,22 @@
       
         <span itemprop="articleBody"><ol>
 <li>Activity中最外层布局不设置background的颜色,使用theme中的background来填充防止过度绘制.</li>
+<li>继承LinearLayout等布局自定义View时,可以在xml最外层使用<code>&lt;merge&gt;</code>标签减少layout层数.</li>
+<li><p>设置Alpha时,直接设置View的Alpha是性能最差的.</p>
+<ol>
+<li><p>TextView: <code>setTextColor</code>更好:</p>
+<pre><code><span class="keyword">int</span> newTextColor = (<span class="keyword">int</span>) (<span class="number">0xFF</span> * alpha) &lt;&lt; <span class="number">24</span> | baseTextColor &amp; <span class="number">0xFFFFFF</span><span class="comment">;</span>
+textView.setTextColor(newTextColor)<span class="comment">;</span>
+</code></pre></li>
+<li><p>ImageView: <code>setImageAlpha</code></p>
+<pre><code>imageView.setImageAlpha<span class="params">(<span class="params">(int)</span> alpha * <span class="number">255</span>)</span>;
+</code></pre></li>
+<li><p>自定义View: 设置<code>paint</code>的alpha</p>
+<pre><code>paint.setAlpha<span class="params">(<span class="params">(int)</span> alpha * <span class="number">255</span>)</span>;
+canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</span>;
+</code></pre></li>
+</ol>
+</li>
 </ol>
 </span>
       
