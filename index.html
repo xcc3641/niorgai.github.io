@@ -262,9 +262,6 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
 </code></pre></li>
 </ol>
 </li>
-<li><p>使用RecyclerView时,使用<code>notifyItemRangeInserted(start, end)</code>可以更加体现数据加载的动画性.</p>
-</li>
-<li>当View的点击事件触发网络请求时,可以在出发前设置<code>view.setEnable(false)</code>,回调结束设置<code>view.setEnable(true)</code></li>
 </ol>
 
             
@@ -380,6 +377,7 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
 </li>
 <li><p>click事件需要触发网络请求时,最好在调用请求前<code>view.setClickable(false);</code>,网络请求结束后<code>view.setClickable(true)</code>.</p>
 </li>
+<li>使用RecyclerView时,使用<code>notifyItemRangeInserted(start, end)</code>可以更加体现数据加载的动画性.</li>
 </ol>
 
             
