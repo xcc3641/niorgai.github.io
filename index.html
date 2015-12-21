@@ -184,6 +184,156 @@
             
             
               
+                <a class="post-title-link" href="/2015/12/22/动态设置MenuItem颜色/" itemprop="url">
+                  动态设置MenuItem颜色
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-22T01:01:33+08:00" content="2015 Dec 22">
+              2015 Dec 22
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android适配问题/" itemprop="url" rel="index">
+                    <span itemprop="name">Android适配问题</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/12/22/动态设置MenuItem颜色/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/22/动态设置MenuItem颜色/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>为了更好的贴近Google设计规范,开始使用Toolbar自定义布局同时设置为ActionBar,在设置的过程中,为了更好的贴近App风格,MenuItem的颜色就需要改变了.</p>
+<ol>
+<li><p>style中设置颜色:</p>
+<pre><code>&lt;style <span class="property">name</span>=<span class="string">"ActionBarMenuText"</span> parent=<span class="string">"TextAppearance.AppCompat.Widget.ActionBar.Menu"</span>&gt;
+    &lt;<span class="property">item</span> <span class="property">name</span>=<span class="string">"android:textColor"</span>&gt;@color/dark_pink&lt;/<span class="property">item</span>&gt;
+    &lt;<span class="property">item</span> <span class="property">name</span>=<span class="string">"android:textSize"</span>&gt;@dimen/title_text_size&lt;/<span class="property">item</span>&gt;
+    &lt;<span class="property">item</span> <span class="property">name</span>=<span class="string">"android:layout_marginRight"</span>&gt;<span class="number">10</span>dp&lt;/<span class="property">item</span>&gt;
+&lt;/style&gt;
+</code></pre><p> 这种方式在Nexus上测试可以直接改变,当时也就没有太注意,可是突然发现小米竟然没有改变颜色,于是就只能使用反射来改变了</p>
+</li>
+<li><p>利用反射改变:</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">void</span> <span class="title">setActionBarText</span><span class="params">(<span class="keyword">final</span> Activity activity)</span> </span>{
+    <span class="keyword">try</span> {
+        <span class="keyword">final</span> LayoutInflater inflater = activity.getLayoutInflater();
+        Field field = LayoutInflater.class.getDeclaredField(<span class="string">"mFactorySet"</span>);
+        field.setAccessible(<span class="keyword">true</span>);
+        field.setBoolean(inflater, <span class="keyword">false</span>);
+        LayoutInflaterCompat.setFactory(inflater, <span class="keyword">new</span> LayoutInflaterFactory() {
+            <span class="annotation">@Override</span>
+            <span class="keyword">public</span> <span class="function">View <span class="title">onCreateView</span><span class="params">(View parent, String name, Context context, AttributeSet attrs)</span> </span>{
+            <span class="comment">//因为我使用的是supportv7包</span>
+                <span class="keyword">if</span> (name.equalsIgnoreCase(<span class="string">"android.support.v7.view.menu.IconMenuItemView"</span>)
+                        || name.equalsIgnoreCase(<span class="string">"android.support.v7.view.menu.ActionMenuItemView"</span>)) {
+                    <span class="keyword">final</span> View view;
+                    <span class="keyword">try</span> {
+                        view = inflater.createView(name, <span class="keyword">null</span>, attrs);
+                        <span class="keyword">if</span> (view <span class="keyword">instanceof</span> TextView)
+                            ((TextView) view).setTextColor(activity.getResources().getColor(R.color.dark_pink));
+                        <span class="keyword">return</span> view;
+                    } <span class="keyword">catch</span> (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    } <span class="keyword">catch</span> (InflateException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                <span class="keyword">return</span> <span class="keyword">null</span>;
+            }
+        });
+    } <span class="keyword">catch</span> (Exception e) {
+
+    }
+
+}
+</code></pre><p> 该方法在Activity的onCreate()时调用即可.</p>
+</li>
+<li><p>无论是style还是反射去改变,都只会在Activity创建时设置一次,创建后不好再改变其颜色.但事实上MenuItem也是一个View,在运行时也可以通过View的寻找方式去动态设置:</p>
+<pre><code>View title = getWindow<span class="params">()</span>.getDecorView<span class="params">()</span>.findViewById<span class="params">(&lt;-- textView的id --&gt;)</span>;
+<span class="comment">//当然也可以通过findViewByTag()等方法</span>
+<span class="keyword">if</span> <span class="params">(title != null &amp;&amp; title instanceof TextView)</span> {
+   <span class="params">(<span class="params">(TextView)</span> title)</span>.setTextColor<span class="params">(getResources<span class="params">()</span>.getColor<span class="params">(R.color.dark_pink)</span>)</span>;
+}
+</code></pre></li>
+</ol>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
                 <a class="post-title-link" href="/2015/12/11/Android性能提升/" itemprop="url">
                   Android性能提升
                 </a>
@@ -648,201 +798,6 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
 
 
     
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2015/10/15/滑动冲突解决-更合理的拦截/" itemprop="url">
-                  滑动冲突解决-更合理的拦截
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-10-15T01:19:27+08:00" content="2015 Oct 15">
-              2015 Oct 15
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
-                    <span itemprop="name">Android开发经验</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/10/15/滑动冲突解决-更合理的拦截/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/15/滑动冲突解决-更合理的拦截/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <h2 id="问题说明:">问题说明:</h2><p>当<code>SwipeRefreshLayout</code>中放置了<code>ViewPager</code>控件,两者的滑动会相互冲突.具体表现为<code>ViewPager</code>的左右滑动不顺畅,容易被<code>SwipeRefreshLayout</code>拦截(即出现刷新的View).</p>
-<h2 id="问题原因:">问题原因:</h2><p><code>ViewPager</code>本身是处理了滚动事件的冲突,它在横向滑动时会调用<code>requestDisallowInterceptTouchEvent()</code>方法使父控件不拦截当前的Touch事件序列.但是<code>SwipeRefreshLayout</code>的<code>requestDisallowInterceptTouchEvent()</code>方法什么也没有做,所以仍然会拦截当前的Touch事件序列.</p>
-<h2 id="问题分析:">问题分析:</h2><p>为什么<code>SwipeRefreshLayout</code>的<code>requestDisallowInterceptTouchEvent()</code>方法什么都不做?</p>
-<p>首先<code>SwipeRefreshLayout</code>继承自<code>ViewGroup</code>.</p>
-<ul>
-<li>在<code>requestDisallowInterceptTouchEvent()</code>方法什么都不做的情况下,用户可以从底部下拉刷新一次拉出LoadingView.</li>
-<li>如果方法调用<code>ViewGroup</code>的<code>requestDisallowInterceptTouchEvent()</code>方法, 可以解决<code>ViewPager</code>的兼容问题,但是用户在界面底部下拉至头部后,无法继续下拉,需要手指放开一次才能拉出LoadingView.</li>
-</ul>
-<h2 id="目标分析:">目标分析:</h2><p>那么为了更加顺滑地滚动,想要的效果当然是<strong>一次性拉出LoadingView</strong>.既然ViewPager在左右滑动时才会调用<code>requestDisallowInterceptTouchEvent()</code>方法,那么<code>SwipeRefreshLayout</code><strong>只应该在上下滑动时</strong>才拦截Touch事件.</p>
-<p>具体逻辑如下:</p>
-<ol>
-<li>记录是否调用了<code>requestDisallowInterceptTouchEvent()</code>方法,并且设置为true.</li>
-<li>在<code>SwipeRefreshLayout</code>中判断是否是上下滑动.</li>
-<li>如果同时满足1,2,则调用<code>super.requestDisallowInterceptTouchEvent(true)</code>.</li>
-<li>否则调用<code>super.requestDisallowInterceptTouchEvent(false)</code>.</li>
-</ol>
-<p>注意:因为<code>ViewGroup</code>的<code>requestDisallowInterceptTouchEvent</code>方法设置true后,Touch事件在<code>dispatchTouchEvent()</code>方法中就会被拦截,所以需要在<code>dispatchTouchEvent()</code>方法中判断是否为上下滑动.</p>
-<h2 id="实现代码(部分):">实现代码(部分):</h2><pre><code><span class="comment">//非法按键</span>
-<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> INVALID_POINTER = -<span class="number">1</span>;
-
-<span class="comment">//dispatch方法记录第一次按下的x</span>
-<span class="keyword">private</span> <span class="keyword">float</span> mInitialDisPatchDownX;
-
-<span class="comment">//dispatch方法记录第一次按下的y</span>
-<span class="keyword">private</span> <span class="keyword">float</span> mInitialDisPatchDownY;
-
-<span class="comment">//dispatch方法记录的手指</span>
-<span class="keyword">private</span> <span class="keyword">int</span> mActiveDispatchPointerId = INVALID_POINTER;
-
-<span class="comment">//是否请求拦截</span>
-<span class="keyword">private</span> <span class="keyword">boolean</span> hasRequestDisallowIntercept = <span class="keyword">false</span>;
-
-<span class="annotation">@Override</span>
-<span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">requestDisallowInterceptTouchEvent</span><span class="params">(<span class="keyword">boolean</span> b)</span> </span>{
-    hasRequestDisallowIntercept = b;
-    <span class="comment">// Nope.</span>
-}
-
-<span class="annotation">@Override</span>
-<span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">dispatchTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>{
-    <span class="keyword">switch</span> (ev.getAction()) {
-        <span class="keyword">case</span> MotionEvent.ACTION_DOWN:
-            mActiveDispatchPointerId = MotionEventCompat.getPointerId(ev, 0);
-            <span class="keyword">final</span> <span class="keyword">float</span> initialDownX = getMotionEventX(ev, mActiveDispatchPointerId);
-            <span class="keyword">if</span> (initialDownX != INVALID_POINTER) {
-                mInitialDisPatchDownX = initialDownX;
-            }
-            <span class="keyword">final</span> <span class="keyword">float</span> initialDownY = getMotionEventY(ev, mActiveDispatchPointerId);
-            <span class="keyword">if</span> (mInitialDisPatchDownY != INVALID_POINTER) {
-                mInitialDisPatchDownY = initialDownY;
-            }
-            <span class="keyword">break</span>;
-        <span class="keyword">case</span> MotionEvent.ACTION_MOVE:
-            <span class="keyword">if</span> (hasRequestDisallowIntercept) {
-                <span class="comment">//解决viewPager滑动冲突问题</span>
-                <span class="keyword">final</span> <span class="keyword">float</span> x = getMotionEventX(ev, mActiveDispatchPointerId);
-                <span class="keyword">final</span> <span class="keyword">float</span> y = getMotionEventY(ev, mActiveDispatchPointerId);
-                <span class="keyword">if</span> (mInitialDisPatchDownX != INVALID_POINTER &amp;&amp; x != INVALID_POINTER &amp;&amp;
-                        mInitialDisPatchDownY != INVALID_POINTER &amp;&amp; y != INVALID_POINTER) {
-                    <span class="keyword">final</span> <span class="keyword">float</span> xDiff = Math.abs(x - mInitialDisPatchDownX);
-                    <span class="keyword">final</span> <span class="keyword">float</span> yDiff = Math.abs(y - mInitialDisPatchDownY);
-                    <span class="keyword">if</span> (xDiff &gt; mTouchSlop &amp;&amp; xDiff * <span class="number">0.7</span>f &gt; yDiff) {
-                        <span class="comment">//横向滚动不需要拦截</span>
-                        <span class="keyword">super</span>.requestDisallowInterceptTouchEvent(<span class="keyword">true</span>);
-                    } <span class="keyword">else</span> {
-                        <span class="keyword">super</span>.requestDisallowInterceptTouchEvent(<span class="keyword">false</span>);
-                    }
-                } <span class="keyword">else</span> {
-                    <span class="keyword">super</span>.requestDisallowInterceptTouchEvent(<span class="keyword">false</span>);
-                }
-            }
-            <span class="keyword">break</span>;
-        <span class="keyword">case</span> MotionEvent.ACTION_UP:
-        <span class="keyword">case</span> MotionEvent.ACTION_CANCEL:
-            <span class="keyword">if</span> (ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_CANCEL) {
-                hasRequestDisallowIntercept = <span class="keyword">false</span>;
-            }
-            <span class="keyword">break</span>;
-    }
-
-    <span class="function"><span class="keyword">return</span> <span class="keyword">super</span>.<span class="title">dispatchTouchEvent</span><span class="params">(ev)</span></span>;
-}
-
-<span class="keyword">private</span> <span class="function"><span class="keyword">float</span> <span class="title">getMotionEventY</span><span class="params">(MotionEvent ev, <span class="keyword">int</span> activePointerId)</span> </span>{
-    <span class="keyword">final</span> <span class="keyword">int</span> index = MotionEventCompat.findPointerIndex(ev, activePointerId);
-    <span class="keyword">if</span> (index &lt; <span class="number">0</span>) {
-        <span class="keyword">return</span> -<span class="number">1</span>;
-    }
-    <span class="function"><span class="keyword">return</span> MotionEventCompat.<span class="title">getY</span><span class="params">(ev, index)</span></span>;
-}
-
-<span class="keyword">private</span> <span class="function"><span class="keyword">float</span> <span class="title">getMotionEventX</span><span class="params">(MotionEvent ev, <span class="keyword">int</span> activePointerId)</span> </span>{
-    <span class="keyword">final</span> <span class="keyword">int</span> index = MotionEventCompat.findPointerIndex(ev, activePointerId);
-    <span class="keyword">if</span> (index &lt; <span class="number">0</span>) {
-        <span class="keyword">return</span> -<span class="number">1</span>;
-    }
-    <span class="function"><span class="keyword">return</span> MotionEventCompat.<span class="title">getX</span><span class="params">(ev, index)</span></span>;
-}
-</code></pre>
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -885,21 +840,21 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">31</span>
+              <span class="site-state-item-count">32</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-count">10</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">34</span>
+              <span class="site-state-item-count">35</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

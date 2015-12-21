@@ -184,6 +184,125 @@
             
             
               
+                <a class="post-title-link" href="/2015/05/13/ProgressBar相关/" itemprop="url">
+                  ProgressBar相关
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-05-13T01:12:16+08:00" content="2015 May 13">
+              2015 May 13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/05/13/ProgressBar相关/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/05/13/ProgressBar相关/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>ProgressBar作为一个进度条控件,经常会被用到,但是使用的时候还是有一些注意点的.</p>
+<ol>
+<li><p>默认的横向Progressbar使用的style是<code>&quot;@android:style/Widget.ProgressBar.Horizontal&quot;</code>,但这个style带有圆角,为了去掉这个圆角,我们只需要一直沿着style查看到源码,然后将progressDrawable文件<code>progress_horizontal</code>复制到自己工程的drawable文件下,那换背景色,去掉圆角的都可以随意修改了~.</p>
+</li>
+<li><p>注意ProgressBar设置progress的时候要在新线程设置,这个在开发者文档也有提到.</p>
+<pre><code><span class="keyword">private</span> Handler mHandler = <span class="keyword">new</span> Handler();
+
+<span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() {
+            <span class="annotation">@Override</span>
+            <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
+                mHandler.post(<span class="keyword">new</span> Runnable() {
+                    <span class="annotation">@Override</span>
+                    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
+                        progressBar.setProgress(newProgress);
+                    }
+                });
+            }
+        }).start();
+</code></pre></li>
+<li><p>xml中可以使用<code>android:indeterminateDrawable</code>属性为其指定连续动画,但是Java代码中目前还没找到方便的API.</p>
+</li>
+</ol>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
                 <a class="post-title-link" href="/2015/04/24/ListView的一些坑/" itemprop="url">
                   ListView的一些坑
                 </a>
@@ -946,176 +1065,6 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
 
 
     
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2015/03/14/ScrollView中放置ListView/" itemprop="url">
-                  ScrollView中放置ListView
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-03-14T00:17:40+08:00" content="2015 Mar 14">
-              2015 Mar 14
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
-                    <span itemprop="name">Android开发经验</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/03/14/ScrollView中放置ListView/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/14/ScrollView中放置ListView/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>最近有个需求是需要在ScrollView中放置一个ListView，如果不做处理的话，直接放置控件会导致：</p>
-<ol>
-<li>ListView的高度设置为wrap_content时，每个item的高度无法控制，可能导致item高度为0而不显示。</li>
-<li>ListView的高度设置为wrap_content时，疯狂调用getView方法导致卡顿。</li>
-<li>ListView的高度设置了合适的高度后，ListView无法滑动。</li>
-</ol>
-<p>其对应的解决方法：</p>
-<ol>
-<li><p>在ListView调用了<code>setAdapter</code>或者<code>notifyDataChange</code>后，使用该方法重新设置ListView的高度。</p>
-<pre><code>public static void setListViewHeightBasedOnChildren<span class="params">(ListView listView)</span> {
-    ListAdapter listAdapter = listView.getAdapter<span class="params">()</span>;
-    <span class="keyword">if</span> <span class="params">(listAdapter == null)</span>
-        return;
-
-    int desiredWidth = View.MeasureSpec.makeMeasureSpec<span class="params">(listView.getWidth<span class="params">()</span>, View.MeasureSpec.UNSPECIFIED)</span>;
-    int totalHeight = <span class="number">0</span>;
-    View view = null;
-    <span class="keyword">for</span> <span class="params">(int i = <span class="number">0</span>; i &lt; listAdapter.getCount<span class="params">()</span>; i++)</span> {
-        <span class="comment">//获取每个item的view</span>
-        view = listAdapter.getView<span class="params">(i, view, listView)</span>;
-        <span class="keyword">if</span> <span class="params">(i == <span class="number">0</span>)</span>
-            view.setLayoutParams<span class="params">(new AbsListView.LayoutParams<span class="params">(desiredWidth, AbsListView.LayoutParams.WRAP_CONTENT)</span>)</span>;
-
-        view.measure<span class="params">(desiredWidth, View.MeasureSpec.UNSPECIFIED)</span>;
-        <span class="comment">//计算总高度</span>
-        totalHeight += view.getMeasuredHeight<span class="params">()</span>;
-    }
-    ViewGroup.LayoutParams params = listView.getLayoutParams<span class="params">()</span>;
-    <span class="comment">//加上divider的高度</span>
-    params.height = totalHeight + <span class="params">(listView.getDividerHeight<span class="params">()</span> * <span class="params">(listAdapter.getCount<span class="params">()</span> - <span class="number">1</span>)</span>)</span>;
-    listView.setLayoutParams<span class="params">(params)</span>;
-    listView.requestLayout<span class="params">()</span>;
-}
-</code></pre><p> 该方法原理就是通过adapter的getView方法返回item的view，计算每个item的高度height乘以item的个数，最后加上divider的高度。(如果知道每个item的高度，可以直接获取adapter的count乘以高度即可，省区调用getView方法的时间)</p>
-<pre><code>使用该方法需要注意：
-<span class="number">1</span>. item的根布局是必须是LinearLayout等重写了<span class="escape">`o</span>nMeasure<span class="escape">`方</span>法的layout，因为获取高度时用到了<span class="escape">`v</span>iew.getMeasuredHeight()<span class="escape">`方</span>法.
-<span class="number">2</span>. 该方法会在Adapter的getView方法前被调用。
-</code></pre></li>
-<li><p>在ListView外部放置一层单独的FrameLayout(性能最高)，设置Layout的高度为wrap_content,然后设置ListView的高度为fill_parent,最后在<code>setAdapter</code>或<code>notifyDataChange</code>后修改<code>setListViewHeightBasedOnChildren</code>方法，通过该方法返回带有正确高度的LinearLayout.LayoutParams(你没有看错，用LinearLayout.LayoutParams来设置FrameLayout)，以此来设置FrameLayout的高度。这样不会疯狂调用getView方法了。</p>
-</li>
-<li><p>在onTouch事件中取消父布局的touch劫持。</p>
-<pre><code>listView.setOnTouchListener(<span class="keyword">new</span> OnTouchListener() {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onTouch</span><span class="params">(View v, MotionEvent event)</span> </span>{
-        v.getParent().requestDisallowInterceptTouchEvent(<span class="keyword">true</span>);
-        <span class="keyword">return</span> <span class="keyword">false</span>;
-    }
-});
-</code></pre></li>
-</ol>
-<hr>
-<p>如果使用了<a href="https://github.com/chrisbanes/Android-PullToRefresh" target="_blank" rel="external">Github开源项目-PullToRefreshListView</a>，它有一个headView和一个BottomView，所以它计算高度的方法会不同：</p>
-<pre><code>public static void setListViewHeightBasedOnChildren<span class="params">(PullToRefreshListView listView)</span> {
-    ListAdapter listAdapter = listView.getRefreshableView<span class="params">()</span>.getAdapter<span class="params">()</span>;
-    <span class="keyword">if</span> <span class="params">(listAdapter == null)</span>
-        return;
-
-    int totalHeight = <span class="number">0</span>;
-    View view = null;
-    <span class="comment">//去掉头尾两个view</span>
-    <span class="keyword">for</span> <span class="params">(int i = <span class="number">1</span>; i &lt; listAdapter.getCount<span class="params">()</span>-<span class="number">1</span>; i++)</span> {
-        view = listAdapter.getView<span class="params">(i, view, listView)</span>;
-        totalHeight += view.getLayoutParams<span class="params">()</span>.height;
-    }
-    ViewGroup.LayoutParams params = listView.getLayoutParams<span class="params">()</span>;
-    params.height = totalHeight + <span class="params">(listView.getRefreshableView<span class="params">()</span>.getDividerHeight<span class="params">()</span> * <span class="params">(listAdapter.getCount<span class="params">()</span> - <span class="number">1</span>)</span>)</span>;
-    listView.setLayoutParams<span class="params">(params)</span>;
-    listView.requestLayout<span class="params">()</span>;
-}
-</code></pre><p>这里使用的是LayoutParams的height作为item的高度，所以在adapter的getView方法中，应该这样初始化：</p>
-<pre><code><span class="keyword">public</span> <span class="function">View <span class="title">getView</span><span class="params">(<span class="keyword">int</span> position, View convertView, ViewGroup parent)</span> </span>{
-    convertView = inflater.inflate(R.layout.parenting_listview_item,parent,<span class="keyword">false</span>);
-}
-</code></pre>
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1158,21 +1107,21 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">31</span>
+              <span class="site-state-item-count">32</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-count">10</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">34</span>
+              <span class="site-state-item-count">35</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

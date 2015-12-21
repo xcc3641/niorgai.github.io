@@ -36,7 +36,7 @@
 
 
 
-  <meta name="keywords" content="ProgressBar," />
+  <meta name="keywords" content="MenuItem," />
 
 
 
@@ -45,22 +45,25 @@
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
 
 
-<meta name="description" content="ProgressBar作为一个进度条控件,经常会被用到,但是使用的时候还是有一些注意点的.
+<meta name="description" content="为了更好的贴近Google设计规范,开始使用Toolbar自定义布局同时设置为ActionBar,在设置的过程中,为了更好的贴近App风格,MenuItem的颜色就需要改变了.
 
-默认的横向Progressbar使用的style是&amp;quot;@android:style/Widget.ProgressBar.Horizontal&amp;quot;,但这个style带有圆角,为了去掉这个圆角,我们只需要一直沿着style查看到源码,然后将progressDrawable文件progress">
+style中设置颜色:
+&amp;lt;style name=&quot;ActionBarMenuText&quot; parent=&quot;TextAppearance.AppCompat.Widget.ActionBar.Menu&quot;&amp;gt;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ProgressBar相关">
-<meta property="og:url" content="http://niorgai.github.io/2015/05/13/ProgressBar相关/index.html">
+<meta property="og:title" content="动态设置MenuItem颜色">
+<meta property="og:url" content="http://niorgai.github.io/2015/12/22/动态设置MenuItem颜色/index.html">
 <meta property="og:site_name" content="Jianqiu's blog">
-<meta property="og:description" content="ProgressBar作为一个进度条控件,经常会被用到,但是使用的时候还是有一些注意点的.
+<meta property="og:description" content="为了更好的贴近Google设计规范,开始使用Toolbar自定义布局同时设置为ActionBar,在设置的过程中,为了更好的贴近App风格,MenuItem的颜色就需要改变了.
 
-默认的横向Progressbar使用的style是&amp;quot;@android:style/Widget.ProgressBar.Horizontal&amp;quot;,但这个style带有圆角,为了去掉这个圆角,我们只需要一直沿着style查看到源码,然后将progressDrawable文件progress">
-<meta property="og:updated_time" content="2015-11-29T13:24:56.000Z">
+style中设置颜色:
+&amp;lt;style name=&quot;ActionBarMenuText&quot; parent=&quot;TextAppearance.AppCompat.Widget.ActionBar.Menu&quot;&amp;gt;">
+<meta property="og:updated_time" content="2015-12-21T17:14:13.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ProgressBar相关">
-<meta name="twitter:description" content="ProgressBar作为一个进度条控件,经常会被用到,但是使用的时候还是有一些注意点的.
+<meta name="twitter:title" content="动态设置MenuItem颜色">
+<meta name="twitter:description" content="为了更好的贴近Google设计规范,开始使用Toolbar自定义布局同时设置为ActionBar,在设置的过程中,为了更好的贴近App风格,MenuItem的颜色就需要改变了.
 
-默认的横向Progressbar使用的style是&amp;quot;@android:style/Widget.ProgressBar.Horizontal&amp;quot;,但这个style带有圆角,为了去掉这个圆角,我们只需要一直沿着style查看到源码,然后将progressDrawable文件progress">
+style中设置颜色:
+&amp;lt;style name=&quot;ActionBarMenuText&quot; parent=&quot;TextAppearance.AppCompat.Widget.ActionBar.Menu&quot;&amp;gt;">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -72,7 +75,7 @@
 
 
 
-  <title> ProgressBar相关 | Jianqiu's blog </title>
+  <title> 动态设置MenuItem颜色 | Jianqiu's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -189,7 +192,7 @@
             
             
               
-                ProgressBar相关
+                动态设置MenuItem颜色
               
             
           </h1>
@@ -198,8 +201,8 @@
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2015-05-13T01:12:16+08:00" content="2015 May 13">
-              2015 May 13
+            <time itemprop="dateCreated" datetime="2015-12-22T01:01:33+08:00" content="2015 Dec 22">
+              2015 Dec 22
             </time>
           </span>
 
@@ -208,8 +211,8 @@
               &nbsp; | &nbsp; 分类于
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
-                    <span itemprop="name">Android开发经验</span>
+                  <a href="/categories/Android适配问题/" itemprop="url" rel="index">
+                    <span itemprop="name">Android适配问题</span>
                   </a>
                 </span>
 
@@ -224,8 +227,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2015/05/13/ProgressBar相关/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/05/13/ProgressBar相关/" itemprop="commentsCount"></span>
+                <a href="/2015/12/22/动态设置MenuItem颜色/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/22/动态设置MenuItem颜色/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -244,27 +247,58 @@
       
 
       
-        <span itemprop="articleBody"><p>ProgressBar作为一个进度条控件,经常会被用到,但是使用的时候还是有一些注意点的.</p>
+        <span itemprop="articleBody"><p>为了更好的贴近Google设计规范,开始使用Toolbar自定义布局同时设置为ActionBar,在设置的过程中,为了更好的贴近App风格,MenuItem的颜色就需要改变了.</p>
 <ol>
-<li><p>默认的横向Progressbar使用的style是<code>&quot;@android:style/Widget.ProgressBar.Horizontal&quot;</code>,但这个style带有圆角,为了去掉这个圆角,我们只需要一直沿着style查看到源码,然后将progressDrawable文件<code>progress_horizontal</code>复制到自己工程的drawable文件下,那换背景色,去掉圆角的都可以随意修改了~.</p>
+<li><p>style中设置颜色:</p>
+<pre><code>&lt;style <span class="property">name</span>=<span class="string">"ActionBarMenuText"</span> parent=<span class="string">"TextAppearance.AppCompat.Widget.ActionBar.Menu"</span>&gt;
+    &lt;<span class="property">item</span> <span class="property">name</span>=<span class="string">"android:textColor"</span>&gt;@color/dark_pink&lt;/<span class="property">item</span>&gt;
+    &lt;<span class="property">item</span> <span class="property">name</span>=<span class="string">"android:textSize"</span>&gt;@dimen/title_text_size&lt;/<span class="property">item</span>&gt;
+    &lt;<span class="property">item</span> <span class="property">name</span>=<span class="string">"android:layout_marginRight"</span>&gt;<span class="number">10</span>dp&lt;/<span class="property">item</span>&gt;
+&lt;/style&gt;
+</code></pre><p> 这种方式在Nexus上测试可以直接改变,当时也就没有太注意,可是突然发现小米竟然没有改变颜色,于是就只能使用反射来改变了</p>
 </li>
-<li><p>注意ProgressBar设置progress的时候要在新线程设置,这个在开发者文档也有提到.</p>
-<pre><code><span class="keyword">private</span> Handler mHandler = <span class="keyword">new</span> Handler();
-
-<span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() {
+<li><p>利用反射改变:</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">void</span> <span class="title">setActionBarText</span><span class="params">(<span class="keyword">final</span> Activity activity)</span> </span>{
+    <span class="keyword">try</span> {
+        <span class="keyword">final</span> LayoutInflater inflater = activity.getLayoutInflater();
+        Field field = LayoutInflater.class.getDeclaredField(<span class="string">"mFactorySet"</span>);
+        field.setAccessible(<span class="keyword">true</span>);
+        field.setBoolean(inflater, <span class="keyword">false</span>);
+        LayoutInflaterCompat.setFactory(inflater, <span class="keyword">new</span> LayoutInflaterFactory() {
             <span class="annotation">@Override</span>
-            <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
-                mHandler.post(<span class="keyword">new</span> Runnable() {
-                    <span class="annotation">@Override</span>
-                    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>{
-                        progressBar.setProgress(newProgress);
+            <span class="keyword">public</span> <span class="function">View <span class="title">onCreateView</span><span class="params">(View parent, String name, Context context, AttributeSet attrs)</span> </span>{
+            <span class="comment">//因为我使用的是supportv7包</span>
+                <span class="keyword">if</span> (name.equalsIgnoreCase(<span class="string">"android.support.v7.view.menu.IconMenuItemView"</span>)
+                        || name.equalsIgnoreCase(<span class="string">"android.support.v7.view.menu.ActionMenuItemView"</span>)) {
+                    <span class="keyword">final</span> View view;
+                    <span class="keyword">try</span> {
+                        view = inflater.createView(name, <span class="keyword">null</span>, attrs);
+                        <span class="keyword">if</span> (view <span class="keyword">instanceof</span> TextView)
+                            ((TextView) view).setTextColor(activity.getResources().getColor(R.color.dark_pink));
+                        <span class="keyword">return</span> view;
+                    } <span class="keyword">catch</span> (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    } <span class="keyword">catch</span> (InflateException ex) {
+                        ex.printStackTrace();
                     }
-                });
+                }
+                <span class="keyword">return</span> <span class="keyword">null</span>;
             }
-        }).start();
-</code></pre></li>
-<li><p>xml中可以使用<code>android:indeterminateDrawable</code>属性为其指定连续动画,但是Java代码中目前还没找到方便的API.</p>
+        });
+    } <span class="keyword">catch</span> (Exception e) {
+
+    }
+
+}
+</code></pre><p> 该方法在Activity的onCreate()时调用即可.</p>
 </li>
+<li><p>无论是style还是反射去改变,都只会在Activity创建时设置一次,创建后不好再改变其颜色.但事实上MenuItem也是一个View,在运行时也可以通过View的寻找方式去动态设置:</p>
+<pre><code>View title = getWindow<span class="params">()</span>.getDecorView<span class="params">()</span>.findViewById<span class="params">(&lt;-- textView的id --&gt;)</span>;
+<span class="comment">//当然也可以通过findViewByTag()等方法</span>
+<span class="keyword">if</span> <span class="params">(title != null &amp;&amp; title instanceof TextView)</span> {
+   <span class="params">(<span class="params">(TextView)</span> title)</span>.setTextColor<span class="params">(getResources<span class="params">()</span>.getColor<span class="params">(R.color.dark_pink)</span>)</span>;
+}
+</code></pre></li>
 </ol>
 </span>
       
@@ -274,7 +308,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/ProgressBar/" rel="tag">#ProgressBar</a>
+            <a href="/tags/MenuItem/" rel="tag">#MenuItem</a>
           
         </div>
       
@@ -283,17 +317,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/04/24/ListView的一些坑/" rel="next" title="ListView的一些坑">
-                <i class="fa fa-chevron-left"></i> ListView的一些坑
+              <a href="/2015/12/11/Android性能提升/" rel="next" title="Android性能提升">
+                <i class="fa fa-chevron-left"></i> Android性能提升
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/07/25/高效使用Volley/" rel="prev" title="高效使用Volley">
-                高效使用Volley <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -318,8 +348,8 @@
         
           <div class="comments" id="comments">
             
-              <div class="ds-thread" data-thread-key="2015/05/13/ProgressBar相关/"
-                   data-title="ProgressBar相关" data-url="http://niorgai.github.io/2015/05/13/ProgressBar相关/">
+              <div class="ds-thread" data-thread-key="2015/12/22/动态设置MenuItem颜色/"
+                   data-title="动态设置MenuItem颜色" data-url="http://niorgai.github.io/2015/12/22/动态设置MenuItem颜色/">
               </div>
             
           </div>
