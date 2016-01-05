@@ -59,7 +59,7 @@ window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 adjustResize属性在全屏模式下无效,即不能设置
 window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 &amp;lt;item n">
-<meta property="og:updated_time" content="2015-12-13T13:49:38.000Z">
+<meta property="og:updated_time" content="2016-01-05T15:57:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android Tips">
 <meta name="twitter:description" content="overridependingtransition正常应该放在startActivity或finish后,有时候失效了也可以放在Activity的onCreate和finish后.
@@ -294,6 +294,14 @@ webSettings.setGeolocationDatabasePath<span class="params">(context.getFilesDir<
 </li>
 </ol>
 </li>
+<li><p>cardView可以设置阴影,但是不同系统版本实现的方式不同,如cardElevation为5dp,那么:</p>
+<ol>
+<li>在SDK &gt; 21,即5.0系统上,正常显示.</li>
+<li><p>在SDK &lt; 21的系统上, cardView会左右各留出5dp的margin,上下各留出10dp的margin来实现阴影效果.</p>
+<p>所以需要在不同的dimens文件夹中声明margin的值.</p>
+</li>
+</ol>
+</li>
 </ol>
 </span>
       
@@ -433,7 +441,7 @@ webSettings.setGeolocationDatabasePath<span class="params">(context.getFilesDir<
       <div class="footer-inner"> <div class="copyright" >
   
   &copy;  2013 - 
-  <span itemprop="copyrightYear">2015</span>
+  <span itemprop="copyrightYear">2016</span>
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
   </span>
