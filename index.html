@@ -415,6 +415,7 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
 <li><p>使用Handler定时滚动ViewPager时,当界面不可见时Handler还是会run,应该在不可见时停掉Handler.</p>
 </li>
 <li>对拍照或图库的图片裁剪时,设置BitmapConfig为Config.565,可以去掉alpha通道,减少内存.</li>
+<li>当Adapter不会影响RecyclerView的大小时,可以设置<code>mRecyclerView.setHasFixedSize(true);</code>来优化RecyclerView.</li>
 </ol>
 
             

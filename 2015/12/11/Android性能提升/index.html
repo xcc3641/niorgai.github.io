@@ -61,7 +61,7 @@ int newTextColor">
 
 TextView: setTextColor更好:
 int newTextColor">
-<meta property="og:updated_time" content="2015-12-28T15:17:50.000Z">
+<meta property="og:updated_time" content="2016-01-06T15:45:17.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android性能提升">
 <meta name="twitter:description" content="Activity中最外层布局不设置background的颜色,使用theme中的background来填充防止过度绘制.
@@ -274,6 +274,7 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
 <li><p>使用Handler定时滚动ViewPager时,当界面不可见时Handler还是会run,应该在不可见时停掉Handler.</p>
 </li>
 <li>对拍照或图库的图片裁剪时,设置BitmapConfig为Config.565,可以去掉alpha通道,减少内存.</li>
+<li>当Adapter不会影响RecyclerView的大小时,可以设置<code>mRecyclerView.setHasFixedSize(true);</code>来优化RecyclerView.</li>
 </ol>
 </span>
       
