@@ -59,7 +59,7 @@ window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 adjustResize属性在全屏模式下无效,即不能设置
 window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 &amp;lt;item n">
-<meta property="og:updated_time" content="2016-01-05T15:57:28.000Z">
+<meta property="og:updated_time" content="2016-01-13T09:57:04.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android Tips">
 <meta name="twitter:description" content="overridependingtransition正常应该放在startActivity或finish后,有时候失效了也可以放在Activity的onCreate和finish后.
@@ -301,6 +301,14 @@ webSettings.setGeolocationDatabasePath<span class="params">(context.getFilesDir<
 <p>所以需要在不同的dimens文件夹中声明margin的值.</p>
 </li>
 </ol>
+</li>
+<li><p>SharedPreference的key最好统一管理,如果同一个key存放的数据和所取出的数据类型不同,会导致崩溃.</p>
+</li>
+<li><p>PagerAdapter的<code>notifyDataSetChange()</code>方法调用后,如果viewpager的每个Item是存在的,就不会重新创建对象,为了更好的解决刷新问题,最好重写Adapter的getItemPosition方法.</p>
+<pre><code><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemPosition</span>(<span class="params">Object <span class="keyword">object</span></span>) </span>{
+    <span class="keyword">return</span> POSITION_NONE;
+}
+</code></pre><p> 如果不重写,会导致ViewPager中item不显示,其实是item的<code>onDraw()</code>方法没有调用, 只有手指触碰viewPager时才会显示item.(我注意到viewPager的<code>hasWindowFocus()</code>方法返回false,但是当我重写<code>getItemPosition()</code>方法后,<code>hasWindowFocus()</code>任然返回false,但是可能是因为重新创建了对象的关系,item的显示是正常的)</p>
 </li>
 </ol>
 </span>
