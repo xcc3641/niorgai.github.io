@@ -184,6 +184,183 @@
             
             
               
+                <a class="post-title-link" href="/2016/01/13/无限滚动ViewPager的实现/" itemprop="url">
+                  无限滚动ViewPager的实现
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-01-13T22:46:22+08:00" content="2016 Jan 13">
+              2016 Jan 13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/01/13/无限滚动ViewPager的实现/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/01/13/无限滚动ViewPager的实现/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>Andorid默认提供的ViewPager是不可以循环滚动的,当滑动到边界时就不能滚动了.但是实现Banner时,体验最好的还是无限滚动,为此需要自定义ViewPager来实现无限滚动.</p>
+<h2 id="PagerAdapter部分:">PagerAdapter部分:</h2><ol>
+<li>首先为了实现无限滚动,<code>getCount()</code>需要返回一个很大的数,可以使用<code>Integer.MAX_VALUE</code>.</li>
+<li>为了节省内存,默认ViewPager只缓存1个Page,就内存中只有perIndex, currentIndex, nextIndex三个View,实际上也发现只需要三个View就可以实现无限滚动.</li>
+<li><p><code>instantiateItem()</code>方法中,需要注意的就是获取到position对应的View后,如果<code>view.getParent()</code>是container时,需要先从container中移除该View,否则会导致View重复添加到parent报错.</p>
+<pre><code>@Override
+<span class="keyword">public</span> Object instantiateItem(ViewGroup <span class="keyword">container</span>, <span class="keyword">int</span> position) {
+    <span class="comment">//mView保存了3个View,用于实现轮播.</span>
+    <span class="comment">//mView[position % 3]即获取该position对应的View</span>
+    View view = mViews[position % <span class="number">3</span>];
+    <span class="keyword">if</span> (<span class="keyword">container</span>.equals(view.getParent())) {
+        <span class="comment">//防止添加到同一个parent</span>
+        <span class="keyword">container</span>.removeView(view);
+    }
+    <span class="keyword">container</span>.addView(view);
+}
+</code></pre></li>
+<li>重写<code>destroyItem()</code>方法,什么都不操作,不调用super方法.</li>
+<li><p><code>isViewFromObject()</code>方法正常重写即可.</p>
+<pre><code><span class="annotation">@Override</span>
+public boolean isViewFromObject(<span class="type">View</span> view, <span class="type">Object</span> <span class="class"><span class="keyword">object</span>) {</span>
+    <span class="keyword">return</span> view == <span class="class"><span class="keyword">object</span>;</span>
+}
+</code></pre></li>
+<li><p>注意重写<code>getItemPosition()</code>方法:</p>
+<pre><code><span class="annotation">@Override</span>
+<span class="keyword">public</span> <span class="function"><span class="keyword">int</span> <span class="title">getItemPosition</span><span class="params">(Object object)</span> </span>{
+    <span class="keyword">return</span> POSITION_NONE;
+}
+</code></pre><p> 通过查看文档的说明,该方法用来判断ViewPager中item的位置是否改变了,返回<code>POSITION_NONE</code>表示该item已经不存在adapter了,此时adapter会重新创建一个view.<strong>当不重写该方法时,可能会导致ViewPager中item有时不显示(item的onDraw()方法不调用)</strong>.</p>
+</li>
+</ol>
+<h2 id="ViewPager部分:">ViewPager部分:</h2><ol>
+<li><p>默认ViewPager的Scroller滑动时间是250ms,轮播时滑动太快了,所以需要反射Scroller来设置合理的滑动时间:</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyScroller</span> <span class="keyword">extends</span> <span class="title">Scroller</span> </span>{
+    <span class="comment">//默认1秒</span>
+    <span class="keyword">private</span> <span class="keyword">int</span> mDuration = <span class="number">1000</span>;
+
+    <span class="function"><span class="keyword">public</span> <span class="title">MyScroller</span><span class="params">(Context context)</span> </span>{
+        <span class="keyword">this</span>(context, <span class="keyword">null</span>);
+    }
+
+    <span class="function"><span class="keyword">public</span> <span class="title">MyScroller</span><span class="params">(Context context, Interpolator interpolator)</span> </span>{
+        <span class="keyword">super</span>(context, interpolator);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startScroll</span><span class="params">(<span class="keyword">int</span> startX, <span class="keyword">int</span> startY, <span class="keyword">int</span> dx, <span class="keyword">int</span> dy, <span class="keyword">int</span> duration)</span> </span>{
+        <span class="comment">// Ignore received duration, use fixed one instead</span>
+        <span class="keyword">super</span>.startScroll(startX, startY, dx, dy, mDuration);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startScroll</span><span class="params">(<span class="keyword">int</span> startX, <span class="keyword">int</span> startY, <span class="keyword">int</span> dx, <span class="keyword">int</span> dy)</span> </span>{
+        <span class="comment">// Ignore received duration, use fixed one instead</span>
+        <span class="keyword">super</span>.startScroll(startX, startY, dx, dy, mDuration);
+    }
+}
+
+<span class="comment">//调用以下方法设置</span>
+<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setViewPagerScrollTime</span><span class="params">()</span> </span>{
+    <span class="keyword">try</span> {
+        Field mScroller = ViewPager.class.getDeclaredField(<span class="string">"mScroller"</span>);
+        mScroller.setAccessible(<span class="keyword">true</span>);
+        MyScroller scroller = <span class="keyword">new</span> MyScroller(getContext());
+        mScroller.set(<span class="keyword">this</span>, scroller);
+    } <span class="keyword">catch</span> (Exception e) {
+        e.printStackTrace();
+    }
+}
+</code></pre></li>
+<li><p>注意ViewPager的offset设为1.</p>
+<pre><code><span class="escape">`m</span>ViewPager.setOffscreenPageLimit(<span class="number">1</span>)<span class="comment">;`</span>
+</code></pre></li>
+<li><p>在设置Adapter或更新数据后,记得设置ViewPager到中间页,否则往左滑动就会到边界.</p>
+<pre><code>//数据大小为<span class="built_in">size</span>.
+<span class="built_in">int</span> mid = <span class="type">Integer</span>.MAX_VALUE / <span class="number">2</span> - ((<span class="type">Integer</span>.MAX_VALUE / <span class="number">2</span>) % <span class="built_in">size</span>);
+holder.mViewPager.setCurrentItem(mid, false);
+</code></pre></li>
+</ol>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
                 <a class="post-title-link" href="/2015/12/22/动态设置MenuItem颜色/" itemprop="url">
                   动态设置MenuItem颜色
                 </a>
@@ -695,113 +872,6 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
 
 
     
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2015/10/31/Android右滑返回/" itemprop="url">
-                  Android右滑返回
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-10-31T15:50:07+08:00" content="2015 Oct 31">
-              2015 Oct 31
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
-                    <span itemprop="name">Android开发经验</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/10/31/Android右滑返回/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/31/Android右滑返回/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>作为一个Android开发者,遇到好的交互当然希望引用过来.iphone的应用可以从屏幕左端右滑返回上一个界面,这个交互在单手操作上非常舒服.那么当然希望在Android上实现.</p>
-<p>起初看到知乎和微信都实现了这个功能,于是就自己偷懒没有去想怎么实现,而是先去网上找了一下别人的实现,最后找到了这个<a href="http://blog.csdn.net/xiaanming/article/details/20934541" target="_blank" rel="external">Android 向右滑动销毁（finish）Activity, 随着手势的滑动而滑动的效果</a>.作者的原理和代码都很简明,但是copy下来后发现还是有点小bug,于是做了点修复.以及我和它的思路有所区别,最后就没有fork他的库了,而是自己写了一个demo:<a href="https://github.com/niorgai/SlideFinishLayout" target="_blank" rel="external">Android 右滑销毁Activity的Layout</a>.</p>
-<p>最初实现的时候,我也想像知乎一样可以从屏幕中间滑动,但最后发现知乎并没有ViewPager之类的横向滑动的控件,所以对原来的库做了以下修改:</p>
-<ol>
-<li>采取了边缘滑动的返回方式.这样便不需要考虑横向滑动的控件的触摸事件冲突.</li>
-<li>根据滑动的比例动态改变背景色,使背景色从黑色40%透明到全透明变化,过渡更加自然.</li>
-<li>finish()的时候调用<code>overridePendingTransition(0, 0)</code>使Activity的关闭动画取消,用户感觉更加自然.</li>
-<li><code>dispatchTouchEvent()</code>中对Move进行判断,这样当子View不消费Touch事件时,<code>slideFinishLayout</code>可以从任意位置滑动返回.</li>
-</ol>
-<h2 id="待解决优化:">待解决优化:</h2><p>因为这里实现滑动返回的是把Activity设为透明,那么上一个Activity的<code>onStop()</code>方法不会被调用,当Activity打开过多,性能下降很快.</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -844,7 +914,7 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">32</span>
+              <span class="site-state-item-count">33</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -858,7 +928,7 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">35</span>
+              <span class="site-state-item-count">37</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

@@ -1,0 +1,734 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  
+    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.3"/>
+
+
+    <meta name="description" content="Android | jianqiu's blog" />
+
+
+
+  <meta name="keywords" content="PagerAdapter,ViewPager," />
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
+
+
+<meta name="description" content="Andorid默认提供的ViewPager是不可以循环滚动的,当滑动到边界时就不能滚动了.但是实现Banner时,体验最好的还是无限滚动,为此需要自定义ViewPager来实现无限滚动.
+PagerAdapter部分:
+首先为了实现无限滚动,getCount()需要返回一个很大的数,可以使用Integer.MAX_VALUE.
+为了节省内存,默认ViewPager只缓存1个Page,就内存中只有p">
+<meta property="og:type" content="article">
+<meta property="og:title" content="无限滚动ViewPager的实现">
+<meta property="og:url" content="http://niorgai.github.io/2016/01/13/无限滚动ViewPager的实现/index.html">
+<meta property="og:site_name" content="Jianqiu's blog">
+<meta property="og:description" content="Andorid默认提供的ViewPager是不可以循环滚动的,当滑动到边界时就不能滚动了.但是实现Banner时,体验最好的还是无限滚动,为此需要自定义ViewPager来实现无限滚动.
+PagerAdapter部分:
+首先为了实现无限滚动,getCount()需要返回一个很大的数,可以使用Integer.MAX_VALUE.
+为了节省内存,默认ViewPager只缓存1个Page,就内存中只有p">
+<meta property="og:updated_time" content="2016-01-13T15:31:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="无限滚动ViewPager的实现">
+<meta name="twitter:description" content="Andorid默认提供的ViewPager是不可以循环滚动的,当滑动到边界时就不能滚动了.但是实现Banner时,体验最好的还是无限滚动,为此需要自定义ViewPager来实现无限滚动.
+PagerAdapter部分:
+首先为了实现无限滚动,getCount()需要返回一个很大的数,可以使用Integer.MAX_VALUE.
+为了节省内存,默认ViewPager只缓存1个Page,就内存中只有p">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+
+
+  <title> 无限滚动ViewPager的实现 | Jianqiu's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Jianqiu's blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Learn More</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                无限滚动ViewPager的实现
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-01-13T22:46:22+08:00" content="2016 Jan 13">
+              2016 Jan 13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/01/13/无限滚动ViewPager的实现/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/01/13/无限滚动ViewPager的实现/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>Andorid默认提供的ViewPager是不可以循环滚动的,当滑动到边界时就不能滚动了.但是实现Banner时,体验最好的还是无限滚动,为此需要自定义ViewPager来实现无限滚动.</p>
+<h2 id="PagerAdapter部分:">PagerAdapter部分:</h2><ol>
+<li>首先为了实现无限滚动,<code>getCount()</code>需要返回一个很大的数,可以使用<code>Integer.MAX_VALUE</code>.</li>
+<li>为了节省内存,默认ViewPager只缓存1个Page,就内存中只有perIndex, currentIndex, nextIndex三个View,实际上也发现只需要三个View就可以实现无限滚动.</li>
+<li><p><code>instantiateItem()</code>方法中,需要注意的就是获取到position对应的View后,如果<code>view.getParent()</code>是container时,需要先从container中移除该View,否则会导致View重复添加到parent报错.</p>
+<pre><code>@Override
+<span class="keyword">public</span> Object instantiateItem(ViewGroup <span class="keyword">container</span>, <span class="keyword">int</span> position) {
+    <span class="comment">//mView保存了3个View,用于实现轮播.</span>
+    <span class="comment">//mView[position % 3]即获取该position对应的View</span>
+    View view = mViews[position % <span class="number">3</span>];
+    <span class="keyword">if</span> (<span class="keyword">container</span>.equals(view.getParent())) {
+        <span class="comment">//防止添加到同一个parent</span>
+        <span class="keyword">container</span>.removeView(view);
+    }
+    <span class="keyword">container</span>.addView(view);
+}
+</code></pre></li>
+<li>重写<code>destroyItem()</code>方法,什么都不操作,不调用super方法.</li>
+<li><p><code>isViewFromObject()</code>方法正常重写即可.</p>
+<pre><code><span class="annotation">@Override</span>
+public boolean isViewFromObject(<span class="type">View</span> view, <span class="type">Object</span> <span class="class"><span class="keyword">object</span>) {</span>
+    <span class="keyword">return</span> view == <span class="class"><span class="keyword">object</span>;</span>
+}
+</code></pre></li>
+<li><p>注意重写<code>getItemPosition()</code>方法:</p>
+<pre><code><span class="annotation">@Override</span>
+<span class="keyword">public</span> <span class="function"><span class="keyword">int</span> <span class="title">getItemPosition</span><span class="params">(Object object)</span> </span>{
+    <span class="keyword">return</span> POSITION_NONE;
+}
+</code></pre><p> 通过查看文档的说明,该方法用来判断ViewPager中item的位置是否改变了,返回<code>POSITION_NONE</code>表示该item已经不存在adapter了,此时adapter会重新创建一个view.<strong>当不重写该方法时,可能会导致ViewPager中item有时不显示(item的onDraw()方法不调用)</strong>.</p>
+</li>
+</ol>
+<h2 id="ViewPager部分:">ViewPager部分:</h2><ol>
+<li><p>默认ViewPager的Scroller滑动时间是250ms,轮播时滑动太快了,所以需要反射Scroller来设置合理的滑动时间:</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyScroller</span> <span class="keyword">extends</span> <span class="title">Scroller</span> </span>{
+    <span class="comment">//默认1秒</span>
+    <span class="keyword">private</span> <span class="keyword">int</span> mDuration = <span class="number">1000</span>;
+
+    <span class="function"><span class="keyword">public</span> <span class="title">MyScroller</span><span class="params">(Context context)</span> </span>{
+        <span class="keyword">this</span>(context, <span class="keyword">null</span>);
+    }
+
+    <span class="function"><span class="keyword">public</span> <span class="title">MyScroller</span><span class="params">(Context context, Interpolator interpolator)</span> </span>{
+        <span class="keyword">super</span>(context, interpolator);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startScroll</span><span class="params">(<span class="keyword">int</span> startX, <span class="keyword">int</span> startY, <span class="keyword">int</span> dx, <span class="keyword">int</span> dy, <span class="keyword">int</span> duration)</span> </span>{
+        <span class="comment">// Ignore received duration, use fixed one instead</span>
+        <span class="keyword">super</span>.startScroll(startX, startY, dx, dy, mDuration);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startScroll</span><span class="params">(<span class="keyword">int</span> startX, <span class="keyword">int</span> startY, <span class="keyword">int</span> dx, <span class="keyword">int</span> dy)</span> </span>{
+        <span class="comment">// Ignore received duration, use fixed one instead</span>
+        <span class="keyword">super</span>.startScroll(startX, startY, dx, dy, mDuration);
+    }
+}
+
+<span class="comment">//调用以下方法设置</span>
+<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setViewPagerScrollTime</span><span class="params">()</span> </span>{
+    <span class="keyword">try</span> {
+        Field mScroller = ViewPager.class.getDeclaredField(<span class="string">"mScroller"</span>);
+        mScroller.setAccessible(<span class="keyword">true</span>);
+        MyScroller scroller = <span class="keyword">new</span> MyScroller(getContext());
+        mScroller.set(<span class="keyword">this</span>, scroller);
+    } <span class="keyword">catch</span> (Exception e) {
+        e.printStackTrace();
+    }
+}
+</code></pre></li>
+<li><p>注意ViewPager的offset设为1.</p>
+<pre><code><span class="escape">`m</span>ViewPager.setOffscreenPageLimit(<span class="number">1</span>)<span class="comment">;`</span>
+</code></pre></li>
+<li><p>在设置Adapter或更新数据后,记得设置ViewPager到中间页,否则往左滑动就会到边界.</p>
+<pre><code>//数据大小为<span class="built_in">size</span>.
+<span class="built_in">int</span> mid = <span class="type">Integer</span>.MAX_VALUE / <span class="number">2</span> - ((<span class="type">Integer</span>.MAX_VALUE / <span class="number">2</span>) % <span class="built_in">size</span>);
+holder.mViewPager.setCurrentItem(mid, false);
+</code></pre></li>
+</ol>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/PagerAdapter/" rel="tag">#PagerAdapter</a>
+          
+            <a href="/tags/ViewPager/" rel="tag">#ViewPager</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/12/22/动态设置MenuItem颜色/" rel="next" title="动态设置MenuItem颜色">
+                <i class="fa fa-chevron-left"></i> 动态设置MenuItem颜色
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+              <div class="ds-thread" data-thread-key="2016/01/13/无限滚动ViewPager的实现/"
+                   data-title="无限滚动ViewPager的实现" data-url="http://niorgai.github.io/2016/01/13/无限滚动ViewPager的实现/">
+              </div>
+            
+          </div>
+        
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="Jianqiu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">Jianqiu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Android | jianqiu's blog</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">33</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">10</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">37</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/niorgai" target="_blank">
+                  <i class="fa fa-github"></i> github
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jianqiu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"niorgai"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+    
+
+    
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.3"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.3"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.3" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.3"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.3" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+
+      motionIntegrator.bootstrap();
+    });
+  </script>
+
+  
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>

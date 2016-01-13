@@ -184,6 +184,113 @@
             
             
               
+                <a class="post-title-link" href="/2015/10/31/Android右滑返回/" itemprop="url">
+                  Android右滑返回
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-10-31T15:50:07+08:00" content="2015 Oct 31">
+              2015 Oct 31
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/10/31/Android右滑返回/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/31/Android右滑返回/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>作为一个Android开发者,遇到好的交互当然希望引用过来.iphone的应用可以从屏幕左端右滑返回上一个界面,这个交互在单手操作上非常舒服.那么当然希望在Android上实现.</p>
+<p>起初看到知乎和微信都实现了这个功能,于是就自己偷懒没有去想怎么实现,而是先去网上找了一下别人的实现,最后找到了这个<a href="http://blog.csdn.net/xiaanming/article/details/20934541" target="_blank" rel="external">Android 向右滑动销毁（finish）Activity, 随着手势的滑动而滑动的效果</a>.作者的原理和代码都很简明,但是copy下来后发现还是有点小bug,于是做了点修复.以及我和它的思路有所区别,最后就没有fork他的库了,而是自己写了一个demo:<a href="https://github.com/niorgai/SlideFinishLayout" target="_blank" rel="external">Android 右滑销毁Activity的Layout</a>.</p>
+<p>最初实现的时候,我也想像知乎一样可以从屏幕中间滑动,但最后发现知乎并没有ViewPager之类的横向滑动的控件,所以对原来的库做了以下修改:</p>
+<ol>
+<li>采取了边缘滑动的返回方式.这样便不需要考虑横向滑动的控件的触摸事件冲突.</li>
+<li>根据滑动的比例动态改变背景色,使背景色从黑色40%透明到全透明变化,过渡更加自然.</li>
+<li>finish()的时候调用<code>overridePendingTransition(0, 0)</code>使Activity的关闭动画取消,用户感觉更加自然.</li>
+<li><code>dispatchTouchEvent()</code>中对Move进行判断,这样当子View不消费Touch事件时,<code>slideFinishLayout</code>可以从任意位置滑动返回.</li>
+</ol>
+<h2 id="待解决优化:">待解决优化:</h2><p>因为这里实现滑动返回的是把Activity设为透明,那么上一个Activity的<code>onStop()</code>方法不会被调用,当Activity打开过多,性能下降很快.</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
                 <a class="post-title-link" href="/2015/10/15/滑动冲突解决-更合理的拦截/" itemprop="url">
                   滑动冲突解决-更合理的拦截
                 </a>
@@ -888,147 +995,7 @@ webSettings.setGeolocationDatabasePath<span class="params">(context.getFilesDir<
 </li>
 <li><p>SharedPreference的key最好统一管理,如果同一个key存放的数据和所取出的数据类型不同,会导致崩溃.</p>
 </li>
-<li><p>PagerAdapter的<code>notifyDataSetChange()</code>方法调用后,如果viewpager的每个Item是存在的,就不会重新创建对象,为了更好的解决刷新问题,最好重写Adapter的getItemPosition方法.</p>
-<pre><code><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemPosition</span>(<span class="params">Object <span class="keyword">object</span></span>) </span>{
-    <span class="keyword">return</span> POSITION_NONE;
-}
-</code></pre><p> 如果不重写,会导致ViewPager中item不显示,其实是item的<code>onDraw()</code>方法没有调用, 只有手指触碰viewPager时才会显示item.(我注意到viewPager的<code>hasWindowFocus()</code>方法返回false,但是当我重写<code>getItemPosition()</code>方法后,<code>hasWindowFocus()</code>任然返回false,但是可能是因为重新创建了对象的关系,item的显示是正常的)</p>
-</li>
 </ol>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2015/07/25/高效使用Volley/" itemprop="url">
-                  高效使用Volley
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-07-25T00:01:24+08:00" content="2015 Jul 25">
-              2015 Jul 25
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
-                    <span itemprop="name">Android开发经验</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/07/25/高效使用Volley/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/07/25/高效使用Volley/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>Volley,在使用时是通过<code>Volley.newRequestQueue(mContext)</code>来初始化,但其实这些方法都是导致其内部类的重复初始化,更高效的方法是使用单例模式来实现~这样最大的好处是使RequestQueue维持在整个Application的生命周期.</p>
-<p>比如Google给出的例子:</p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MySingleton</span> </span>{
-    <span class="keyword">private</span> <span class="keyword">static</span> MySingleton mInstance;
-    <span class="keyword">private</span> RequestQueue mRequestQueue;
-    <span class="keyword">private</span> <span class="keyword">static</span> Context mCtx;
-
-    <span class="function"><span class="keyword">private</span> <span class="title">MySingleton</span><span class="params">(Context context)</span> </span>{
-        mCtx = context;
-        mRequestQueue = getRequestQueue();
-    }
-
-    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> MySingleton <span class="title">getInstance</span><span class="params">(Context context)</span> </span>{
-        <span class="keyword">if</span> (mInstance == <span class="keyword">null</span>) {
-            mInstance = <span class="keyword">new</span> MySingleton(context);
-        }
-        <span class="keyword">return</span> mInstance;
-    }
-
-    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> MySingleton <span class="title">getInstance</span><span class="params">(Activity activity)</span> </span>{
-        <span class="keyword">if</span> (mInstance == <span class="keyword">null</span>) {
-            mInstance = <span class="keyword">new</span> MySingleton(activity.getApplicationContext());
-        }
-        <span class="keyword">return</span> mInstance;
-    }
-
-    <span class="function"><span class="keyword">public</span> RequestQueue <span class="title">getRequestQueue</span><span class="params">()</span> </span>{
-        <span class="keyword">if</span> (mRequestQueue == <span class="keyword">null</span>) {
-            mRequestQueue = Volley.newRequestQueue(mCtx.getApplicationContext());
-        }
-        <span class="keyword">return</span> mRequestQueue;
-    }
-
-}
-</code></pre><p>在使用时通过以下方法获取RequestQueue.</p>
-<pre><code>RequestQueue queue = MySingleton.getInstance<span class="params">(mContext)</span>.getRequestQueue<span class="params">()</span>;
-</code></pre><p><strong>Google的例子中还包含了ImageLoader,但是ImageLoader的getInstance()方法已经是单例模式了~</strong></p>
 
             
           </span>
@@ -1092,7 +1059,7 @@ webSettings.setGeolocationDatabasePath<span class="params">(context.getFilesDir<
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">32</span>
+              <span class="site-state-item-count">33</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1106,7 +1073,7 @@ webSettings.setGeolocationDatabasePath<span class="params">(context.getFilesDir<
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">35</span>
+              <span class="site-state-item-count">37</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

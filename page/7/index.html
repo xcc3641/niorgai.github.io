@@ -184,6 +184,130 @@
             
             
               
+                <a class="post-title-link" href="/2014/12/08/Activity中launchMode的值/" itemprop="url">
+                  Activity中launchMode的值
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2014-12-08T00:14:05+08:00" content="2014 Dec 8">
+              2014 Dec 8
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android基础知识/" itemprop="url" rel="index">
+                    <span itemprop="name">Android基础知识</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2014/12/08/Activity中launchMode的值/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/08/Activity中launchMode的值/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>Activity ： A,B,C,D。<br>回退栈： s1,s2.</p>
+<p>正常的生命周期：<br>开始－退出 ： onCreate -&gt; onStart -&gt; onResume -&gt; onPause -&gt; onStop -&gt; onDestroy</p>
+<p>启动Activity时，都会将Activity压入当前Application的回退栈中。</p>
+<h4 id="四种启动模式:standard，singleTop，singleTask，singleInstance。">四种启动模式:standard，singleTop，singleTask，singleInstance。</h4><h5 id="standard模式">standard模式</h5><p>launchMode属性的默认值，每次通过startActivity调用该Activity时都会new一个新对象。例如A1-&gt;A2.</p>
+<p>生命周期(点击时)： A1 onPause -&gt; A2 onCreate -&gt; A2 onStart -&gt; A2 onResume -&gt; A1 onSaveInstanceState -&gt; A1 onStop.</p>
+<h5 id="singleTop模式">singleTop模式</h5><ol>
+<li><p>如果当前Activity在回退栈的栈顶，则直接使用该Activity，同时调用该Activity的onNewIntent方法。</p>
+<p> 生命周期(点击时)：A1 onPause -&gt; A1 onNewIntent -&gt; A1 onResume.</p>
+</li>
+<li><p>如果不在栈顶，则与standard模式相同。</p>
+</li>
+</ol>
+<h5 id="singleTask模式">singleTask模式</h5><p>保证同一个窗口类在多个回退栈中只能有一个实例。</p>
+<ol>
+<li><p>调用同一应用程序内的Activity：</p>
+<ol>
+<li>如果Activity在栈顶，则直接使用并调用onNewIntent方法。</li>
+<li><p>如果Activity不在栈顶，则将该Activity之上的Activity全部出栈，并调用onNewIntent方法。</p>
+<p>生命周期(点击时)：A1 onPause -&gt; A1 onNewIntent -&gt; A1 onResume.</p>
+</li>
+</ol>
+</li>
+<li><p>调用不同应用程序内的Activity：<br> 同上，但是此时涉及到其他应用程序的切换，而不是单纯的出入栈操作。</p>
+</li>
+</ol>
+<h5 id="singleInstance模式">singleInstance模式</h5><p>同singleTask模式，但是新建立的任务只能有一个Activity对象。不能在该任务栈中启动其他Activity。</p>
+<p>生命周期(点击时)：A1 onPause -&gt; A1 onNewIntent -&gt; A1 onResume.</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
                 <a class="post-title-link" href="/2014/12/06/Android壁纸设置/" itemprop="url">
                   Android壁纸设置
                 </a>
@@ -487,7 +611,7 @@ drawable-xxhdpi     <span class="list">(<span class="keyword">dpi=480</span> , d
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">32</span>
+              <span class="site-state-item-count">33</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -501,7 +625,7 @@ drawable-xxhdpi     <span class="list">(<span class="keyword">dpi=480</span> , d
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">35</span>
+              <span class="site-state-item-count">37</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
