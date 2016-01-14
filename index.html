@@ -244,7 +244,7 @@
         
           <span itemprop="articleBody">
             
-              <p>Andorid默认提供的ViewPager是不可以循环滚动的,当滑动到边界时就不能滚动了.但是实现Banner时,体验最好的还是无限滚动,为此需要自定义ViewPager来实现<a href="&quot;mmlm://feed&quot;">无限滚动</a>.</p>
+              <p>Andorid默认提供的ViewPager是不可以循环滚动的,当滑动到边界时就不能滚动了.但是实现Banner时,体验最好的还是无限滚动,为此需要自定义ViewPager来实现无限滚动.</p>
 <h2 id="PagerAdapter部分:">PagerAdapter部分:</h2><ol>
 <li>首先为了实现无限滚动,<code>getCount()</code>需要返回一个很大的数,可以使用<code>Integer.MAX_VALUE</code>.</li>
 <li>为了节省内存,默认ViewPager只缓存1个Page,就内存中只有perIndex, currentIndex, nextIndex三个View,实际上也发现只需要三个View就可以实现无限滚动.</li>
