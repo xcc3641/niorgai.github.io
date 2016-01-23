@@ -260,13 +260,17 @@
 &lt;?xml <span class="variable">version=</span><span class="string">"1.0"</span> <span class="variable">encoding=</span><span class="string">"utf-8"</span>?&gt;
 &lt;selector xmlns:<span class="variable">android=</span><span class="string">"http://schemas.android.com/apk/res/android"</span>
     xmlns:<span class="variable">message=</span><span class="string">"http://schemas.android.com/apk/res/xxx"</span>&gt;
-    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_selected"</span>                 android:<span class="variable">state_checked=</span><span class="string">"true"</span>
+    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_selected"</span>
+        android:<span class="variable">state_checked=</span><span class="string">"true"</span>
         message:<span class="variable">state_new_message=</span><span class="string">"false"</span>/&gt;
-    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_selected_new"</span>                 android:<span class="variable">state_checked=</span><span class="string">"true"</span>
+    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_selected_new"</span>
+        android:<span class="variable">state_checked=</span><span class="string">"true"</span>
         message:<span class="variable">state_new_message=</span><span class="string">"true"</span>/&gt;
-    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_normal"</span>                 android:<span class="variable">state_checked=</span><span class="string">"false"</span>
+    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_normal"</span> 
+        android:<span class="variable">state_checked=</span><span class="string">"false"</span>
         message:<span class="variable">state_new_message=</span><span class="string">"false"</span>/&gt;
-    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_normal_new"</span>                 android:<span class="variable">state_checked=</span><span class="string">"false"</span>
+    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_normal_new"</span> 
+        android:<span class="variable">state_checked=</span><span class="string">"false"</span>
         message:<span class="variable">state_new_message=</span><span class="string">"true"</span>/&gt;
 &lt;/selector&gt;
 </code></pre></li>
@@ -322,8 +326,6 @@
 </li>
 </ul>
 </li>
-</ol>
-<ol>
 <li><p>selector对应的Drawable对象即<strong>StateListDrawable</strong>.</p>
 <ul>
 <li><p><code>StateListDrawable.addState(int[] stateSet, Drawable drawable)</code>方法可以添加状态对应的drawable.</p>

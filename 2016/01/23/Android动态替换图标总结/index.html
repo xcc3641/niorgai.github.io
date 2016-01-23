@@ -53,7 +53,7 @@
 <meta property="og:site_name" content="Jianqiu's blog">
 <meta property="og:description" content="现在淘宝,京东等App在节假日打开时,都是采用一套节假日的图标,这种不用发版本,又可以随着后台配置动态替换图标固然是很方便,体验很好的事情.
 准备工作:全部按钮的不同状态改为纯图片实现.现在很多应用的通知策略都是采用小红点提示,小红点可以单独画出来,与图标分离,单独控制隐藏.但是现在需要动态替换图标,小红点就不能与图片分离了,否则会导致红点位置不理想或红点被图标遮住等问题.为此,所有的状态都需要改">
-<meta property="og:updated_time" content="2016-01-23T11:49:36.000Z">
+<meta property="og:updated_time" content="2016-01-23T11:52:10.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android动态替换图标总结">
 <meta name="twitter:description" content="现在淘宝,京东等App在节假日打开时,都是采用一套节假日的图标,这种不用发版本,又可以随着后台配置动态替换图标固然是很方便,体验很好的事情.
@@ -257,13 +257,17 @@
 &lt;?xml <span class="variable">version=</span><span class="string">"1.0"</span> <span class="variable">encoding=</span><span class="string">"utf-8"</span>?&gt;
 &lt;selector xmlns:<span class="variable">android=</span><span class="string">"http://schemas.android.com/apk/res/android"</span>
     xmlns:<span class="variable">message=</span><span class="string">"http://schemas.android.com/apk/res/xxx"</span>&gt;
-    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_selected"</span>                 android:<span class="variable">state_checked=</span><span class="string">"true"</span>
+    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_selected"</span>
+        android:<span class="variable">state_checked=</span><span class="string">"true"</span>
         message:<span class="variable">state_new_message=</span><span class="string">"false"</span>/&gt;
-    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_selected_new"</span>                 android:<span class="variable">state_checked=</span><span class="string">"true"</span>
+    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_selected_new"</span>
+        android:<span class="variable">state_checked=</span><span class="string">"true"</span>
         message:<span class="variable">state_new_message=</span><span class="string">"true"</span>/&gt;
-    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_normal"</span>                 android:<span class="variable">state_checked=</span><span class="string">"false"</span>
+    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_normal"</span> 
+        android:<span class="variable">state_checked=</span><span class="string">"false"</span>
         message:<span class="variable">state_new_message=</span><span class="string">"false"</span>/&gt;
-    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_normal_new"</span>                 android:<span class="variable">state_checked=</span><span class="string">"false"</span>
+    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_normal_new"</span> 
+        android:<span class="variable">state_checked=</span><span class="string">"false"</span>
         message:<span class="variable">state_new_message=</span><span class="string">"true"</span>/&gt;
 &lt;/selector&gt;
 </code></pre></li>
@@ -319,8 +323,6 @@
 </li>
 </ul>
 </li>
-</ol>
-<ol>
 <li><p>selector对应的Drawable对象即<strong>StateListDrawable</strong>.</p>
 <ul>
 <li><p><code>StateListDrawable.addState(int[] stateSet, Drawable drawable)</code>方法可以添加状态对应的drawable.</p>
