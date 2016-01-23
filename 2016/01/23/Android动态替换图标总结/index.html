@@ -36,7 +36,7 @@
 
 
 
-  <meta name="keywords" content="获取图片," />
+  <meta name="keywords" content="Drawable,selector," />
 
 
 
@@ -45,25 +45,19 @@
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
 
 
-<meta name="description" content="目前从图库选择图片可以有两种方法：
-以下结果属于vivo Xplay,Android Version 4.4.4测试结果，如果有其他机型测试我会补充1.Intent.ACTION_PICK：
-Intent intent = new Intent(Intent.ACTION_PICK,
-            android.provider.MediaStore.Images.Media.EXTE">
+<meta name="description" content="现在淘宝,京东等App在节假日打开时,都是采用一套节假日的图标,这种不用发版本,又可以随着后台配置动态替换图标固然是很方便,体验很好的事情.
+准备工作:全部按钮的不同状态改为纯图片实现.现在很多应用的通知策略都是采用小红点提示,小红点可以单独画出来,与图标分离,单独控制隐藏.但是现在需要动态替换图标,小红点就不能与图片分离了,否则会导致红点位置不理想或红点被图标遮住等问题.为此,所有的状态都需要改">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android相册选取图片">
-<meta property="og:url" content="http://niorgai.github.io/2015/01/31/Android相册选取图片/index.html">
+<meta property="og:title" content="Android动态替换图标总结">
+<meta property="og:url" content="http://niorgai.github.io/2016/01/23/Android动态替换图标总结/index.html">
 <meta property="og:site_name" content="Jianqiu's blog">
-<meta property="og:description" content="目前从图库选择图片可以有两种方法：
-以下结果属于vivo Xplay,Android Version 4.4.4测试结果，如果有其他机型测试我会补充1.Intent.ACTION_PICK：
-Intent intent = new Intent(Intent.ACTION_PICK,
-            android.provider.MediaStore.Images.Media.EXTE">
-<meta property="og:updated_time" content="2015-11-29T13:19:53.000Z">
+<meta property="og:description" content="现在淘宝,京东等App在节假日打开时,都是采用一套节假日的图标,这种不用发版本,又可以随着后台配置动态替换图标固然是很方便,体验很好的事情.
+准备工作:全部按钮的不同状态改为纯图片实现.现在很多应用的通知策略都是采用小红点提示,小红点可以单独画出来,与图标分离,单独控制隐藏.但是现在需要动态替换图标,小红点就不能与图片分离了,否则会导致红点位置不理想或红点被图标遮住等问题.为此,所有的状态都需要改">
+<meta property="og:updated_time" content="2016-01-23T11:49:36.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android相册选取图片">
-<meta name="twitter:description" content="目前从图库选择图片可以有两种方法：
-以下结果属于vivo Xplay,Android Version 4.4.4测试结果，如果有其他机型测试我会补充1.Intent.ACTION_PICK：
-Intent intent = new Intent(Intent.ACTION_PICK,
-            android.provider.MediaStore.Images.Media.EXTE">
+<meta name="twitter:title" content="Android动态替换图标总结">
+<meta name="twitter:description" content="现在淘宝,京东等App在节假日打开时,都是采用一套节假日的图标,这种不用发版本,又可以随着后台配置动态替换图标固然是很方便,体验很好的事情.
+准备工作:全部按钮的不同状态改为纯图片实现.现在很多应用的通知策略都是采用小红点提示,小红点可以单独画出来,与图标分离,单独控制隐藏.但是现在需要动态替换图标,小红点就不能与图片分离了,否则会导致红点位置不理想或红点被图标遮住等问题.为此,所有的状态都需要改">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -75,7 +69,7 @@ Intent intent = new Intent(Intent.ACTION_PICK,
 
 
 
-  <title> Android相册选取图片 | Jianqiu's blog </title>
+  <title> Android动态替换图标总结 | Jianqiu's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -192,7 +186,7 @@ Intent intent = new Intent(Intent.ACTION_PICK,
             
             
               
-                Android相册选取图片
+                Android动态替换图标总结
               
             
           </h1>
@@ -201,8 +195,8 @@ Intent intent = new Intent(Intent.ACTION_PICK,
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2015-01-31T00:39:36+08:00" content="2015 Jan 31">
-              2015 Jan 31
+            <time itemprop="dateCreated" datetime="2016-01-23T19:10:43+08:00" content="2016 Jan 23">
+              2016 Jan 23
             </time>
           </span>
 
@@ -227,8 +221,8 @@ Intent intent = new Intent(Intent.ACTION_PICK,
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2015/01/31/Android相册选取图片/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/31/Android相册选取图片/" itemprop="commentsCount"></span>
+                <a href="/2016/01/23/Android动态替换图标总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/01/23/Android动态替换图标总结/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -247,47 +241,98 @@ Intent intent = new Intent(Intent.ACTION_PICK,
       
 
       
-        <span itemprop="articleBody"><p>目前从图库选择图片可以有两种方法：</p>
-<p><strong>以下结果属于vivo Xplay,Android Version 4.4.4测试结果，如果有其他机型测试我会补充</strong><br>1.<strong>Intent.ACTION_PICK：</strong></p>
-<pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(<span class="type">Intent</span>.ACTION_PICK,
-            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
-</code></pre><p> onActivityResult返回的Intent中：</p>
-<ul>
-<li><code>intent.getData()</code>会返回所选图片的Uri，格式为<code>content://media/external/images/media/919</code></li>
-<li><code>intent.getExtras()</code>返回的bundle中包含一个boolean变量，通过<code>data.getExtras().get(&quot;isFinishGallery&quot;)</code>获取,应该是指是否获取完毕，查询文档没有官方结果。</li>
-<li><code>intent.putExtra(&quot;return-data&quot;,false)</code>对返回值没有影响。</li>
-</ul>
-<p>2.<strong>Intent.ACTION_GET_CONTENT</strong></p>
-<pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(<span class="type">Intent</span>.ACTION_GET_CONTENT);
-<span class="type">intent</span>.setType(<span class="string">"image/*"</span>);//不加会导致crash
-</code></pre><p>  onActivityResult返回的Intent中：</p>
-<ul>
-<li><code>intent.getData()</code>返回所选图片的Uri：</li>
-</ul>
-<hr>
-<p>关于返回Uri格式的说明：</p>
-<ul>
-<li><p>系统版本大于等于19(KitKat):<code>content://com.android.providers.media.documents/document/image%3A919</code></p>
-</li>
-<li><p>系统版本低于19:<code>content://media/external/images/media/919</code></p>
-</li>
-</ul>
-<p>可以通过以下函数获取真实路径：</p>
-<pre><code><span class="keyword">private</span> <span class="keyword">String</span> getRealPathFromURI(Context context,Uri contentUri) {
-    <span class="keyword">String</span>[] proj = { MediaStore.Images.Media.DATA };
-    Cursor <span class="built_in">cursor</span> = context.getContentResolver().query(contentUri, proj, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);
-    <span class="keyword">if</span> (<span class="built_in">cursor</span> != <span class="keyword">null</span>) {
-        <span class="built_in">cursor</span>.moveToFirst();
-        <span class="built_in">int</span> columnIndex = <span class="built_in">cursor</span>.getColumnIndex(proj[<span class="number">0</span>]);
-        <span class="keyword">String</span> path = <span class="built_in">cursor</span>.getString(columnIndex);
-        <span class="built_in">cursor</span>.close();
-        <span class="keyword">return</span> path;
+        <span itemprop="articleBody"><p>现在淘宝,京东等App在节假日打开时,都是采用一套节假日的图标,这种不用发版本,又可以随着后台配置动态替换图标固然是很方便,体验很好的事情.</p>
+<h2 id="准备工作:全部按钮的不同状态改为纯图片实现-">准备工作:全部按钮的不同状态改为纯图片实现.</h2><p>现在很多应用的通知策略都是采用小红点提示,小红点可以单独画出来,与图标分离,单独控制隐藏.但是现在需要动态替换图标,小红点就不能与图片分离了,否则会导致红点位置不理想或红点被图标遮住等问题.为此,所有的状态都需要改为纯图片实现.</p>
+<p>首页的tab,目前应用采用的是<code>RadioButton + Fragment</code>的实现,为此,需要自定义RadioButton的selector.</p>
+<ol>
+<li><p>定义attr.</p>
+<pre><code>//下面定义的state_new_message表示有新消息
+<span class="tag">&lt;<span class="title">declare-styleable</span> <span class="attribute">name</span>=<span class="value">"MessageRadioButton"</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">attr</span> <span class="attribute">name</span>=<span class="value">"state_new_message"</span> <span class="attribute">format</span>=<span class="value">"boolean"</span>/&gt;</span>
+<span class="tag">&lt;/<span class="title">declare-styleable</span>&gt;</span>
+</code></pre></li>
+<li><p>定义selector.</p>
+<pre><code>//xxx为你的包名
+//为了配合state_checked,需要<span class="number">4</span>张图片
+&lt;?xml <span class="variable">version=</span><span class="string">"1.0"</span> <span class="variable">encoding=</span><span class="string">"utf-8"</span>?&gt;
+&lt;selector xmlns:<span class="variable">android=</span><span class="string">"http://schemas.android.com/apk/res/android"</span>
+    xmlns:<span class="variable">message=</span><span class="string">"http://schemas.android.com/apk/res/xxx"</span>&gt;
+    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_selected"</span>                 android:<span class="variable">state_checked=</span><span class="string">"true"</span>
+        message:<span class="variable">state_new_message=</span><span class="string">"false"</span>/&gt;
+    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_selected_new"</span>                 android:<span class="variable">state_checked=</span><span class="string">"true"</span>
+        message:<span class="variable">state_new_message=</span><span class="string">"true"</span>/&gt;
+    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_normal"</span>                 android:<span class="variable">state_checked=</span><span class="string">"false"</span>
+        message:<span class="variable">state_new_message=</span><span class="string">"false"</span>/&gt;
+    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_normal_new"</span>                 android:<span class="variable">state_checked=</span><span class="string">"false"</span>
+        message:<span class="variable">state_new_message=</span><span class="string">"true"</span>/&gt;
+&lt;/selector&gt;
+</code></pre></li>
+<li><p>重写RadioButton(ImageView等控件也同样适用).</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageRadioButton</span> <span class="keyword">extends</span> <span class="title">RadioButton</span> </span>{
+    <span class="comment">//定义的状态</span>
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span>[] STATE_NEW_MESSAGE = {R.attr.state_new_message};
+    <span class="comment">//是否有新消息</span>
+    <span class="keyword">private</span> <span class="keyword">boolean</span> hasNewMessage;
+
+    <span class="comment">/**
+     * 构造函数
+     **/</span>
+
+    <span class="comment">/**
+     * 关键需要此函数,添加状态
+     **/</span>
+    <span class="annotation">@Override</span>
+    <span class="keyword">protected</span> <span class="keyword">int</span>[] onCreateDrawableState(<span class="keyword">int</span> extraSpace) {
+        <span class="keyword">if</span> (hasNewMessage) {
+            <span class="keyword">final</span> <span class="keyword">int</span>[] drawableState = <span class="keyword">super</span>.onCreateDrawableState(extraSpace + <span class="number">1</span>);
+            mergeDrawableStates(drawableState, STATE_NEW_MESSAGE);
+            <span class="keyword">return</span> drawableState;
+        }
+        <span class="function"><span class="keyword">return</span> <span class="keyword">super</span>.<span class="title">onCreateDrawableState</span><span class="params">(extraSpace)</span></span>;
     }
-    <span class="keyword">return</span> contentUri.getPath();
-   }
-</code></pre><ol>
-<li>Uri获取bitmap的方法可以参考<a href="http://niorgai.github.io/2015/02/22/Bitmap%E7%9B%B8%E5%85%B3-%E8%AF%BB%E5%8F%96%E5%A4%A7%E5%9B%BE%E7%89%87/">Bitmap相关:读取大图片</a>.</li>
+
+    <span class="comment">/**
+     * 设置是否有新消息数
+     * <span class="doctag">@param</span> newMessage, 是否有新消息数
+     */</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">setHasNewMessage</span><span class="params">(<span class="keyword">boolean</span> newMessage)</span> </span>{
+        <span class="keyword">if</span> (hasNewMessage != newMessage) {
+            hasNewMessage = newMessage;
+            refreshDrawableState();
+        }
+    }
+
+}
+</code></pre></li>
+</ol>
+<p>使用MessageRadioButton的<code>setHasNewMessage()</code>方法即可以显示带小红点的图片.<br>即<strong>所有按钮改为图片实现.</strong></p>
+<h2 id="创建Drawable对象">创建Drawable对象</h2><p>动态配置就是下载图片成功后,从文件中获取每个按钮的Drawable对象.但是实现时需要注意细节:</p>
+<ol>
+<li><p>根据图片生成的Drawable对象即<strong>BitmapDrawable</strong>.</p>
+<ul>
+<li><p>目前BitmapDrawable对应的构造函数未被弃用的还有</p>
+<pre><code><span class="function"><span class="title">BitmapDrawable</span><span class="params">(Resources res, Bitmap bitmap)</span></span>
+<span class="function"><span class="title">BitmapDrawable</span><span class="params">(Resources res, String path)</span></span>
+</code></pre><p>  但使用<code>BitmapDrawable(Resources res, String path)</code>时发现在vivo手机上没有生效,所以还是推荐<code>BitmapDrawable(Resources res, Bitmap bitmap)</code>方法.</p>
+</li>
+<li><p>图片在使用时也需要区分dpi,对应<code>Bitmap.setDensity()</code>方法,参数为160的倍数.</p>
+</li>
+</ul>
+</li>
+</ol>
+<ol>
+<li><p>selector对应的Drawable对象即<strong>StateListDrawable</strong>.</p>
+<ul>
+<li><p><code>StateListDrawable.addState(int[] stateSet, Drawable drawable)</code>方法可以添加状态对应的drawable.</p>
+<pre><code><span class="comment">//state_new_message为false</span>
+listDrawable.addState(<span class="keyword">new</span> <span class="keyword">int</span>[]{-R.attr.state_new_message}, drawable);
+<span class="comment">//state_new_message为true</span>
+listDrawable.addState(<span class="keyword">new</span> <span class="keyword">int</span>[]{R.attr.state_new_message}, drawable);
+</code></pre></li>
+<li><p>listDrawable必须调用<code>setBounds()</code>方法才能显示.</p>
+</li>
+</ul>
+</li>
 </ol>
 </span>
       
@@ -297,7 +342,9 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
       
         <div class="post-tags">
           
-            <a href="/tags/获取图片/" rel="tag">#获取图片</a>
+            <a href="/tags/Drawable/" rel="tag">#Drawable</a>
+          
+            <a href="/tags/selector/" rel="tag">#selector</a>
           
         </div>
       
@@ -306,17 +353,13 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/01/12/Android序列化对象/" rel="next" title="Android序列化对象">
-                <i class="fa fa-chevron-left"></i> Android序列化对象
+              <a href="/2016/01/13/无限滚动ViewPager的实现/" rel="next" title="无限滚动ViewPager的实现">
+                <i class="fa fa-chevron-left"></i> 无限滚动ViewPager的实现
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/01/31/Android拍照选取图片/" rel="prev" title="Android拍照选取图片">
-                Android拍照选取图片 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -341,8 +384,8 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
         
           <div class="comments" id="comments">
             
-              <div class="ds-thread" data-thread-key="2015/01/31/Android相册选取图片/"
-                   data-title="Android相册选取图片" data-url="http://niorgai.github.io/2015/01/31/Android相册选取图片/">
+              <div class="ds-thread" data-thread-key="2016/01/23/Android动态替换图标总结/"
+                   data-title="Android动态替换图标总结" data-url="http://niorgai.github.io/2016/01/23/Android动态替换图标总结/">
               </div>
             
           </div>

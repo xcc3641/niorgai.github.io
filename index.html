@@ -184,6 +184,196 @@
             
             
               
+                <a class="post-title-link" href="/2016/01/23/Android动态替换图标总结/" itemprop="url">
+                  Android动态替换图标总结
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-01-23T19:10:43+08:00" content="2016 Jan 23">
+              2016 Jan 23
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/01/23/Android动态替换图标总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/01/23/Android动态替换图标总结/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>现在淘宝,京东等App在节假日打开时,都是采用一套节假日的图标,这种不用发版本,又可以随着后台配置动态替换图标固然是很方便,体验很好的事情.</p>
+<h2 id="准备工作:全部按钮的不同状态改为纯图片实现-">准备工作:全部按钮的不同状态改为纯图片实现.</h2><p>现在很多应用的通知策略都是采用小红点提示,小红点可以单独画出来,与图标分离,单独控制隐藏.但是现在需要动态替换图标,小红点就不能与图片分离了,否则会导致红点位置不理想或红点被图标遮住等问题.为此,所有的状态都需要改为纯图片实现.</p>
+<p>首页的tab,目前应用采用的是<code>RadioButton + Fragment</code>的实现,为此,需要自定义RadioButton的selector.</p>
+<ol>
+<li><p>定义attr.</p>
+<pre><code>//下面定义的state_new_message表示有新消息
+<span class="tag">&lt;<span class="title">declare-styleable</span> <span class="attribute">name</span>=<span class="value">"MessageRadioButton"</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">attr</span> <span class="attribute">name</span>=<span class="value">"state_new_message"</span> <span class="attribute">format</span>=<span class="value">"boolean"</span>/&gt;</span>
+<span class="tag">&lt;/<span class="title">declare-styleable</span>&gt;</span>
+</code></pre></li>
+<li><p>定义selector.</p>
+<pre><code>//xxx为你的包名
+//为了配合state_checked,需要<span class="number">4</span>张图片
+&lt;?xml <span class="variable">version=</span><span class="string">"1.0"</span> <span class="variable">encoding=</span><span class="string">"utf-8"</span>?&gt;
+&lt;selector xmlns:<span class="variable">android=</span><span class="string">"http://schemas.android.com/apk/res/android"</span>
+    xmlns:<span class="variable">message=</span><span class="string">"http://schemas.android.com/apk/res/xxx"</span>&gt;
+    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_selected"</span>                 android:<span class="variable">state_checked=</span><span class="string">"true"</span>
+        message:<span class="variable">state_new_message=</span><span class="string">"false"</span>/&gt;
+    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_selected_new"</span>                 android:<span class="variable">state_checked=</span><span class="string">"true"</span>
+        message:<span class="variable">state_new_message=</span><span class="string">"true"</span>/&gt;
+    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_normal"</span>                 android:<span class="variable">state_checked=</span><span class="string">"false"</span>
+        message:<span class="variable">state_new_message=</span><span class="string">"false"</span>/&gt;
+    &lt;item android:<span class="variable">drawable=</span><span class="string">"@drawable/icon_union_normal_new"</span>                 android:<span class="variable">state_checked=</span><span class="string">"false"</span>
+        message:<span class="variable">state_new_message=</span><span class="string">"true"</span>/&gt;
+&lt;/selector&gt;
+</code></pre></li>
+<li><p>重写RadioButton(ImageView等控件也同样适用).</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageRadioButton</span> <span class="keyword">extends</span> <span class="title">RadioButton</span> </span>{
+    <span class="comment">//定义的状态</span>
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span>[] STATE_NEW_MESSAGE = {R.attr.state_new_message};
+    <span class="comment">//是否有新消息</span>
+    <span class="keyword">private</span> <span class="keyword">boolean</span> hasNewMessage;
+
+    <span class="comment">/**
+     * 构造函数
+     **/</span>
+
+    <span class="comment">/**
+     * 关键需要此函数,添加状态
+     **/</span>
+    <span class="annotation">@Override</span>
+    <span class="keyword">protected</span> <span class="keyword">int</span>[] onCreateDrawableState(<span class="keyword">int</span> extraSpace) {
+        <span class="keyword">if</span> (hasNewMessage) {
+            <span class="keyword">final</span> <span class="keyword">int</span>[] drawableState = <span class="keyword">super</span>.onCreateDrawableState(extraSpace + <span class="number">1</span>);
+            mergeDrawableStates(drawableState, STATE_NEW_MESSAGE);
+            <span class="keyword">return</span> drawableState;
+        }
+        <span class="function"><span class="keyword">return</span> <span class="keyword">super</span>.<span class="title">onCreateDrawableState</span><span class="params">(extraSpace)</span></span>;
+    }
+
+    <span class="comment">/**
+     * 设置是否有新消息数
+     * <span class="doctag">@param</span> newMessage, 是否有新消息数
+     */</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">setHasNewMessage</span><span class="params">(<span class="keyword">boolean</span> newMessage)</span> </span>{
+        <span class="keyword">if</span> (hasNewMessage != newMessage) {
+            hasNewMessage = newMessage;
+            refreshDrawableState();
+        }
+    }
+
+}
+</code></pre></li>
+</ol>
+<p>使用MessageRadioButton的<code>setHasNewMessage()</code>方法即可以显示带小红点的图片.<br>即<strong>所有按钮改为图片实现.</strong></p>
+<h2 id="创建Drawable对象">创建Drawable对象</h2><p>动态配置就是下载图片成功后,从文件中获取每个按钮的Drawable对象.但是实现时需要注意细节:</p>
+<ol>
+<li><p>根据图片生成的Drawable对象即<strong>BitmapDrawable</strong>.</p>
+<ul>
+<li><p>目前BitmapDrawable对应的构造函数未被弃用的还有</p>
+<pre><code><span class="function"><span class="title">BitmapDrawable</span><span class="params">(Resources res, Bitmap bitmap)</span></span>
+<span class="function"><span class="title">BitmapDrawable</span><span class="params">(Resources res, String path)</span></span>
+</code></pre><p>  但使用<code>BitmapDrawable(Resources res, String path)</code>时发现在vivo手机上没有生效,所以还是推荐<code>BitmapDrawable(Resources res, Bitmap bitmap)</code>方法.</p>
+</li>
+<li><p>图片在使用时也需要区分dpi,对应<code>Bitmap.setDensity()</code>方法,参数为160的倍数.</p>
+</li>
+</ul>
+</li>
+</ol>
+<ol>
+<li><p>selector对应的Drawable对象即<strong>StateListDrawable</strong>.</p>
+<ul>
+<li><p><code>StateListDrawable.addState(int[] stateSet, Drawable drawable)</code>方法可以添加状态对应的drawable.</p>
+<pre><code><span class="comment">//state_new_message为false</span>
+listDrawable.addState(<span class="keyword">new</span> <span class="keyword">int</span>[]{-R.attr.state_new_message}, drawable);
+<span class="comment">//state_new_message为true</span>
+listDrawable.addState(<span class="keyword">new</span> <span class="keyword">int</span>[]{R.attr.state_new_message}, drawable);
+</code></pre></li>
+<li><p>listDrawable必须调用<code>setBounds()</code>方法才能显示.</p>
+</li>
+</ul>
+</li>
+</ol>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
                 <a class="post-title-link" href="/2016/01/13/无限滚动ViewPager的实现/" itemprop="url">
                   无限滚动ViewPager的实现
                 </a>
@@ -730,148 +920,6 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
 
 
     
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2015/12/05/我眼中的刷新与加载/" itemprop="url">
-                  我眼中的刷新与加载
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-12-05T23:43:43+08:00" content="2015 Dec 5">
-              2015 Dec 5
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Android开发闲谈/" itemprop="url" rel="index">
-                    <span itemprop="name">Android开发闲谈</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/12/05/我眼中的刷新与加载/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/05/我眼中的刷新与加载/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>下拉刷新,在我看来是非常有革命性的一种交互形式,使用过程非常自然.而与之对应的,就有上拉加载.为了实现下拉刷新和上拉加载,通常都是将整个界面分为三部分:</p>
-<pre><code><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span>
-     TopLoadingView
-<span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span>
-
-       childView
-
-<span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span>
-    BottomLoadingView
-<span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span>
-</code></pre><h3 id="下拉刷新">下拉刷新</h3><p>目前常用的下拉刷新有几种样式,在这里推荐一个库<a href="https://github.com/Aspsine/SwipeToLoadLayout" target="_blank" rel="external">SwipeToLoadLayout</a>, </p>
-<p>这个库的Demo中把刷新的几种样式: </p>
-<table>
-<thead>
-<tr>
-<th>名字</th>
-<th>效果</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>classic</td>
-<td>拉动时LoadingView与childView一起滑动</td>
-</tr>
-<tr>
-<td>above</td>
-<td>拉动时只滑动LoadingView, childView不滑动</td>
-</tr>
-<tr>
-<td>below</td>
-<td>拉动时只滑动childView,不滑动LoadingView</td>
-</tr>
-<tr>
-<td>scale</td>
-<td>拉动时childView跟随拉动距离移动,loadingView滑动较慢</td>
-</tr>
-</tbody>
-</table>
-<h3 id="上拉加载">上拉加载</h3><p>与下拉刷新相同,上拉加载也可以同时支持这几种样式.</p>
-<h3 id="交互上的细节点:">交互上的细节点:</h3><ol>
-<li>无论是下拉刷新还是上拉加载,手指在整个过程中都不应该离开屏幕,应该让用户感觉更加自然.解决办法如下:<a href="http://niorgai.github.io/2015/10/12/%E6%BB%91%E5%8A%A8%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3-%E8%81%94%E5%8A%A8%E5%AD%90View/">联动子View</a>.</li>
-<li>注意与横向滑动View的冲突解决,如<code>ViewPager</code>等.解决方法可以参考<a href="http://niorgai.github.io/2015/10/15/%E6%BB%91%E5%8A%A8%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3-%E6%9B%B4%E5%90%88%E7%90%86%E7%9A%84%E6%8B%A6%E6%88%AA/">更合理的拦截</a>.</li>
-<li>下拉刷新是很多App培养出来的用户习惯,用户会习惯性下拉刷新.但是上拉加载却不是,用户并不能很明确得了解是否有更多.同时在除classic的其他模式中,刷新完后loadingView隐藏,界面布局并没有任何变化,用户并不知道是否加载出来.于是就想出一种更加直接的加载<strong><code>滑动到底部自动加载</code></strong>.</li>
-</ol>
-<h3 id="实现">实现</h3><p><a href="">RefreshView:包含下拉刷新和自动加载的View</a></p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -914,7 +962,7 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">33</span>
+              <span class="site-state-item-count">34</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -928,7 +976,7 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">37</span>
+              <span class="site-state-item-count">39</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

@@ -184,6 +184,148 @@
             
             
               
+                <a class="post-title-link" href="/2015/12/05/我眼中的刷新与加载/" itemprop="url">
+                  我眼中的刷新与加载
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-05T23:43:43+08:00" content="2015 Dec 5">
+              2015 Dec 5
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发闲谈/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发闲谈</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/12/05/我眼中的刷新与加载/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/05/我眼中的刷新与加载/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>下拉刷新,在我看来是非常有革命性的一种交互形式,使用过程非常自然.而与之对应的,就有上拉加载.为了实现下拉刷新和上拉加载,通常都是将整个界面分为三部分:</p>
+<pre><code><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span>
+     TopLoadingView
+<span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span>
+
+       childView
+
+<span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span>
+    BottomLoadingView
+<span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span>
+</code></pre><h3 id="下拉刷新">下拉刷新</h3><p>目前常用的下拉刷新有几种样式,在这里推荐一个库<a href="https://github.com/Aspsine/SwipeToLoadLayout" target="_blank" rel="external">SwipeToLoadLayout</a>, </p>
+<p>这个库的Demo中把刷新的几种样式: </p>
+<table>
+<thead>
+<tr>
+<th>名字</th>
+<th>效果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>classic</td>
+<td>拉动时LoadingView与childView一起滑动</td>
+</tr>
+<tr>
+<td>above</td>
+<td>拉动时只滑动LoadingView, childView不滑动</td>
+</tr>
+<tr>
+<td>below</td>
+<td>拉动时只滑动childView,不滑动LoadingView</td>
+</tr>
+<tr>
+<td>scale</td>
+<td>拉动时childView跟随拉动距离移动,loadingView滑动较慢</td>
+</tr>
+</tbody>
+</table>
+<h3 id="上拉加载">上拉加载</h3><p>与下拉刷新相同,上拉加载也可以同时支持这几种样式.</p>
+<h3 id="交互上的细节点:">交互上的细节点:</h3><ol>
+<li>无论是下拉刷新还是上拉加载,手指在整个过程中都不应该离开屏幕,应该让用户感觉更加自然.解决办法如下:<a href="http://niorgai.github.io/2015/10/12/%E6%BB%91%E5%8A%A8%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3-%E8%81%94%E5%8A%A8%E5%AD%90View/">联动子View</a>.</li>
+<li>注意与横向滑动View的冲突解决,如<code>ViewPager</code>等.解决方法可以参考<a href="http://niorgai.github.io/2015/10/15/%E6%BB%91%E5%8A%A8%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3-%E6%9B%B4%E5%90%88%E7%90%86%E7%9A%84%E6%8B%A6%E6%88%AA/">更合理的拦截</a>.</li>
+<li>下拉刷新是很多App培养出来的用户习惯,用户会习惯性下拉刷新.但是上拉加载却不是,用户并不能很明确得了解是否有更多.同时在除classic的其他模式中,刷新完后loadingView隐藏,界面布局并没有任何变化,用户并不知道是否加载出来.于是就想出一种更加直接的加载<strong><code>滑动到底部自动加载</code></strong>.</li>
+</ol>
+<h3 id="实现">实现</h3><p><a href="">RefreshView:包含下拉刷新和自动加载的View</a></p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
                 <a class="post-title-link" href="/2015/10/31/Android右滑返回/" itemprop="url">
                   Android右滑返回
                 </a>
@@ -865,158 +1007,6 @@ public boolean onTouchEvent<span class="params">(MotionEvent ev)</span> {
 
 
     
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2015/09/10/Android-Tips/" itemprop="url">
-                  Android Tips
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-09-10T12:07:11+08:00" content="2015 Sep 10">
-              2015 Sep 10
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
-                    <span itemprop="name">Android开发经验</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/09/10/Android-Tips/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/09/10/Android-Tips/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <ol>
-<li><p><code>overridependingtransition</code>正常应该放在<code>startActivity</code>或<code>finish</code>后,有时候失效了也可以放在Activity的<code>onCreate</code>和<code>finish</code>后.</p>
-</li>
-<li><p><code>adjustResize</code>属性在全屏模式下无效,即不能设置</p>
-<pre><code>window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-&lt;<span class="property">item</span> <span class="property">name</span>=<span class="string">"android:windowTranslucentStatus"</span>&gt;<span class="constant">true</span>&lt;/<span class="property">item</span>&gt;
-requestWindowFeature(Window.FEATURE_NO_TITLE);
-</code></pre><p> 等属性.</p>
-</li>
-<li><p><code>dispatchKeyEventPreIme</code>可以预处理键盘事件.</p>
-</li>
-<li><p>ImageView想高度自适应时,可以使用:</p>
-<pre><code>&lt;ImageView
-    android:<span class="variable">layout_width=</span><span class="string">"match_parent"</span>
-    android:<span class="variable">adjustViewBounds=</span><span class="string">"true"</span>
-    android:<span class="variable">layout_height=</span><span class="string">"wrap_content"</span> /&gt;
-</code></pre></li>
-<li><p>Android中WebView需要获取地理位置时,需要以下权限:</p>
-<pre><code>&lt;uses-permission android:<span class="property">name</span>=<span class="string">"android.permission.LOCATION_HARDWARE"</span>/&gt;
-&lt;uses-permission android:<span class="property">name</span>=<span class="string">"android.permission.ACCESS_COARSE_LOCATION"</span>/&gt;
-&lt;uses-permission android:<span class="property">name</span>=<span class="string">"android.permission.ACCESS_FINE_LOCATION"</span>/&gt;
-</code></pre><p>另外WebView中也需要设置:</p>
-<pre><code>WebSettings webSettings = webView.getSettings<span class="params">()</span>;
-  <span class="comment">//允许WebView获取位置           </span>
-webSettings.setGeolocationEnabled<span class="params">(<span class="literal">true</span>)</span>;
-   webSettings.setJavaScriptCanOpenWindowsAutomatically<span class="params">(<span class="literal">true</span>)</span>;
-webSettings.setGeolocationDatabasePath<span class="params">(context.getFilesDir<span class="params">()</span>.getPath<span class="params">()</span>)</span>;
-</code></pre><p>最重要重写WebChromeClient中的<code>onGeolocationPermissionsShowPrompt</code>方法:</p>
-<pre><code><span class="annotation">@Override</span>
- <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onGeolocationPermissionsShowPrompt</span><span class="params">(String origin, GeolocationPermissions.Callback callback)</span> </span>{
-     <span class="comment">//return ture表示允许定位</span>
-     callback.invoke(origin, <span class="keyword">true</span>, <span class="keyword">false</span>);
- }
-</code></pre></li>
-</ol>
-<ol>
-<li><p><strong>注意使用shape来画line时，注意以下两点：</strong></p>
-<ol>
-<li>引用该shape的View的layout_height的值必须大于shape中<stroke>标签下android:width的值。</stroke></li>
-<li><p>必须关闭硬件加速，可以在AndroidMainfest中修改，也可以调用<code>view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);</code></p>
-<p><strong>这样才会显示line</strong></p>
-</li>
-</ol>
-</li>
-<li><p>cardView可以设置阴影,但是不同系统版本实现的方式不同,如cardElevation为5dp,那么:</p>
-<ol>
-<li>在SDK &gt; 21,即5.0系统上,正常显示.</li>
-<li><p>在SDK &lt; 21的系统上, cardView会左右各留出5dp的margin,上下各留出10dp的margin来实现阴影效果.</p>
-<p>所以需要在不同的dimens文件夹中声明margin的值.</p>
-</li>
-</ol>
-</li>
-<li><p>SharedPreference的key最好统一管理,如果同一个key存放的数据和所取出的数据类型不同,会导致崩溃.</p>
-</li>
-</ol>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1059,7 +1049,7 @@ webSettings.setGeolocationDatabasePath<span class="params">(context.getFilesDir<
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">33</span>
+              <span class="site-state-item-count">34</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1073,7 +1063,7 @@ webSettings.setGeolocationDatabasePath<span class="params">(context.getFilesDir<
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">37</span>
+              <span class="site-state-item-count">39</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
