@@ -184,6 +184,136 @@
             
             
               
+                <a class="post-title-link" href="/2015/03/03/Android内存泄漏/" itemprop="url">
+                  Android内存泄漏
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-03-03T16:11:13+08:00" content="2015 Mar 3">
+              2015 Mar 3
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/03/03/Android内存泄漏/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/03/Android内存泄漏/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>以下内容提取于<a href="http://blog.csdn.net/gemmem/article/details/8920039" target="_blank" rel="external">Android进程的内存管理分析</a>及<a href="http://blog.csdn.net/gemmem/article/details/13017999" target="_blank" rel="external">Android内存泄漏分析及调试</a>.</p>
+<p>Android中的内存分为：</p>
+<ol>
+<li>native进程：采用C/C++实现，不包含dalvik实例的进程。</li>
+<li>java进程：Android中运行于dalvik虚拟机之上的进程。每一个java进程都是存在于一个native进程中。</li>
+</ol>
+<p>内存空间是一定的，所以在对象无用时就要回收一些对象来留出空间。当Java Garbage Collection开始运行时，它会从他了解还存活的对象作为内存遍历的根节点(GC Root)，遍历heap内存空间，没有直接或间接引用到GC Root的对象便会被回收。</p>
+<p>而Android内存泄漏便是指进程中的对象，虽然没有使用价值了，但它仍然有直接或间接的引用到GC Root，那么该对象便不会被GC回收，导致内存持续被占用，使可用内存变小。</p>
+<h2 id="常见的内存泄漏">常见的内存泄漏</h2><ol>
+<li>查询数据库没有关闭Cursor。</li>
+<li>使用BaseAdapter作为适配器时没有复用convertView。可以参考<a href="http://niorgai.github.io/2014/12/13/ListView%E4%B8%8EBaseAdapter%E4%BC%98%E5%8C%96/">ListView与BaseAdapter优化</a>.</li>
+<li>bitmap没有回收，可以参考<a href="http://niorgai.github.io/2015/02/27/Bitmap%E7%9B%B8%E5%85%B3-%E7%AE%A1%E7%90%86Bitmap%E5%86%85%E5%AD%98/">Bitmap相关:管理Bitmap内存</a>.</li>
+<li>注册对象后没有反注册，比如Broadcast Receiver等。</li>
+<li>handler问题，如果handler是非静态的，会导致Activity或者Service不被回收，所以应当注册为静态内部类，同时在onDestroy时停止线程:<code>mThread.getLooper().quit();</code></li>
+<li>Activity被静态引用，特别是缓存bitmap时，解决方法可以考虑使用Application的context代替Activity的context。</li>
+<li><p>View在callback中被引用,可能回调还没有结束,但是view处于引用状态,无法回收</p>
+<pre><code><span class="tag">public</span> <span class="tag">void</span> <span class="tag">leak</span>(final View view) {
+    <span class="tag">api</span><span class="class">.callback</span>(new <span class="function">callBack</span>() {
+        <span class="tag">onCallBack</span>() {
+            ...
+        }
+    )
+}
+</code></pre></li>
+<li>WebView的泄露问题:在魅族上面发现webView打开再关闭就会内存泄露..目前使用的解决方法是在webview外面嵌套一层layout作为container.在Activity的<code>onDestroy</code>中调用<code>container.removeAllViews()</code>方法.</li>
+<li>Dialog导致Window泄露,如果需要在dialog依附的Activity销毁前没有调用dialog.dismiss().会导致Activity泄露</li>
+</ol>
+<h2 id="检测内存泄露的方法">检测内存泄露的方法</h2><ol>
+<li>Android Studio自带的Memory Monitor,手动触发GC可以看得比较直观</li>
+<li>MAT<a href="http://androidperformance.com/2015/04/11/AndroidMemory-Usage-Of-MAT.html" target="_blank" rel="external">这篇文章</a>分析得比较透彻</li>
+<li><a href="https://github.com/square/leakcanary" target="_blank" rel="external">Leakcanary</a>,检测一些容易忽略的内存泄露很好用.</li>
+<li><code>adb shell dumpsys meminfo [包名]</code>可以看到内存使用情况.</li>
+</ol>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
                 <a class="post-title-link" href="/2015/03/02/Activity生命周期/" itemprop="url">
                   Activity生命周期
                 </a>
@@ -851,181 +981,6 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
 
 
     
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2015/01/12/Android序列化对象/" itemprop="url">
-                  Android序列化对象
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-01-12T18:48:05+08:00" content="2015 Jan 12">
-              2015 Jan 12
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Android基础知识/" itemprop="url" rel="index">
-                    <span itemprop="name">Android基础知识</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/01/12/Android序列化对象/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/12/Android序列化对象/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>默认情况下，Activity之间只能传递基本数据类型，如果需要传递某个对象，则需要将其序列化，Android中序列化便是实现Serializable或则Parcelable接口。</p>
-<p>序列化:永久性保存对象,即保存对象的字节序列到本地文件中。</p>
-<p>Serializable的作用是<strong>将对象的属性保存到本地文件、数据库、网络流以方便传输</strong>。Parcelable的设计初衷是因为Serializable的效率太慢，为了**在程序内不同组件间及不同Android程序间(AIDL)高效传输而设计。</p>
-<p>使用的选择：</p>
-<ol>
-<li>在内存间传递数据时，推荐使用Parcelable，因为其内存开销小，性能高。</li>
-<li>在需要保存时，推荐使用Serializable，因为Parcelable不适合做持久化存储。</li>
-<li>Serializable使用IO读写存储在硬盘上，而Parcelable是直接在内存中读写，很明显内存的读写速度通常大于IO读写，所以在Android中通常优先选择Parcelable。</li>
-</ol>
-<p>接下来利用一个例子说明如何实现这些接口。首先是初始对象：</p>
-<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Test</span> {
-    <span class="keyword">int</span> num;
-    String <span class="keyword">string</span>;
-}
-</code></pre><hr>
-<p>如果实现Serializable接口，只需要继承java.io.Serializable，并提供一个serialVersionUID即可。</p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>{
-
-    <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">12345678</span>l;
-    <span class="keyword">int</span> num;
-    String string;
-}
-</code></pre><hr>
-<p>如果实现Parcelable,需要继承android.os.Parcelable，重写describeContents方法和writeToParcel方法，并定义一个Parcelable.Creator类型的静态变量，在该静态变量中实现readFromParcel方法(自己定义的名字)。</p>
-<p><strong>注意：</strong></p>
-<ol>
-<li>writeToParcel方法中将变量<strong>按顺序</strong>写入Parcel</li>
-<li><p>Parcelable.Creator的createFromParcel方法，从Parcel读入变量时<strong>必须按照writeToParcel方法中的顺序</strong>读入。</p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">implements</span> <span class="title">Parcelable</span></span>{
-    <span class="keyword">int</span> num;
-    String string;
-
-    <span class="annotation">@Override</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">describeContents</span><span class="params">()</span> </span>{
-            <span class="keyword">return</span> <span class="number">0</span>;
-        }
-
-        <span class="annotation">@Override</span>
-        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeToParcel</span><span class="params">(Parcel dest, <span class="keyword">int</span> flags)</span> </span>{
-            dest.writeInt(num);
-             dest.writeString(string);
-        }
-
-    <span class="keyword">public</span> <span class="keyword">static</span> Creator&lt;Test&gt; creator = <span class="keyword">new</span> Creator&lt;Test&gt;() {
-            <span class="annotation">@Override</span>
-        <span class="function"><span class="keyword">public</span> Test <span class="title">createFromParcel</span><span class="params">(Parcel source)</span> </span>{
-            <span class="keyword">return</span> <span class="keyword">new</span> Test(source);
-        }
-
-        <span class="annotation">@Override</span>
-        <span class="keyword">public</span> Test[] newArray(<span class="keyword">int</span> size) {
-            <span class="keyword">return</span> <span class="keyword">new</span> Test[size];
-        }
-    };
-
-    Test(){}
-
-    Test(Parcel source){
-                readFromParcel(source);
-        }
-
-    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readFromParcel</span><span class="params">(Parcel source)</span></span>{
-        <span class="comment">//读取对象数据，必须按照writeToParcel方法中</span>
-        <span class="comment">//写入数据的顺序依次读取数据</span>
-        num = source.readInt();
-        string = source.readString();
-    }
-
-}
-</code></pre></li>
-<li><p>如果需要序列化自定义的数据，该数据也需要实现Parcelable接口。</p>
-<p> 例如希望通过序列化类TestA，类TestA中有一个List存放类TestB。</p>
-<pre><code><span class="class"><span class="keyword">class</span> <span class="title">TestA</span></span>{
-    <span class="keyword">List</span>&lt;TestB&gt; <span class="keyword">list</span>;
-}
-</code></pre><p> 那么TestA与TestB都需要实现Parcelable接口。且类TestA通过<code>parcel.writeTypedList</code>写入list，通过<code>parcel.readTypedList(list,TestB.creator)</code>读取list。</p>
-</li>
-</ol>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1068,7 +1023,7 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">34</span>
+              <span class="site-state-item-count">35</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1082,7 +1037,7 @@ startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">39</span>
+              <span class="site-state-item-count">41</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

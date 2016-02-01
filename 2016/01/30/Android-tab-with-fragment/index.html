@@ -36,7 +36,7 @@
 
 
 
-  <meta name="keywords" content="Hexo,next" />
+  <meta name="keywords" content="Fragment,tab," />
 
 
 
@@ -45,19 +45,31 @@
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
 
 
-<meta name="description" content="问题说明:当SwipeRefreshLayout中放置了ViewPager控件,两者的滑动会相互冲突.具体表现为ViewPager的左右滑动不顺畅,容易被SwipeRefreshLayout拦截(即出现刷新的View).
-问题原因:ViewPager本身是处理了滚动事件的冲突,它在横向滑动时会调用requestDisallowInterceptTouchEvent()方法使父控件不拦截当前的Tou">
+<meta name="description" content="目前按照iOS的设计风格,很多应用都是采用的底部导航+Tab的方式.虽然我是希望各平台遵循各自的规范,但是不得不说.确实这样比抽屉式菜单更加直接.目前项目中采用的是RadioButton + FrameLayout + Fragment的实现方式,所以总结一下遇到的几个问题.
+
+Activity重建导致Fragment重叠.
+
+复现方式: 系统销毁Activity,如改变字体大小.
+问题原因: A">
 <meta property="og:type" content="article">
-<meta property="og:title" content="滑动冲突解决-更合理的拦截">
-<meta property="og:url" content="http://niorgai.github.io/2015/10/15/滑动冲突解决-更合理的拦截/index.html">
+<meta property="og:title" content="Android使用Fragment切换tab">
+<meta property="og:url" content="http://niorgai.github.io/2016/01/30/Android-tab-with-fragment/index.html">
 <meta property="og:site_name" content="Jianqiu's blog">
-<meta property="og:description" content="问题说明:当SwipeRefreshLayout中放置了ViewPager控件,两者的滑动会相互冲突.具体表现为ViewPager的左右滑动不顺畅,容易被SwipeRefreshLayout拦截(即出现刷新的View).
-问题原因:ViewPager本身是处理了滚动事件的冲突,它在横向滑动时会调用requestDisallowInterceptTouchEvent()方法使父控件不拦截当前的Tou">
-<meta property="og:updated_time" content="2015-11-29T13:29:01.000Z">
+<meta property="og:description" content="目前按照iOS的设计风格,很多应用都是采用的底部导航+Tab的方式.虽然我是希望各平台遵循各自的规范,但是不得不说.确实这样比抽屉式菜单更加直接.目前项目中采用的是RadioButton + FrameLayout + Fragment的实现方式,所以总结一下遇到的几个问题.
+
+Activity重建导致Fragment重叠.
+
+复现方式: 系统销毁Activity,如改变字体大小.
+问题原因: A">
+<meta property="og:updated_time" content="2016-02-01T13:49:12.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="滑动冲突解决-更合理的拦截">
-<meta name="twitter:description" content="问题说明:当SwipeRefreshLayout中放置了ViewPager控件,两者的滑动会相互冲突.具体表现为ViewPager的左右滑动不顺畅,容易被SwipeRefreshLayout拦截(即出现刷新的View).
-问题原因:ViewPager本身是处理了滚动事件的冲突,它在横向滑动时会调用requestDisallowInterceptTouchEvent()方法使父控件不拦截当前的Tou">
+<meta name="twitter:title" content="Android使用Fragment切换tab">
+<meta name="twitter:description" content="目前按照iOS的设计风格,很多应用都是采用的底部导航+Tab的方式.虽然我是希望各平台遵循各自的规范,但是不得不说.确实这样比抽屉式菜单更加直接.目前项目中采用的是RadioButton + FrameLayout + Fragment的实现方式,所以总结一下遇到的几个问题.
+
+Activity重建导致Fragment重叠.
+
+复现方式: 系统销毁Activity,如改变字体大小.
+问题原因: A">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -69,7 +81,7 @@
 
 
 
-  <title> 滑动冲突解决-更合理的拦截 | Jianqiu's blog </title>
+  <title> Android使用Fragment切换tab | Jianqiu's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -186,7 +198,7 @@
             
             
               
-                滑动冲突解决-更合理的拦截
+                Android使用Fragment切换tab
               
             
           </h1>
@@ -195,8 +207,8 @@
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2015-10-15T01:19:27+08:00" content="2015 Oct 15">
-              2015 Oct 15
+            <time itemprop="dateCreated" datetime="2016-01-30T22:15:19+08:00" content="2016 Jan 30">
+              2016 Jan 30
             </time>
           </span>
 
@@ -221,8 +233,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2015/10/15/滑动冲突解决-更合理的拦截/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/15/滑动冲突解决-更合理的拦截/" itemprop="commentsCount"></span>
+                <a href="/2016/01/30/Android-tab-with-fragment/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/01/30/Android-tab-with-fragment/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -241,126 +253,78 @@
       
 
       
-        <span itemprop="articleBody"><h2 id="问题说明:">问题说明:</h2><p>当<code>SwipeRefreshLayout</code>中放置了<code>ViewPager</code>控件,两者的滑动会相互冲突.具体表现为<code>ViewPager</code>的左右滑动不顺畅,容易被<code>SwipeRefreshLayout</code>拦截(即出现刷新的View).</p>
-<h2 id="问题原因:">问题原因:</h2><p><code>ViewPager</code>本身是处理了滚动事件的冲突,它在横向滑动时会调用<code>requestDisallowInterceptTouchEvent()</code>方法使父控件不拦截当前的Touch事件序列.但是<code>SwipeRefreshLayout</code>的<code>requestDisallowInterceptTouchEvent()</code>方法什么也没有做,所以仍然会拦截当前的Touch事件序列.</p>
-<h2 id="问题分析:">问题分析:</h2><p>为什么<code>SwipeRefreshLayout</code>的<code>requestDisallowInterceptTouchEvent()</code>方法什么都不做?</p>
-<p>首先<code>SwipeRefreshLayout</code>继承自<code>ViewGroup</code>.</p>
-<ul>
-<li>在<code>requestDisallowInterceptTouchEvent()</code>方法什么都不做的情况下,用户可以从底部下拉刷新一次拉出LoadingView.</li>
-<li>如果方法调用<code>ViewGroup</code>的<code>requestDisallowInterceptTouchEvent()</code>方法, 可以解决<code>ViewPager</code>的兼容问题,但是用户在界面底部下拉至头部后,无法继续下拉,需要手指放开一次才能拉出LoadingView.</li>
-</ul>
-<h2 id="目标分析:">目标分析:</h2><p>那么为了更加顺滑地滚动,想要的效果当然是<strong>一次性拉出LoadingView</strong>.既然ViewPager在左右滑动时才会调用<code>requestDisallowInterceptTouchEvent()</code>方法,那么<code>SwipeRefreshLayout</code><strong>只应该在上下滑动时</strong>才拦截Touch事件.</p>
-<p>具体逻辑如下:</p>
+        <span itemprop="articleBody"><p>目前按照iOS的设计风格,很多应用都是采用的底部导航+Tab的方式.虽然我是希望各平台遵循各自的规范,但是不得不说.确实这样比抽屉式菜单更加直接.目前项目中采用的是<code>RadioButton + FrameLayout + Fragment</code>的实现方式,所以总结一下遇到的几个问题.</p>
 <ol>
-<li>记录是否调用了<code>requestDisallowInterceptTouchEvent()</code>方法,并且设置为true.</li>
-<li>在<code>SwipeRefreshLayout</code>中判断是否是上下滑动.</li>
-<li>如果同时满足1,2,则调用<code>super.requestDisallowInterceptTouchEvent(true)</code>.</li>
-<li>否则调用<code>super.requestDisallowInterceptTouchEvent(false)</code>.</li>
+<li><p>Activity重建导致Fragment重叠.</p>
+<ul>
+<li>复现方式: 系统销毁Activity,如改变字体大小.</li>
+<li>问题原因: Activity销毁时,系统会保存该Activity状态,而<code>onCreate(Bundle state)</code>会导致Activity的</li>
+<li>解决方法:<ul>
+<li>在Activity销毁时不保存状态.如重写<code>onSaveInstanceState (Bundle outState)</code>并且不调用super方法,即在Activity销毁时不保存状态.但是该方式会导致<strong>Application创建两次</strong>.</li>
+<li>在Activity创建时,调用<code>super.onCreate(null)</code>,即不根据其保存的状态来恢复Activity状态,而是直接重新创建.这算是一种偷懒的办法吧.</li>
+<li>在创建或保存Fragment时,将每个Fragment设置不同的tag.然后在<code>onCreate (Bundle savedInstanceState)</code>方法中,如果bundle不为null,根据bundle中Fragment的tag来获取fragment,而不是重复创建.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Fragment中调用<code>getContext()</code>或<code>getActivity()</code>为null导致崩溃.</p>
+<ul>
+<li>复现方式: detach一个Fragment,然后异步函数调用<code>getContext()</code>.</li>
+<li>问题原因: <code>onDetach()</code>调用后,<code>getContext()</code>会置为null.</li>
+<li><p>解决方法:</p>
+<ul>
+<li><p>在BaseFragment中维护一个mContext,然后重写<code>onAttach(Context context)</code>方法:</p>
+<pre><code><span class="annotation">@Override</span>
+<span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onAttach</span><span class="params">(Activity activity)</span> </span>{
+    <span class="keyword">super</span>.onAttach(activity);
+    <span class="keyword">this</span>.mContext = activity;
+}
+
+<span class="annotation">@Override</span>
+<span class="keyword">public</span> <span class="function">Context <span class="title">getContext</span><span class="params">()</span> </span>{
+    <span class="keyword">if</span> (<span class="keyword">super</span>.getContext() != <span class="keyword">null</span>) {
+        <span class="function"><span class="keyword">return</span> <span class="keyword">super</span>.<span class="title">getContext</span><span class="params">()</span></span>;
+    }
+    <span class="keyword">return</span> mContext;
+}
+</code></pre><p>然后尽量调用getContext()方法.</p>
+</li>
+<li><p>因为<code>getActivity()</code>方法不能重写,所以只好加上判断:</p>
+<pre><code><span class="keyword">if</span><span class="comment">(isAdded()</span>) {
+    <span class="comment">//<span class="doctag"><span class="keyword">XXX</span></span>X</span>
+}
+</code></pre></li>
+</ul>
+</li>
+</ul>
+</li>
 </ol>
-<p>注意:因为<code>ViewGroup</code>的<code>requestDisallowInterceptTouchEvent</code>方法设置true后,Touch事件在<code>dispatchTouchEvent()</code>方法中就会被拦截,所以需要在<code>dispatchTouchEvent()</code>方法中判断是否为上下滑动.</p>
-<h2 id="实现代码(部分):">实现代码(部分):</h2><pre><code><span class="comment">//非法按键</span>
-<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> INVALID_POINTER = -<span class="number">1</span>;
-
-<span class="comment">//dispatch方法记录第一次按下的x</span>
-<span class="keyword">private</span> <span class="keyword">float</span> mInitialDisPatchDownX;
-
-<span class="comment">//dispatch方法记录第一次按下的y</span>
-<span class="keyword">private</span> <span class="keyword">float</span> mInitialDisPatchDownY;
-
-<span class="comment">//dispatch方法记录的手指</span>
-<span class="keyword">private</span> <span class="keyword">int</span> mActiveDispatchPointerId = INVALID_POINTER;
-
-<span class="comment">//是否请求拦截</span>
-<span class="keyword">private</span> <span class="keyword">boolean</span> hasRequestDisallowIntercept = <span class="keyword">false</span>;
-
-<span class="annotation">@Override</span>
-<span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">requestDisallowInterceptTouchEvent</span><span class="params">(<span class="keyword">boolean</span> b)</span> </span>{
-    hasRequestDisallowIntercept = b;
-    <span class="comment">// Nope.</span>
-}
-
-<span class="annotation">@Override</span>
-<span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">dispatchTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>{
-    <span class="keyword">switch</span> (ev.getAction()) {
-        <span class="keyword">case</span> MotionEvent.ACTION_DOWN:
-            mActiveDispatchPointerId = MotionEventCompat.getPointerId(ev, 0);
-            <span class="keyword">final</span> <span class="keyword">float</span> initialDownX = getMotionEventX(ev, mActiveDispatchPointerId);
-            <span class="keyword">if</span> (initialDownX != INVALID_POINTER) {
-                mInitialDisPatchDownX = initialDownX;
-            }
-            <span class="keyword">final</span> <span class="keyword">float</span> initialDownY = getMotionEventY(ev, mActiveDispatchPointerId);
-            <span class="keyword">if</span> (mInitialDisPatchDownY != INVALID_POINTER) {
-                mInitialDisPatchDownY = initialDownY;
-            }
-            <span class="keyword">break</span>;
-        <span class="keyword">case</span> MotionEvent.ACTION_MOVE:
-            <span class="keyword">if</span> (hasRequestDisallowIntercept) {
-                <span class="comment">//解决viewPager滑动冲突问题</span>
-                <span class="keyword">final</span> <span class="keyword">float</span> x = getMotionEventX(ev, mActiveDispatchPointerId);
-                <span class="keyword">final</span> <span class="keyword">float</span> y = getMotionEventY(ev, mActiveDispatchPointerId);
-                <span class="keyword">if</span> (mInitialDisPatchDownX != INVALID_POINTER &amp;&amp; x != INVALID_POINTER &amp;&amp;
-                        mInitialDisPatchDownY != INVALID_POINTER &amp;&amp; y != INVALID_POINTER) {
-                    <span class="keyword">final</span> <span class="keyword">float</span> xDiff = Math.abs(x - mInitialDisPatchDownX);
-                    <span class="keyword">final</span> <span class="keyword">float</span> yDiff = Math.abs(y - mInitialDisPatchDownY);
-                    <span class="keyword">if</span> (xDiff &gt; mTouchSlop &amp;&amp; xDiff * <span class="number">0.7</span>f &gt; yDiff) {
-                        <span class="comment">//横向滚动不需要拦截</span>
-                        <span class="keyword">super</span>.requestDisallowInterceptTouchEvent(<span class="keyword">true</span>);
-                    } <span class="keyword">else</span> {
-                        <span class="keyword">super</span>.requestDisallowInterceptTouchEvent(<span class="keyword">false</span>);
-                    }
-                } <span class="keyword">else</span> {
-                    <span class="keyword">super</span>.requestDisallowInterceptTouchEvent(<span class="keyword">false</span>);
-                }
-            }
-            <span class="keyword">break</span>;
-        <span class="keyword">case</span> MotionEvent.ACTION_UP:
-        <span class="keyword">case</span> MotionEvent.ACTION_CANCEL:
-            <span class="keyword">if</span> (ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_CANCEL) {
-                hasRequestDisallowIntercept = <span class="keyword">false</span>;
-            }
-            <span class="keyword">break</span>;
-    }
-
-    <span class="function"><span class="keyword">return</span> <span class="keyword">super</span>.<span class="title">dispatchTouchEvent</span><span class="params">(ev)</span></span>;
-}
-
-<span class="keyword">private</span> <span class="function"><span class="keyword">float</span> <span class="title">getMotionEventY</span><span class="params">(MotionEvent ev, <span class="keyword">int</span> activePointerId)</span> </span>{
-    <span class="keyword">final</span> <span class="keyword">int</span> index = MotionEventCompat.findPointerIndex(ev, activePointerId);
-    <span class="keyword">if</span> (index &lt; <span class="number">0</span>) {
-        <span class="keyword">return</span> -<span class="number">1</span>;
-    }
-    <span class="function"><span class="keyword">return</span> MotionEventCompat.<span class="title">getY</span><span class="params">(ev, index)</span></span>;
-}
-
-<span class="keyword">private</span> <span class="function"><span class="keyword">float</span> <span class="title">getMotionEventX</span><span class="params">(MotionEvent ev, <span class="keyword">int</span> activePointerId)</span> </span>{
-    <span class="keyword">final</span> <span class="keyword">int</span> index = MotionEventCompat.findPointerIndex(ev, activePointerId);
-    <span class="keyword">if</span> (index &lt; <span class="number">0</span>) {
-        <span class="keyword">return</span> -<span class="number">1</span>;
-    }
-    <span class="function"><span class="keyword">return</span> MotionEventCompat.<span class="title">getX</span><span class="params">(ev, index)</span></span>;
-}
-</code></pre></span>
+</span>
       
     </div>
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Fragment/" rel="tag">#Fragment</a>
+          
+            <a href="/tags/tab/" rel="tag">#tab</a>
+          
+        </div>
       
 
       
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/10/12/滑动冲突解决-联动子View/" rel="next" title="滑动冲突解决-联动子View">
-                <i class="fa fa-chevron-left"></i> 滑动冲突解决-联动子View
+              <a href="/2016/01/23/Android动态替换图标总结/" rel="next" title="Android动态替换图标总结">
+                <i class="fa fa-chevron-left"></i> Android动态替换图标总结
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/10/31/Android右滑返回/" rel="prev" title="Android右滑返回">
-                Android右滑返回 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -385,8 +349,8 @@
         
           <div class="comments" id="comments">
             
-              <div class="ds-thread" data-thread-key="2015/10/15/滑动冲突解决-更合理的拦截/"
-                   data-title="滑动冲突解决-更合理的拦截" data-url="http://niorgai.github.io/2015/10/15/滑动冲突解决-更合理的拦截/">
+              <div class="ds-thread" data-thread-key="2016/01/30/Android-tab-with-fragment/"
+                   data-title="Android使用Fragment切换tab" data-url="http://niorgai.github.io/2016/01/30/Android-tab-with-fragment/">
               </div>
             
           </div>

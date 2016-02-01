@@ -184,6 +184,149 @@
             
             
               
+                <a class="post-title-link" href="/2016/01/30/Android-tab-with-fragment/" itemprop="url">
+                  Android使用Fragment切换tab
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-01-30T22:15:19+08:00" content="2016 Jan 30">
+              2016 Jan 30
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/01/30/Android-tab-with-fragment/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/01/30/Android-tab-with-fragment/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>目前按照iOS的设计风格,很多应用都是采用的底部导航+Tab的方式.虽然我是希望各平台遵循各自的规范,但是不得不说.确实这样比抽屉式菜单更加直接.目前项目中采用的是<code>RadioButton + FrameLayout + Fragment</code>的实现方式,所以总结一下遇到的几个问题.</p>
+<ol>
+<li><p>Activity重建导致Fragment重叠.</p>
+<ul>
+<li>复现方式: 系统销毁Activity,如改变字体大小.</li>
+<li>问题原因: Activity销毁时,系统会保存该Activity状态,而<code>onCreate(Bundle state)</code>会导致Activity的</li>
+<li>解决方法:<ul>
+<li>在Activity销毁时不保存状态.如重写<code>onSaveInstanceState (Bundle outState)</code>并且不调用super方法,即在Activity销毁时不保存状态.但是该方式会导致<strong>Application创建两次</strong>.</li>
+<li>在Activity创建时,调用<code>super.onCreate(null)</code>,即不根据其保存的状态来恢复Activity状态,而是直接重新创建.这算是一种偷懒的办法吧.</li>
+<li>在创建或保存Fragment时,将每个Fragment设置不同的tag.然后在<code>onCreate (Bundle savedInstanceState)</code>方法中,如果bundle不为null,根据bundle中Fragment的tag来获取fragment,而不是重复创建.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Fragment中调用<code>getContext()</code>或<code>getActivity()</code>为null导致崩溃.</p>
+<ul>
+<li>复现方式: detach一个Fragment,然后异步函数调用<code>getContext()</code>.</li>
+<li>问题原因: <code>onDetach()</code>调用后,<code>getContext()</code>会置为null.</li>
+<li><p>解决方法:</p>
+<ul>
+<li><p>在BaseFragment中维护一个mContext,然后重写<code>onAttach(Context context)</code>方法:</p>
+<pre><code><span class="annotation">@Override</span>
+<span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onAttach</span><span class="params">(Activity activity)</span> </span>{
+    <span class="keyword">super</span>.onAttach(activity);
+    <span class="keyword">this</span>.mContext = activity;
+}
+
+<span class="annotation">@Override</span>
+<span class="keyword">public</span> <span class="function">Context <span class="title">getContext</span><span class="params">()</span> </span>{
+    <span class="keyword">if</span> (<span class="keyword">super</span>.getContext() != <span class="keyword">null</span>) {
+        <span class="function"><span class="keyword">return</span> <span class="keyword">super</span>.<span class="title">getContext</span><span class="params">()</span></span>;
+    }
+    <span class="keyword">return</span> mContext;
+}
+</code></pre><p>然后尽量调用getContext()方法.</p>
+</li>
+<li><p>因为<code>getActivity()</code>方法不能重写,所以只好加上判断:</p>
+<pre><code><span class="keyword">if</span><span class="comment">(isAdded()</span>) {
+    <span class="comment">//<span class="doctag"><span class="keyword">XXX</span></span>X</span>
+}
+</code></pre></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
                 <a class="post-title-link" href="/2016/01/23/Android动态替换图标总结/" itemprop="url">
                   Android动态替换图标总结
                 </a>
@@ -807,121 +950,6 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
 
 
     
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2015/12/09/Android体验提升/" itemprop="url">
-                  Android体验提升
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-12-09T00:54:46+08:00" content="2015 Dec 9">
-              2015 Dec 9
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Android开发闲谈/" itemprop="url" rel="index">
-                    <span itemprop="name">Android开发闲谈</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/12/09/Android体验提升/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/09/Android体验提升/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <ol>
-<li><p>关于界面加载,为了更快的打开Activity,应该注意:</p>
-<ol>
-<li>尽量上一个Activity的<code>onPause()</code>的执行时间,因为上一个Activity的<code>onPause()</code>执行后才会执行下一个Activity的<code>onStart()</code></li>
-<li>参考<a href="http://www.androidperformance.com/2015/11/18/Android-app-lunch-optimize-delay-load.html" target="_blank" rel="external">Android应用启动优化:一种DelayLoad的实现和原理</a>中提到的延迟加载,在第一帧绘制结束后开始业务动作.</li>
-</ol>
-</li>
-<li><p>Activity的界面刷新与加载:</p>
-<ol>
-<li>进入Activity时显示空白界面(但是要有title).</li>
-<li>刷新过程中显示LoadingView.</li>
-<li>刷新完毕如果没有数据显示EmptyView.</li>
-<li>加载数据时最好使用自动加载,加载结束后底部露出新数据告知用户有更多数据.</li>
-</ol>
-</li>
-<li><p>click事件需要触发网络请求时,最好在调用请求前<code>view.setClickable(false);</code>,网络请求结束后<code>view.setClickable(true)</code>.</p>
-</li>
-</ol>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -964,7 +992,7 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">34</span>
+              <span class="site-state-item-count">35</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -978,7 +1006,7 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">39</span>
+              <span class="site-state-item-count">41</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
