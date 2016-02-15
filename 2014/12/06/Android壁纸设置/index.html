@@ -45,19 +45,19 @@
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
 
 
-<meta name="description" content="设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下： WallpaperManager wallpaperManager = WallpaperManager.getInstance(DisplayPicture.this);
-wallpaperManager.suggestDesiredDimensions(bitmap.getWidth(),bitmap.getHei">
+<meta name="description" content="设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下：WallpaperManager wallpaperManager = WallpaperManager.getInstance(context);
+                       wallpaperManager.suggestDesiredDimensions(bitmap.getWidth(),bit">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android壁纸设置">
 <meta property="og:url" content="http://niorgai.github.io/2014/12/06/Android壁纸设置/index.html">
 <meta property="og:site_name" content="Jianqiu's blog">
-<meta property="og:description" content="设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下： WallpaperManager wallpaperManager = WallpaperManager.getInstance(DisplayPicture.this);
-wallpaperManager.suggestDesiredDimensions(bitmap.getWidth(),bitmap.getHei">
-<meta property="og:updated_time" content="2015-11-29T13:15:06.000Z">
+<meta property="og:description" content="设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下：WallpaperManager wallpaperManager = WallpaperManager.getInstance(context);
+                       wallpaperManager.suggestDesiredDimensions(bitmap.getWidth(),bit">
+<meta property="og:updated_time" content="2016-02-10T05:33:41.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android壁纸设置">
-<meta name="twitter:description" content="设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下： WallpaperManager wallpaperManager = WallpaperManager.getInstance(DisplayPicture.this);
-wallpaperManager.suggestDesiredDimensions(bitmap.getWidth(),bitmap.getHei">
+<meta name="twitter:description" content="设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下：WallpaperManager wallpaperManager = WallpaperManager.getInstance(context);
+                       wallpaperManager.suggestDesiredDimensions(bitmap.getWidth(),bit">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -242,10 +242,10 @@ wallpaperManager.suggestDesiredDimensions(bitmap.getWidth(),bitmap.getHei">
 
       
         <span itemprop="articleBody"><ol>
-<li><h4 id="设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下：">设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下：</h4><p> WallpaperManager wallpaperManager = WallpaperManager.getInstance(DisplayPicture.this);</p>
-<pre><code><span class="tag">wallpaperManager</span><span class="class">.suggestDesiredDimensions</span>(<span class="tag">bitmap</span><span class="class">.getWidth</span>(),<span class="tag">bitmap</span><span class="class">.getHeight</span>());
-</code></pre><p> wallpaperManager.setBitmap(bitmap);</p>
-</li>
+<li><h4 id="设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下：">设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下：</h4><pre><code>WallpaperManager wallpaperManager = WallpaperManager.getInstance<span class="params">(context)</span>;
+                       wallpaperManager.suggestDesiredDimensions<span class="params">(bitmap.getWidth<span class="params">()</span>,bitmap.getHeight<span class="params">()</span>)</span>;
+wallpaperManager.setBitmap<span class="params">(bitmap)</span>;
+</code></pre></li>
 </ol>
 <p>注意这里的</p>
 <pre><code><span class="tag">wallpaperManager</span><span class="class">.suggestDesiredDimensions</span>(<span class="tag">bitmap</span><span class="class">.getWidth</span>(),<span class="tag">bitmap</span><span class="class">.getHeight</span>());

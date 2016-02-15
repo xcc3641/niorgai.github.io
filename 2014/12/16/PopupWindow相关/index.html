@@ -53,7 +53,7 @@
 通过设置背景颜色0xaa000000可以实现半透明效果
 关于点击消失：
 
-如果需要点击外部消失，只需设置背景，foucs，outSideTouchable。
+如果需要点击外部消失，只需设置背景，focus，outSideTouchable。
 this.setBac">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PopupWindow相关">
@@ -67,10 +67,10 @@ this.setBac">
 通过设置背景颜色0xaa000000可以实现半透明效果
 关于点击消失：
 
-如果需要点击外部消失，只需设置背景，foucs，outSideTouchable。
+如果需要点击外部消失，只需设置背景，focus，outSideTouchable。
 this.setBac">
 <meta property="og:image" content="http://7sbqys.com1.z0.glb.clouddn.com/alert.png">
-<meta property="og:updated_time" content="2015-11-29T13:23:33.000Z">
+<meta property="og:updated_time" content="2016-02-04T14:09:58.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PopupWindow相关">
 <meta name="twitter:description" content="PopupWindow顾名思义，就是一个弹出窗口。不过特性倒是挺好玩的：
@@ -81,7 +81,7 @@ this.setBac">
 通过设置背景颜色0xaa000000可以实现半透明效果
 关于点击消失：
 
-如果需要点击外部消失，只需设置背景，foucs，outSideTouchable。
+如果需要点击外部消失，只需设置背景，focus，outSideTouchable。
 this.setBac">
 
 
@@ -274,7 +274,7 @@ this.setBac">
 <li>通过设置背景颜色0xaa000000可以实现半透明效果</li>
 <li><p>关于点击消失：</p>
 <ol>
-<li><p>如果需要点击外部消失，只需设置背景，foucs，outSideTouchable。</p>
+<li><p>如果需要点击外部消失，只需设置背景，focus，outSideTouchable。</p>
 <pre><code><span class="keyword">this</span>.setBackgroundDrawable(<span class="keyword">new</span> ColorDrawable(<span class="number">0xaa000000</span>));
 <span class="keyword">this</span>.setFocusable(<span class="literal">true</span>);
 <span class="keyword">this</span>.setOutsideTouchable(<span class="literal">true</span>);
@@ -304,8 +304,8 @@ this.setBac">
             .getSystemService(<span class="type">Context</span>.<span class="type">LAYOUT_INFLATER_SERVICE</span>);
     mWindow = inflater.inflate(<span class="type">R</span>.layout.get_express_alert, <span class="literal">null</span>);
     <span class="keyword">this</span>.setContentView(mWindow);
-    <span class="keyword">this</span>.setWidth(<span class="type">LayoutParams</span>.<span class="type">FILL_PARENT</span>);
-    <span class="keyword">this</span>.setHeight(<span class="type">LayoutParams</span>.<span class="type">FILL_PARENT</span>);
+    <span class="keyword">this</span>.setWidth(<span class="type">LayoutParams</span>.<span class="type">MATCH_PARENT</span>);
+    <span class="keyword">this</span>.setHeight(<span class="type">LayoutParams</span>.<span class="type">MATCH_PARENT</span>);
 
     <span class="keyword">this</span>.setBackgroundDrawable(<span class="keyword">new</span> <span class="type">ColorDrawable</span>(<span class="number">0xaa000000</span>));
     }

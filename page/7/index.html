@@ -717,10 +717,10 @@ textViewExtras.setMovementMethod(<span class="keyword">new</span> ScrollingMovem
           <span itemprop="articleBody">
             
               <ol>
-<li><h4 id="设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下：">设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下：</h4><p> WallpaperManager wallpaperManager = WallpaperManager.getInstance(DisplayPicture.this);</p>
-<pre><code><span class="tag">wallpaperManager</span><span class="class">.suggestDesiredDimensions</span>(<span class="tag">bitmap</span><span class="class">.getWidth</span>(),<span class="tag">bitmap</span><span class="class">.getHeight</span>());
-</code></pre><p> wallpaperManager.setBitmap(bitmap);</p>
-</li>
+<li><h4 id="设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下：">设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下：</h4><pre><code>WallpaperManager wallpaperManager = WallpaperManager.getInstance<span class="params">(context)</span>;
+                       wallpaperManager.suggestDesiredDimensions<span class="params">(bitmap.getWidth<span class="params">()</span>,bitmap.getHeight<span class="params">()</span>)</span>;
+wallpaperManager.setBitmap<span class="params">(bitmap)</span>;
+</code></pre></li>
 </ol>
 <p>注意这里的</p>
 <pre><code><span class="tag">wallpaperManager</span><span class="class">.suggestDesiredDimensions</span>(<span class="tag">bitmap</span><span class="class">.getWidth</span>(),<span class="tag">bitmap</span><span class="class">.getHeight</span>());
