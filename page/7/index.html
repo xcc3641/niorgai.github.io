@@ -464,28 +464,19 @@ public <span class="type">View</span> getView<span class="container">(<span clas
 </code></pre><p> 但输入框满了后，如果继续输入，EditText会不断增加高度，这样会隐藏上面的控件，最好设置    android:minLines和 android:maxLines确认最大最小行数。</p>
 </li>
 <li><p>软键盘遮挡<br> 可以在AndroidManifext.xml中设置Activity的软键盘：</p>
-<pre><code>android:windowSoftInputMode=<span class="string">"adjustPan</span>
+<pre><code><span class="label">android:</span>windowSoftInputMode=<span class="string">"adjustPan"</span>
 </code></pre><p> 最后为了软键盘不挡住下方控件，最好还是全部添加一个scrollView。</p>
 <p> 为了防止ScorllView和EditText(TextView)的滚动相冲突：<br> 除了在xml中设置editText：</p>
 <pre><code><span class="label">android:</span>scrollbars=<span class="string">"vertical"</span>
-<span class="label">android:</span>scrollbarStyle=<span class="string">"insideInset"</span>
 </code></pre><p> 还需要在代码中设置：</p>
-<pre><code>scrollView.setOnTouchListener(<span class="keyword">new</span> View.OnTouchListener() {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onTouch</span><span class="params">(View v, MotionEvent event)</span> </span>{
-        textViewExtras.getParent().requestDisallowInterceptTouchEvent(<span class="keyword">false</span>);
-        <span class="keyword">return</span> <span class="keyword">false</span>;
+<pre><code>textViewExtras.setOnTouchListener<span class="params">(new View.OnTouchListener<span class="params">()</span> {
+    @Override
+    public boolean onTouch<span class="params">(View v, MotionEvent event)</span> {
+        textViewExtras.getParent<span class="params">()</span>.requestDisallowInterceptTouchEvent<span class="params">(<span class="literal">true</span>)</span>;
+        return <span class="literal">false</span>;
     }
-});
-
-textViewExtras.setOnTouchListener(<span class="keyword">new</span> View.OnTouchListener() {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onTouch</span><span class="params">(View v, MotionEvent event)</span> </span>{
-        textViewExtras.getParent().requestDisallowInterceptTouchEvent(<span class="keyword">true</span>);
-        <span class="keyword">return</span> <span class="keyword">false</span>;
-    }
-});
-textViewExtras.setMovementMethod(<span class="keyword">new</span> ScrollingMovementMethod());
+})</span>;
+textViewExtras.setMovementMethod<span class="params">(ScrollingMovementMethod.getInstance<span class="params">()</span>)</span>;
 </code></pre></li>
 <li><ol>
 <li>中划线 : textview.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG );</li>
@@ -493,6 +484,8 @@ textViewExtras.setMovementMethod(<span class="keyword">new</span> ScrollingMovem
 </ol>
 </li>
 <li><p>设置<code>android:imeOptions</code>属性时,有可能会失效.只需要再设置<code>android:singleLine</code>为true或者设置<code>android:inputType</code>为text,就可以修复~</p>
+</li>
+<li><p>EditText支持长按复制,TextView也可以通过<code>android:textIsSelectable=&quot;true&quot;</code>来设置.</p>
 </li>
 </ol>
 
