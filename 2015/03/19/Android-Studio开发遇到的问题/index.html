@@ -62,7 +62,7 @@
 -Xmx:JVM最大内存,默认是物理内存的1/4.
 -XX:MaxPermSize:最大非堆内存,默认是物理内">
 <meta property="og:image" content="http://7sbqys.com1.z0.glb.clouddn.com/intelTest.jpg">
-<meta property="og:updated_time" content="2015-11-29T13:13:22.000Z">
+<meta property="og:updated_time" content="2016-02-26T17:09:17.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android Studio开发遇到的问题">
 <meta name="twitter:description" content="Android studio卡顿优化
@@ -280,9 +280,6 @@
 <li><p><code>Executor Singleton not started</code></p>
 <p> 升级一下gradle到最新版本,然后在project的build.gradle中修改gradle版本即可.</p>
 </li>
-<li><p>java <code>finished with non-zero exit value 2</code></p>
-<p> 这是libs里面有包重复了,找出来删掉就好了</p>
-</li>
 <li><p>adb连接不到手机</p>
 <p> 以魅族mx4为例，直接连接手机的话其实是识别不到的，adb连接需要添加机器的Vender ID。</p>
 <ul>
@@ -318,6 +315,23 @@ adb <span class="keyword">start</span>-<span class="keyword">server</span></span
 <li>把Structure里面的路径全部替换为当前实际工程的项目。</li>
 <li>顺利运行。</li>
 </ul>
+</li>
+<li><p>java <code>finished with non-zero exit value x</code>error code问题,常见的code有:</p>
+<ol>
+<li>vcs缓存与新添加的资源冲突,clean 工程再重新运行即可.</li>
+<li>有两种情况:<ol>
+<li>可能是libs中添加了重复包,这时候需要看看是哪两个依赖重复了,然后去掉一个.</li>
+<li>可能是方法数过了65535.这时候就需要multi-dex分包了.</li>
+</ol>
+</li>
+<li><p>这个我在分包后出现过,目前解决方法是在<code>build.gradle</code>文件中添加:</p>
+<p> dexOptions {</p>
+<pre><code><span class="title">preDexLibraries</span> = <span class="built_in">false</span>
+incremental <span class="built_in">true</span>
+javaMaxHeapSize <span class="string">"4g"</span>
+</code></pre><p> }</p>
+</li>
+</ol>
 </li>
 </ol>
 </span>
