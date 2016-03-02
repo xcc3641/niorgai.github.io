@@ -339,7 +339,7 @@ public <span class="type">View</span> getView<span class="container">(<span clas
         convertView = inflater.inflate(R.layout.list_item, parent, <span class="keyword">false</span>);
         holder = <span class="keyword">new</span> ViewHolder();
         holder.name = (TextView) convertView.findViewById(R.id.name);
-        holder.name.setOnClickListener(<span class="keyword">this</span>);
+        holder.name.setOnClickListener(holder);
         convertView.setTag(holder);
     } <span class="keyword">else</span> {
         holder = (ViewHolder) convertView.getTag();
