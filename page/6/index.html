@@ -1,4 +1,4 @@
-<!doctype html>
+  <!doctype html>
 <html class="theme-next use-motion theme-next-mist">
 <head>
   
@@ -167,181 +167,6 @@
       <div class="main-inner">
         <div id="content" class="content"> 
   <section id="posts" class="posts-expand">
-    
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2015/01/12/Android序列化对象/" itemprop="url">
-                  Android序列化对象
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-01-12T18:48:05+08:00" content="2015 Jan 12">
-              2015 Jan 12
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Android基础知识/" itemprop="url" rel="index">
-                    <span itemprop="name">Android基础知识</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/01/12/Android序列化对象/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/12/Android序列化对象/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>默认情况下，Activity之间只能传递基本数据类型，如果需要传递某个对象，则需要将其序列化，Android中序列化便是实现Serializable或则Parcelable接口。</p>
-<p>序列化:永久性保存对象,即保存对象的字节序列到本地文件中。</p>
-<p>Serializable的作用是<strong>将对象的属性保存到本地文件、数据库、网络流以方便传输</strong>。Parcelable的设计初衷是因为Serializable的效率太慢，为了**在程序内不同组件间及不同Android程序间(AIDL)高效传输而设计。</p>
-<p>使用的选择：</p>
-<ol>
-<li>在内存间传递数据时，推荐使用Parcelable，因为其内存开销小，性能高。</li>
-<li>在需要保存时，推荐使用Serializable，因为Parcelable不适合做持久化存储。</li>
-<li>Serializable使用IO读写存储在硬盘上，而Parcelable是直接在内存中读写，很明显内存的读写速度通常大于IO读写，所以在Android中通常优先选择Parcelable。</li>
-</ol>
-<p>接下来利用一个例子说明如何实现这些接口。首先是初始对象：</p>
-<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Test</span> {
-    <span class="keyword">int</span> num;
-    String <span class="keyword">string</span>;
-}
-</code></pre><hr>
-<p>如果实现Serializable接口，只需要继承java.io.Serializable，并提供一个serialVersionUID即可。</p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>{
-
-    <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">12345678</span>l;
-    <span class="keyword">int</span> num;
-    String string;
-}
-</code></pre><hr>
-<p>如果实现Parcelable,需要继承android.os.Parcelable，重写describeContents方法和writeToParcel方法，并定义一个Parcelable.Creator类型的静态变量，在该静态变量中实现readFromParcel方法(自己定义的名字)。</p>
-<p><strong>注意：</strong></p>
-<ol>
-<li>writeToParcel方法中将变量<strong>按顺序</strong>写入Parcel</li>
-<li><p>Parcelable.Creator的createFromParcel方法，从Parcel读入变量时<strong>必须按照writeToParcel方法中的顺序</strong>读入。</p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">implements</span> <span class="title">Parcelable</span></span>{
-    <span class="keyword">int</span> num;
-    String string;
-
-    <span class="annotation">@Override</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">describeContents</span><span class="params">()</span> </span>{
-            <span class="keyword">return</span> <span class="number">0</span>;
-        }
-
-        <span class="annotation">@Override</span>
-        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeToParcel</span><span class="params">(Parcel dest, <span class="keyword">int</span> flags)</span> </span>{
-            dest.writeInt(num);
-             dest.writeString(string);
-        }
-
-    <span class="keyword">public</span> <span class="keyword">static</span> Creator&lt;Test&gt; creator = <span class="keyword">new</span> Creator&lt;Test&gt;() {
-            <span class="annotation">@Override</span>
-        <span class="function"><span class="keyword">public</span> Test <span class="title">createFromParcel</span><span class="params">(Parcel source)</span> </span>{
-            <span class="keyword">return</span> <span class="keyword">new</span> Test(source);
-        }
-
-        <span class="annotation">@Override</span>
-        <span class="keyword">public</span> Test[] newArray(<span class="keyword">int</span> size) {
-            <span class="keyword">return</span> <span class="keyword">new</span> Test[size];
-        }
-    };
-
-    Test(){}
-
-    Test(Parcel source){
-                readFromParcel(source);
-        }
-
-    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readFromParcel</span><span class="params">(Parcel source)</span></span>{
-        <span class="comment">//读取对象数据，必须按照writeToParcel方法中</span>
-        <span class="comment">//写入数据的顺序依次读取数据</span>
-        num = source.readInt();
-        string = source.readString();
-    }
-
-}
-</code></pre></li>
-<li><p>如果需要序列化自定义的数据，该数据也需要实现Parcelable接口。</p>
-<p> 例如希望通过序列化类TestA，类TestA中有一个List存放类TestB。</p>
-<pre><code><span class="class"><span class="keyword">class</span> <span class="title">TestA</span></span>{
-    <span class="keyword">List</span>&lt;TestB&gt; <span class="keyword">list</span>;
-}
-</code></pre><p> 那么TestA与TestB都需要实现Parcelable接口。且类TestA通过<code>parcel.writeTypedList</code>写入list，通过<code>parcel.readTypedList(list,TestB.creator)</code>读取list。</p>
-</li>
-</ol>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
     
       
 
@@ -974,6 +799,211 @@
 
 
     
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                <a class="post-title-link" href="/2014/12/13/ListView与BaseAdapter优化/" itemprop="url">
+                  ListView与BaseAdapter优化
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2014-12-13T12:39:52+08:00" content="2014 Dec 13">
+              2014 Dec 13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2014/12/13/ListView与BaseAdapter优化/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/13/ListView与BaseAdapter优化/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <ol>
+<li><p>ListView使用BaseAdapter作适配器的时候，在初始化获取View或者滚动获取View时，都会调用getView方法返回View添加到ListView中，这也是ListView每一项的item。</p>
+<pre><code><span class="keyword">public</span> View getView(<span class="built_in">int</span> <span class="keyword">position</span>, View convertView, ViewGroup parent)
+</code></pre><p> 所传递的三个参数中，</p>
+<p> position表示所添加的view的位置，parent一般为listview。</p>
+<p> 而convertView参数：</p>
+<ol>
+<li><p>如果listView的layout_height设置为wrap_content时，除了position=0时convertView为null，其他时候convertView都不为空。(因为这样会疯狂调用getView方法，不推荐)</p>
+</li>
+<li><p>如果listView的layout_height设置为fill_parent或者指定高度时，当listView没有填充到所需高度时，每一个convertView都为null，后面都不为null。</p>
+<p>因为listView所需的全部view不可能全部加载到内存中，所以不需要显示的view就需要回收，回收的view即为convertView。<br>以listview的高度为fill_parent为例：</p>
+</li>
+<li>当convertView为null时，每个item的View需要通过LayoutInflater实例化返回。</li>
+<li>当convertView不为null时，如果整个listView的item使用的是一样的布局，那我们可以直接使用这个view，只需更新convertView中的数据即可。</li>
+</ol>
+</li>
+<li><p>ViewHolder</p>
+<p> 经常在文章中看到ViewHolder来优化ListView，但其实ViewHolder不是库函数，而是需要自己定义的类。（<strong>注意viewHolder里面item方法重绘：如invalidate，setVisiblity，requestLayout后，会调用adapter的getView方法</strong>）</p>
+<p> 使用ViewHolder的原因是findViewById方法耗时较大，如果控件个数过多，会严重影响性能，而使用ViewHolder主要是为了可以省去这个时间。通过setTag，getTag直接获取View。</p>
+<pre><code><span class="class"><span class="keyword">class</span>  <span class="type">ViewHolder</span>{
+    <span class="type">ImageView</span> img;
+    <span class="type">TextView</span> name;
+}
+
+public <span class="type">View</span> getView<span class="container">(<span class="title">int</span> <span class="title">position</span>, <span class="type">View</span> <span class="title">convertView</span>, <span class="type">ViewGroup</span> <span class="title">parent</span>)</span> {
+    <span class="type">ViewHolder</span> holder = null;
+    if<span class="container">(<span class="title">convertView</span>==<span class="title">null</span>)</span>{
+        convertView = inflater.inflate<span class="container">(<span class="type">R</span>.<span class="title">layout</span>.<span class="title">list_item</span>, <span class="title">parent</span>, <span class="title">false</span>)</span>;
+        holder.img = <span class="container">(<span class="type">ImageView</span>)</span> convertView.findViewById<span class="container">(<span class="type">R</span>.<span class="title">id</span>.<span class="title">img</span>)</span>;
+        holder.name = <span class="container">(<span class="type">TextView</span>)</span> convertView.findViewById<span class="container">(<span class="type">R</span>.<span class="title">id</span>.<span class="title">name</span>)</span>;
+        holder = new <span class="type">ViewHolder</span><span class="container">()</span>;
+        convertView.setTag<span class="container">(<span class="title">holder</span>)</span>;
+    }else{
+        holder = <span class="container">(<span class="type">ViewHolder</span>)</span> convertView.getTag<span class="container">()</span>;
+    }
+    //设置holder
+    holder.img.setImageResource<span class="container">(<span class="type">R</span>.<span class="title">drawable</span>.<span class="title">ic_launcher</span>)</span>;
+    holder.name.setText<span class="container">(<span class="title">list</span>.<span class="title">get</span>(<span class="title">position</span>)</span>.partname);
+    return convertView;
+}</span>
+</code></pre></li>
+<li><p>OnScrollListener</p>
+<p> ListView经常需要展示图片，如果在滑动时对滑动过的每张图片都要加载，会比较占内存。推荐的优化方法是设置OnScrollListener，在滑动完成后再下载当前页面的图片。</p>
+<pre><code>listView.setOnScrollListener(<span class="keyword">new</span> AbsListView.OnScrollListener() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="typename">void</span> onScrollStateChanged(AbsListView view, <span class="typename">int</span> scrollState) {
+        <span class="keyword">switch</span> (scrollState){
+            <span class="comment">// 用户手指滑动中</span>
+            <span class="keyword">case</span> <span class="string">SCROLL_STATE_TOUCH_SCROLL:</span>
+            <span class="comment">// 用户手指离开，但滑动动画进行中</span>
+            <span class="keyword">case</span> <span class="string">SCROLL_STATE_FLING:</span>
+                <span class="keyword">break</span>;
+            <span class="comment">// 滑动结束</span>
+            <span class="keyword">case</span> <span class="string">SCROLL_STATE_IDLE:</span>
+                <span class="typename">int</span> start = listView.getFirstVisiblePosition();
+                <span class="typename">int</span> end = listView.getLastVisiblePosition();
+                <span class="keyword">if</span>(end &gt;= listView.getCount()){
+                    end = listView.getCount() - <span class="number">1</span>;
+                }
+                <span class="comment">//展示start－end之间的图片</span>
+                <span class="keyword">break</span>;
+        }
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="typename">void</span> onScroll(AbsListView view, <span class="typename">int</span> firstVisibleItem, <span class="typename">int</span> visibleItemCount, <span class="typename">int</span> totalItemCount) {
+
+    }
+});
+</code></pre></li>
+<li><p><code>onClickListener</code>,当ListView的item中有比如button这些子view时，需要对其设置onclickListener，通常的写法是在getView方法中一个个设置，比如</p>
+<pre><code>holder<span class="class">.img</span><span class="class">.setonClickListener</span>(new onClickListenr)...
+</code></pre><p> 但是这种写法每次调用getView时都设置了一个新的onClick事件，效率很低。高效的写法可以直接在ViewHolder中设置一个position，然后viewHolder implements OnClickListenr：</p>
+<pre><code><span class="class"><span class="keyword">class</span>  <span class="title">ViewHolder</span> <span class="keyword">implements</span> <span class="title">OnClickListener</span></span>{
+    <span class="keyword">int</span> position;
+    TextView name;
+
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPosition</span><span class="params">(<span class="keyword">int</span> position)</span></span>{
+        <span class="keyword">this</span>.position = position;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>{
+        <span class="keyword">switch</span> (v.getId()){
+            <span class="comment">//<span class="doctag">XXX</span>X</span>
+        }
+    }
+}
+
+<span class="function"><span class="keyword">public</span> View <span class="title">getView</span><span class="params">(<span class="keyword">int</span> position, View convertView, ViewGroup parent)</span> </span>{
+    ViewHolder holder = <span class="keyword">null</span>;
+    <span class="keyword">if</span> (convertView == <span class="keyword">null</span>) {
+        convertView = inflater.inflate(R.layout.list_item, parent, <span class="keyword">false</span>);
+        holder = <span class="keyword">new</span> ViewHolder();
+        holder.name = (TextView) convertView.findViewById(R.id.name);
+        holder.name.setOnClickListener(holder);
+        convertView.setTag(holder);
+    } <span class="keyword">else</span> {
+        holder = (ViewHolder) convertView.getTag();
+    }
+    <span class="comment">//设置holder</span>
+    holder.name.setText(list.get(position).partname);
+    <span class="comment">//设置position</span>
+    holder.setPosition(position);
+    <span class="keyword">return</span> convertView;
+}
+</code></pre></li>
+</ol>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
   </section>
 
   
@@ -1016,7 +1046,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">35</span>
+              <span class="site-state-item-count">34</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1175,5 +1205,7 @@
       });
     });
   </script>
+  <!-- Github -->
+  <a href="https://github.com/niorgai"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png"></a>
 </body>
 </html>

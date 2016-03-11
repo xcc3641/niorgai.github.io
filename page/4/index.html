@@ -1,4 +1,4 @@
-<!doctype html>
+  <!doctype html>
 <html class="theme-next use-motion theme-next-mist">
 <head>
   
@@ -167,203 +167,6 @@
       <div class="main-inner">
         <div id="content" class="content"> 
   <section id="posts" class="posts-expand">
-    
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2015/03/23/Android文件存储/" itemprop="url">
-                  Android文件存储
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-03-23T10:04:39+08:00" content="2015 Mar 23">
-              2015 Mar 23
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Android基础知识/" itemprop="url" rel="index">
-                    <span itemprop="name">Android基础知识</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/03/23/Android文件存储/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/23/Android文件存储/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>文件存储分内部文件存储和外部存储。</p>
-<p>默认情况下应用安装到内部存储，可以通过<code>AndroidMainfest.xml</code>文件下<code>application</code>的<code>android:installLocation</code>属性设置安装位置。</p>
-<table>
-<thead>
-<tr>
-<th>类别</th>
-<th>内部存储</th>
-<th>外部存储</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>可用</td>
-<td>一直可用</td>
-<td>没有挂载时不可用</td>
-</tr>
-<tr>
-<td>可访问性</td>
-<td>只能被自己的APP访问</td>
-<td>全部可读</td>
-</tr>
-<tr>
-<td>删除</td>
-<td>卸载应用时清除</td>
-<td>只有通过<code>getExternalFilesDir()</code>方法返回的路径的文件才会被删除</td>
-</tr>
-</tbody>
-</table>
-<p>读取外部存储时,需要添加以下权限:</p>
-<pre><code>写入的权限已经在SDK&gt;<span class="number">18</span>的版本中默认拥有了
-&lt;uses-permission android:<span class="variable">name=</span><span class="string">"android.permission.WRITE_EXTERNAL_STORAGE"</span>
-                 android:<span class="variable">maxSdkVersion=</span><span class="string">"18"</span> /&gt;
-
-&lt;uses-permission android:<span class="variable">name=</span><span class="string">"android.permission.READ_EXTERNAL_STORAGE"</span> /&gt;
-</code></pre><hr>
-<p>内部存储</p>
-<ol>
-<li><p><code>getFilesDir()</code> </p>
-<p> 返回app可用的内部存储文件地址。</p>
-</li>
-<li><p><code>getCacheDir()</code> </p>
-<p> 返回app可用的缓存文件地址。当缓存较大并且系统空间不足时会删除其中的文件。</p>
-</li>
-</ol>
-<p>内部存储保存文件：</p>
-<pre><code><span class="type">File</span> file = <span class="keyword">new</span> <span class="type">File</span>(context.getFilesDir<span class="literal">()</span>, filename);
-<span class="type">String</span> filename = <span class="string">"myfile"</span>;
-<span class="type">String</span> <span class="built_in">string</span> = <span class="string">"Hello world!"</span>;
-<span class="type">FileOutputStream</span> outputStream;
-
-<span class="keyword">try</span> {
-      outputStream = openFileOutput(filename, <span class="type">Context</span>.<span class="type">MODE_PRIVATE</span>);
-      outputStream.write(<span class="built_in">string</span>.getBytes<span class="literal">()</span>);
-      outputStream.close<span class="literal">()</span>;
-    } catch (<span class="type">Exception</span> e) {
-          e.printStackTrace<span class="literal">()</span>;
-}
-</code></pre><p>设置<code>MODE_PRIVATE</code>可以使其他应用无法访问文件。</p>
-<p>内部存储保存缓存文件：</p>
-<pre><code><span class="keyword">public</span> <span class="keyword">File</span> getTempFile(Context context, String url) {
-    <span class="keyword">File</span> <span class="keyword">file</span>;
-    <span class="keyword">try</span> {
-        String fileName = Uri.parse(url).getLastPathSegment();
-        <span class="keyword">file</span> = <span class="keyword">File</span>.createTempFile(fileName, <span class="keyword">null</span>, context.getCacheDir());
-    <span class="keyword">catch</span> (IOException e) {
-        <span class="comment">// Error while creating file</span>
-    }
-    <span class="keyword">return</span> <span class="keyword">file</span>;
-}
-</code></pre><hr>
-<p>外部存储</p>
-<p>因为外部存储可能没有被挂载，所以需要先判断是否可用：</p>
-<pre><code>/* Checks if external storage is available <span class="keyword">for</span> read and write */
-public boolean isExternalStorageWritable() {
-    String <span class="keyword">state</span> = Environment.getExternalStorageState();
-    if (Environment.MEDIA_MOUNTED.equals(<span class="keyword">state</span>)) {
-        return true;
-    }
-    return false;
-}
-
-/* Checks if external storage is available <span class="keyword">to</span> at least read */
-public boolean isExternalStorageReadable() {
-    String <span class="keyword">state</span> = Environment.getExternalStorageState();
-    if (Environment.MEDIA_MOUNTED.equals(<span class="keyword">state</span>) ||
-        Environment.MEDIA_MOUNTED_READ_ONLY.equals(<span class="keyword">state</span>)) {
-        return true;
-    }
-    return false;
-}
-</code></pre><ol>
-<li><p><code>getExternalStoragePublicDirectory()</code></p>
-<p> 返回可以任意访问的外部存储路径，删除应用时不会清除该路径。</p>
-</li>
-<li><p><code>getExternalFilesDir()</code></p>
-<p> 返回只能自己访问的外部存储路径，删除应用时该目录下的文件会被删除。</p>
-</li>
-</ol>
-<hr>
-<p><code>getFreeSpace ()</code>和<code>getTotalSpace ()</code>会返回路径下的可用空间和全部空间的字节。</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
     
       
 
@@ -1192,6 +995,136 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
 
 
     
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                <a class="post-title-link" href="/2015/03/03/Android内存泄漏/" itemprop="url">
+                  Android内存泄漏
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-03-03T16:11:13+08:00" content="2015 Mar 3">
+              2015 Mar 3
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/03/03/Android内存泄漏/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/03/Android内存泄漏/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>以下内容提取于<a href="http://blog.csdn.net/gemmem/article/details/8920039" target="_blank" rel="external">Android进程的内存管理分析</a>及<a href="http://blog.csdn.net/gemmem/article/details/13017999" target="_blank" rel="external">Android内存泄漏分析及调试</a>.</p>
+<p>Android中的内存分为：</p>
+<ol>
+<li>native进程：采用C/C++实现，不包含dalvik实例的进程。</li>
+<li>java进程：Android中运行于dalvik虚拟机之上的进程。每一个java进程都是存在于一个native进程中。</li>
+</ol>
+<p>内存空间是一定的，所以在对象无用时就要回收一些对象来留出空间。当Java Garbage Collection开始运行时，它会从他了解还存活的对象作为内存遍历的根节点(GC Root)，遍历heap内存空间，没有直接或间接引用到GC Root的对象便会被回收。</p>
+<p>而Android内存泄漏便是指进程中的对象，虽然没有使用价值了，但它仍然有直接或间接的引用到GC Root，那么该对象便不会被GC回收，导致内存持续被占用，使可用内存变小。</p>
+<h2 id="常见的内存泄漏">常见的内存泄漏</h2><ol>
+<li>查询数据库没有关闭Cursor。</li>
+<li>使用BaseAdapter作为适配器时没有复用convertView。可以参考<a href="http://niorgai.github.io/2014/12/13/ListView%E4%B8%8EBaseAdapter%E4%BC%98%E5%8C%96/">ListView与BaseAdapter优化</a>.</li>
+<li>bitmap没有回收，可以参考<a href="http://niorgai.github.io/2015/02/27/Bitmap%E7%9B%B8%E5%85%B3-%E7%AE%A1%E7%90%86Bitmap%E5%86%85%E5%AD%98/">Bitmap相关:管理Bitmap内存</a>.</li>
+<li>注册对象后没有反注册，比如Broadcast Receiver等。</li>
+<li>handler问题，如果handler是非静态的，会导致Activity或者Service不被回收，所以应当注册为静态内部类，同时在onDestroy时停止线程:<code>mThread.getLooper().quit();</code></li>
+<li>Activity被静态引用，特别是缓存bitmap时，解决方法可以考虑使用Application的context代替Activity的context。</li>
+<li><p>View在callback中被引用,可能回调还没有结束,但是view处于引用状态,无法回收</p>
+<pre><code><span class="tag">public</span> <span class="tag">void</span> <span class="tag">leak</span>(final View view) {
+    <span class="tag">api</span><span class="class">.callback</span>(new <span class="function">callBack</span>() {
+        <span class="tag">onCallBack</span>() {
+            ...
+        }
+    )
+}
+</code></pre></li>
+<li>WebView的泄露问题:在魅族上面发现webView打开再关闭就会内存泄露..目前使用的解决方法是在webview外面嵌套一层layout作为container.在Activity的<code>onDestroy</code>中调用<code>container.removeAllViews()</code>方法.</li>
+<li>Dialog导致Window泄露,如果需要在dialog依附的Activity销毁前没有调用dialog.dismiss().会导致Activity泄露</li>
+</ol>
+<h2 id="检测内存泄露的方法">检测内存泄露的方法</h2><ol>
+<li>Android Studio自带的Memory Monitor,手动触发GC可以看得比较直观</li>
+<li>MAT<a href="http://androidperformance.com/2015/04/11/AndroidMemory-Usage-Of-MAT.html" target="_blank" rel="external">这篇文章</a>分析得比较透彻</li>
+<li><a href="https://github.com/square/leakcanary" target="_blank" rel="external">Leakcanary</a>,检测一些容易忽略的内存泄露很好用.</li>
+<li><code>adb shell dumpsys meminfo [包名]</code>可以看到内存使用情况.</li>
+</ol>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
   </section>
 
   
@@ -1234,7 +1167,7 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">35</span>
+              <span class="site-state-item-count">34</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1393,5 +1326,7 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
       });
     });
   </script>
+  <!-- Github -->
+  <a href="https://github.com/niorgai"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png"></a>
 </body>
 </html>
