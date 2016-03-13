@@ -1099,10 +1099,18 @@ View importPanel = <span class="params">(<span class="params">(ViewStub)</span> 
 <li>Dialog导致Window泄露,如果需要在dialog依附的Activity销毁前没有调用dialog.dismiss().会导致Activity泄露</li>
 </ol>
 <h2 id="检测内存泄露的方法">检测内存泄露的方法</h2><ol>
-<li>Android Studio自带的Memory Monitor,手动触发GC可以看得比较直观</li>
-<li>MAT<a href="http://androidperformance.com/2015/04/11/AndroidMemory-Usage-Of-MAT.html" target="_blank" rel="external">这篇文章</a>分析得比较透彻</li>
+<li><p>Android Studio 自带的 Memory Monitor,手动触发GC可以看得比较直观,但是dump出来的文件需要处理才能用MAT打开,利用 <code>sdk/platforms-tool/</code> 下的 hprof-conv 文件,命令为:</p>
+<pre><code>/hprof-conv <span class="built_in">source</span> output
+</code></pre></li>
+<li><p>MAT<a href="http://androidperformance.com/2015/04/11/AndroidMemory-Usage-Of-MAT.html" target="_blank" rel="external">这篇文章</a>分析得比较透彻</p>
+</li>
 <li><a href="https://github.com/square/leakcanary" target="_blank" rel="external">Leakcanary</a>,检测一些容易忽略的内存泄露很好用.</li>
 <li><code>adb shell dumpsys meminfo [包名]</code>可以看到内存使用情况.</li>
+</ol>
+<h2 id="一些值得注意的地方">一些值得注意的地方</h2><ol>
+<li><p>理论上来说,当你退出一个 Activity 后,强制GC一次,内存值应该回到跟进入 Activity 差不多的状态,否则就有可能是内存泄露了.但是有可能是图片加载库中对新 Activity 中加载的图片做了内存缓存,然而这部分内存 GC 可能暂时不会回收.</p>
+<p> 比如在应用中我使用了 Fresco 去加载本地图库中的图片, Fresco 对这些图片做了内存缓存,然而这部分的图片其实是不需要在内存中缓存的.</p>
+</li>
 </ol>
 
             
