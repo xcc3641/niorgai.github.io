@@ -45,7 +45,7 @@
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
 
 
-<meta name="description" content="目前按照iOS的设计风格,很多应用都是采用的底部导航+Tab的方式.虽然我是希望各平台遵循各自的规范,但是不得不说.确实这样比抽屉式菜单更加直接.目前项目中采用的是RadioButton + FrameLayout + Fragment的实现方式,所以总结一下遇到的几个问题.
+<meta name="description" content="目前按照iOS的设计风格,很多应用都是采用的底部导航+Tab的方式.虽然我是希望各平台遵循各自的规范,但是不得不说.这样确实比抽屉式菜单更加直接.目前项目中采用的是RadioButton + FrameLayout + Fragment的实现方式,所以总结一下遇到的几个问题.
 
 Activity重建导致Fragment重叠.
 
@@ -55,16 +55,16 @@ Activity重建导致Fragment重叠.
 <meta property="og:title" content="Android使用Fragment切换tab">
 <meta property="og:url" content="http://niorgai.github.io/2016/01/30/Android-tab-with-fragment/index.html">
 <meta property="og:site_name" content="Jianqiu's blog">
-<meta property="og:description" content="目前按照iOS的设计风格,很多应用都是采用的底部导航+Tab的方式.虽然我是希望各平台遵循各自的规范,但是不得不说.确实这样比抽屉式菜单更加直接.目前项目中采用的是RadioButton + FrameLayout + Fragment的实现方式,所以总结一下遇到的几个问题.
+<meta property="og:description" content="目前按照iOS的设计风格,很多应用都是采用的底部导航+Tab的方式.虽然我是希望各平台遵循各自的规范,但是不得不说.这样确实比抽屉式菜单更加直接.目前项目中采用的是RadioButton + FrameLayout + Fragment的实现方式,所以总结一下遇到的几个问题.
 
 Activity重建导致Fragment重叠.
 
 复现方式: 系统销毁Activity,如改变字体大小.
 问题原因: A">
-<meta property="og:updated_time" content="2016-02-01T13:49:12.000Z">
+<meta property="og:updated_time" content="2016-03-13T16:10:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android使用Fragment切换tab">
-<meta name="twitter:description" content="目前按照iOS的设计风格,很多应用都是采用的底部导航+Tab的方式.虽然我是希望各平台遵循各自的规范,但是不得不说.确实这样比抽屉式菜单更加直接.目前项目中采用的是RadioButton + FrameLayout + Fragment的实现方式,所以总结一下遇到的几个问题.
+<meta name="twitter:description" content="目前按照iOS的设计风格,很多应用都是采用的底部导航+Tab的方式.虽然我是希望各平台遵循各自的规范,但是不得不说.这样确实比抽屉式菜单更加直接.目前项目中采用的是RadioButton + FrameLayout + Fragment的实现方式,所以总结一下遇到的几个问题.
 
 Activity重建导致Fragment重叠.
 
@@ -253,7 +253,7 @@ Activity重建导致Fragment重叠.
       
 
       
-        <span itemprop="articleBody"><p>目前按照iOS的设计风格,很多应用都是采用的底部导航+Tab的方式.虽然我是希望各平台遵循各自的规范,但是不得不说.确实这样比抽屉式菜单更加直接.目前项目中采用的是<code>RadioButton + FrameLayout + Fragment</code>的实现方式,所以总结一下遇到的几个问题.</p>
+        <span itemprop="articleBody"><p>目前按照iOS的设计风格,很多应用都是采用的底部导航+Tab的方式.虽然我是希望各平台遵循各自的规范,但是不得不说.这样确实比抽屉式菜单更加直接.目前项目中采用的是<code>RadioButton + FrameLayout + Fragment</code>的实现方式,所以总结一下遇到的几个问题.</p>
 <ol>
 <li><p>Activity重建导致Fragment重叠.</p>
 <ul>
@@ -262,7 +262,7 @@ Activity重建导致Fragment重叠.
 <li>解决方法:<ul>
 <li>在Activity销毁时不保存状态.如重写<code>onSaveInstanceState (Bundle outState)</code>并且不调用super方法,即在Activity销毁时不保存状态.但是该方式会导致<strong>Application创建两次</strong>.</li>
 <li>在Activity创建时,调用<code>super.onCreate(null)</code>,即不根据其保存的状态来恢复Activity状态,而是直接重新创建.这算是一种偷懒的办法吧.</li>
-<li>在创建或保存Fragment时,将每个Fragment设置不同的tag.然后在<code>onCreate (Bundle savedInstanceState)</code>方法中,如果bundle不为null,根据bundle中Fragment的tag来获取fragment,而不是重复创建.</li>
+<li>在创建或保存Fragment时,将每个Fragment设置不同的tag.然后在 <code>onSaveInstanceState (Bundle outState)</code> 中为每个 Fragment 记录保存. 最后在 Activity 的 <code>onCreate (Bundle savedInstanceState)</code> 方法中,如果 Bundle 不为null,根据bundle中Fragment的tag来获取fragment,而不是重复创建.</li>
 </ul>
 </li>
 </ul>
@@ -297,6 +297,40 @@ Activity重建导致Fragment重叠.
 </ul>
 </li>
 </ul>
+</li>
+<li><p>如果使用 ViewPager + Fragment, ViewPager 在初始化时会缓存多个 Fragment, 这里可以通过 <code>setUserVisibleHint</code> 来判断 Fragment 是否可见.一个简单封装的 Fragment 如下:</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseFragment</span> <span class="keyword">extends</span> <span class="title">Fragment</span> </span>{
+
+    <span class="comment">//避免ViewPager在一开始创建</span>
+    <span class="keyword">private</span> <span class="keyword">boolean</span> hasLazyLoad = <span class="keyword">false</span>;
+
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setHasLazyLoad</span><span class="params">(<span class="keyword">boolean</span> hasLazyLoad)</span> </span>{
+        <span class="keyword">this</span>.hasLazyLoad = hasLazyLoad;
+    }
+
+    <span class="comment">/**
+     * 懒加载,防止ViewPager重复创建
+     */</span>
+    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onLazyLoad</span><span class="params">()</span> </span>{
+
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUserVisibleHint</span><span class="params">(<span class="keyword">boolean</span> isVisibleToUser)</span> </span>{
+        <span class="keyword">super</span>.setUserVisibleHint(isVisibleToUser);
+        <span class="keyword">if</span> (getUserVisibleHint() &amp;&amp; !hasLazyLoad) {
+            onLazyLoad();
+            hasLazyLoad = <span class="keyword">true</span>;
+        }
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDestroyView</span><span class="params">()</span> </span>{
+        <span class="keyword">super</span>.onDestroyView();
+        hasLazyLoad = <span class="keyword">false</span>;
+    }
+}
+</code></pre><p> 注意需要在 <code>onDestroyView()</code>中复位标志位,因为 ViewPager 的切换会导致 Fragment 的销毁.</p>
 </li>
 </ol>
 </span>
