@@ -184,6 +184,125 @@
             
             
               
+                <a class="post-title-link" href="/2015/12/11/Android性能提升/" itemprop="url">
+                  Android性能提升
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-11T23:07:32+08:00" content="2015 Dec 11">
+              2015 Dec 11
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/12/11/Android性能提升/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/11/Android性能提升/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <ol>
+<li>Activity中最外层布局不设置background的颜色,使用theme中的background来填充防止过度绘制.</li>
+<li>继承LinearLayout等布局自定义View时,可以在xml最外层使用<code>&lt;merge&gt;</code>标签减少layout层数.</li>
+<li><p>设置Alpha时,直接设置View的Alpha是性能最差的.</p>
+<ol>
+<li><p>TextView: <code>setTextColor</code>更好:</p>
+<pre><code><span class="keyword">int</span> newTextColor = (<span class="keyword">int</span>) (<span class="number">0xFF</span> * alpha) &lt;&lt; <span class="number">24</span> | baseTextColor &amp; <span class="number">0xFFFFFF</span><span class="comment">;</span>
+textView.setTextColor(newTextColor)<span class="comment">;</span>
+</code></pre></li>
+<li><p>ImageView: <code>setImageAlpha</code></p>
+<pre><code>imageView.setImageAlpha<span class="params">(<span class="params">(int)</span> alpha * <span class="number">255</span>)</span>;
+</code></pre></li>
+<li><p>自定义View: 设置<code>paint</code>的alpha</p>
+<pre><code>paint.setAlpha<span class="params">(<span class="params">(int)</span> alpha * <span class="number">255</span>)</span>;
+canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</span>;
+</code></pre></li>
+</ol>
+</li>
+<li><p>使用Handler定时滚动ViewPager时,当界面不可见时Handler还是会run,应该在不可见时停掉Handler.</p>
+</li>
+<li>对拍照或图库的图片裁剪时,设置BitmapConfig为Config.565,可以去掉alpha通道,减少内存.</li>
+</ol>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
                 <a class="post-title-link" href="/2015/12/09/Android体验提升/" itemprop="url">
                   Android体验提升
                 </a>
@@ -728,205 +847,6 @@
 
 
     
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2015/10/12/滑动冲突解决-联动子View/" itemprop="url">
-                  滑动冲突解决-联动子View
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-10-12T02:32:57+08:00" content="2015 Oct 12">
-              2015 Oct 12
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
-                    <span itemprop="name">Android开发经验</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/10/12/滑动冲突解决-联动子View/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/12/滑动冲突解决-联动子View/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>在做<a href="https://github.com/niorgai/SuperRefreshLayout" target="_blank" rel="external">SuperRefreshLayout</a>这个下拉刷新的控件时,发现了一个问题,这也是很多下拉刷新控件都会有的问题.</p>
-<p>如果用户在顶部下拉时触发了控件的下拉效果,此时用户不放手向上滑动,会取消该控件的下拉效果.但是<strong>用户继续向上滑动时,子View却不会向下滚动了.</strong>一定要用户抬起手重新向下滚动才可以.</p>
-<p>界面状态分别为:</p>
-<table>
-<thead>
-<tr>
-<th>普通状态(图1)</th>
-<th>拉动中(图2)</th>
-<th>刷新中(图3)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><img src="http://7sbqys.com1.z0.glb.clouddn.com/refresh_normal.jpg" alt=""></td>
-<td><img src="http://7sbqys.com1.z0.glb.clouddn.com/refresh_draging.jpg" alt=""></td>
-<td><img src="http://7sbqys.com1.z0.glb.clouddn.com/refresh_refreshing.jpg" alt=""></td>
-</tr>
-</tbody>
-</table>
-<p>当用户从普通状态(图1)向下拉动进入拉动中状态(图2),用户向上滑动取消拉动动作,恢复普通状态(图1),此时继续向上滑动,界面并不会跟随用户手指滚动.</p>
-<h2 id="问题分析:">问题分析:</h2><p>外层刷新控件称为RefreshLayout, 内部子控件称为子View.</p>
-<ol>
-<li><p>RefreshLayout在由图1向下滑动至图2的过程中,其实是RefreshLayout拦截了当前的Touch事件,此时:</p>
-<ol>
-<li>RefreshLayout的<code>onInterceptTouchEvent()</code>方法返回true,后续的Touch事件都会交给RefreshLayout的<code>onTouchEvent()</code>处理.</li>
-<li>子View的<code>dispatchTouchEvent()</code>方法会接收到Action_cancel事件,表示当前触摸事件已经结束,不会再处理接收到的除Action_down之外的事件.</li>
-<li>RefreshLayout的<code>onTouchEvent()</code>方法消费Touch事件,界面逐渐变为图2.</li>
-</ol>
-</li>
-<li><p>RefreshLayout由图2向上滑动恢复图1状态后并继续向上滑动时,界面无法向下滑动,因为:</p>
-<ol>
-<li>RefreshLayout拦截了Touch事件,子View无法接收.</li>
-<li>RefreshLayout的<code>onTouchEvent()</code>方法返回false(因为当子View可以向下滑动时不需要处理).</li>
-</ol>
-</li>
-</ol>
-<h2 id="解决思路:">解决思路:</h2><p>我们的最终目标就是<strong>把RefreshLayout”错误”拦截的Touch事件交给子View来处理</strong>.</p>
-<table>
-<thead>
-<tr>
-<th>问题</th>
-<th>原因</th>
-<th>解决</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>怎么判断是”错误”的拦截</td>
-<td>有需要拦截的Touch事件(如滑动到顶部后继续下拉)</td>
-<td>在拦截后记录标志位, 在RefreshLayout的<code>onTouchEvent()</code>方法中不该处理(return false)的情况中判断该标志位</td>
-</tr>
-<tr>
-<td>为什么子View无法接收Touch事件</td>
-<td>在一开始滚动的过程中RefreshLayout的<code>onInterceptTouchEvent()</code>方法返回true,拦截了所有的Touch事件</td>
-<td>事件传递机制是系统设定的,不好更改.但可以在RefreshLayout的<code>onTouchEvent()</code>方法中调用子View的<code>dispatchTouchEvent()</code>方法,让子View接受并处理该Touch事件</td>
-</tr>
-<tr>
-<td>怎么让子View能够处理该Touch事件</td>
-<td>RefreshLayout拦截Touch事件后,子View会接收到Action_cancel事件,后续事件无法处理</td>
-<td>判断是否为拦截后的第一个Touch事件,是的话先模拟一个Action_down事件并传递给子View,使子View认为这是一个新的Touch事件序列.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="解决代码:">解决代码:</h2><p>以下代码为简略版:</p>
-<pre><code><span class="comment">//首先定义一个变量,检测是否是同一点击事件序列中第一个拦截后应该处理的move事件</span>
-private boolean isFirstMoveAfterIntercept = <span class="literal">false</span>;
-
- <span class="comment">//在dispatchTouchEvent方法中初始化</span>
- @Override
-public boolean dispatchTouchEvent<span class="params">(MotionEvent ev)</span> {
-    <span class="keyword">if</span> <span class="params">(ev.getAction<span class="params">()</span> == MotionEvent.ACTION_DOWN)</span> {
-        isFirstMoveAfterIntercept = <span class="literal">true</span>;
-    }
-    <span class="keyword">if</span> <span class="params">(ev.getAction<span class="params">()</span> == MotionEvent.ACTION_UP || ev.getAction<span class="params">()</span> == MotionEvent.ACTION_CANCEL)</span> {
-        isFirstMoveAfterIntercept = <span class="literal">false</span>;
-    }
-    return super.dispatchTouchEvent<span class="params">(ev)</span>;
-}
-
-@Override
-public boolean onTouchEvent<span class="params">(MotionEvent ev)</span> {
-    ......
-    <span class="comment">//mIsBeingDragged表示被拦截了</span>
-    <span class="keyword">if</span> <span class="params">(mIsBeingDragged)</span> {
-        <span class="comment">//此时是错误的拦截(不需要拦截的情况)</span>
-        <span class="keyword">if</span> <span class="params">(originalDragPercent &lt; <span class="number">0</span>)</span> {
-            <span class="comment">//判断是否是拦截后的第一个Move事件</span>
-            <span class="keyword">if</span> <span class="params">(isFirstMoveAfterIntercept)</span> {
-                <span class="comment">// 先为子View模拟一个Action_Down事件,使其认为这是一个新的Touch事件序列</span>
-                MotionEvent event = MotionEvent.obtain<span class="params">(ev)</span>;
-                event.setAction<span class="params">(MotionEvent.ACTION_DOWN)</span>;
-                mTarget.dispatchTouchEvent<span class="params">(event)</span>;
-                isFirstMoveAfterIntercept = <span class="literal">false</span>;
-            }
-            <span class="comment">//将Move事件传递到子View</span>
-            mTarget.dispatchTouchEvent<span class="params">(ev)</span>;
-            return <span class="literal">false</span>;
-        }
-        ...
-    }
-    ....
-}
-</code></pre>
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -969,14 +889,14 @@ public boolean onTouchEvent<span class="params">(MotionEvent ev)</span> {
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">34</span>
+              <span class="site-state-item-count">35</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">10</span>
+              <span class="site-state-item-count">11</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
