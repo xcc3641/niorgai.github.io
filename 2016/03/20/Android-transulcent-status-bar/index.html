@@ -46,38 +46,41 @@
 
 
 <meta name="description" content="最近业务上看到一个设计图挺好看,所以研究了一下透明状态栏,注意不是沉浸式状态栏,在参考了网上的一些资料后,整理出了这篇博客.
+Github Demo 链接: StatusBarCompat
 参考文章:
 由沉浸式状态栏引发的血案
 Translucent System Bar 的最佳实践
 该使用 fitsSystemWindows 了！
 
 
-首先强调,对于状态栏的处理有两种不同的方式, 这里从Translucent System Bar 的最佳实践直接盗了两张图做">
+首先强调,对于状态栏的处理有两种不同的方式, 这里从Tran">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android-transulcent-status-bar">
 <meta property="og:url" content="http://niorgai.github.io/2016/03/20/Android-transulcent-status-bar/index.html">
 <meta property="og:site_name" content="Jianqiu's blog">
 <meta property="og:description" content="最近业务上看到一个设计图挺好看,所以研究了一下透明状态栏,注意不是沉浸式状态栏,在参考了网上的一些资料后,整理出了这篇博客.
+Github Demo 链接: StatusBarCompat
 参考文章:
 由沉浸式状态栏引发的血案
 Translucent System Bar 的最佳实践
 该使用 fitsSystemWindows 了！
 
 
-首先强调,对于状态栏的处理有两种不同的方式, 这里从Translucent System Bar 的最佳实践直接盗了两张图做">
+首先强调,对于状态栏的处理有两种不同的方式, 这里从Tran">
 <meta property="og:image" content="http://7sbqys.com1.z0.glb.clouddn.com/fullScreen.png">
 <meta property="og:image" content="http://7sbqys.com1.z0.glb.clouddn.com/Toolbar.png">
-<meta property="og:updated_time" content="2016-03-20T15:57:00.000Z">
+<meta property="og:updated_time" content="2016-03-20T16:17:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android-transulcent-status-bar">
 <meta name="twitter:description" content="最近业务上看到一个设计图挺好看,所以研究了一下透明状态栏,注意不是沉浸式状态栏,在参考了网上的一些资料后,整理出了这篇博客.
+Github Demo 链接: StatusBarCompat
 参考文章:
 由沉浸式状态栏引发的血案
 Translucent System Bar 的最佳实践
 该使用 fitsSystemWindows 了！
 
 
-首先强调,对于状态栏的处理有两种不同的方式, 这里从Translucent System Bar 的最佳实践直接盗了两张图做">
+首先强调,对于状态栏的处理有两种不同的方式, 这里从Tran">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -262,6 +265,7 @@ Translucent System Bar 的最佳实践
 
       
         <span itemprop="articleBody"><p>最近业务上看到一个设计图挺好看,所以研究了一下透明状态栏,注意不是沉浸式状态栏,在参考了网上的一些资料后,整理出了这篇博客.</p>
+<p>Github Demo 链接: <a href="https://github.com/niorgai/StatusBarCompat" target="_blank" rel="external">StatusBarCompat</a></p>
 <h2 id="参考文章:">参考文章:</h2><ol>
 <li><a href="http://www.jianshu.com/p/140be70b84cd?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">由沉浸式状态栏引发的血案</a></li>
 <li><a href="http://www.jianshu.com/p/0acc12c29c1b" target="_blank" rel="external">Translucent System Bar 的最佳实践</a></li>
@@ -486,12 +490,23 @@ mContentView.addView<span class="params">(mTopView, <span class="number">0</span
 <tr>
 <td>原理</td>
 <td>向 <code>ContentView</code> 中添加假 View, 然后利用 <code>ChildView</code> 的 marginTop 属性来模拟 <code>fitsSystemWindows</code> ,主要是通过修改 marginTop 的值可以在全屏模式和着色模式之间切换.</td>
-<td>因为 <code>ParentView</code> 的实质是一个 <code>LinearLayout</code> , 可以再其顶部添加 View .但是不知道为什么会像<a href="http://www.jianshu.com/p/140be70b84cd?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">由沉浸式状态栏引发的血案</a>中一样出现一条黑线</td>
+<td>因为 <code>ParentView</code> 的实质是一个 <code>LinearLayout</code> , 可以再其顶部添加 View .</td>
 <td>向 <code>ContentView</code> 中添加假 View, 然后利用 <code>ChildView</code> 的 <code>fitsSystemWindows</code> 属性来控制位置, 但是实现缺陷就是不能随时切换两种模式.</td>
+</tr>
+<tr>
+<td>缺陷</td>
+<td>改变了 <code>ChildView</code> 的 marginTop 值</td>
+<td>着色模式下,会像<a href="http://www.jianshu.com/p/140be70b84cd?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">由沉浸式状态栏引发的血案</a>中一样出现一条黑线</td>
+<td>不能在不重启 Activity 的情况下切换模式.</td>
+</tr>
+<tr>
+<td>对应 Github demo 中代码</td>
+<td>StatusBarCompat类</td>
+<td>StatusBarCompat1类</td>
+<td>StatusBarCompat2 类</td>
 </tr>
 </tbody>
 </table>
-<p> | 缺陷 | 改变了 <code>ChildView</code> 的 marginTop 值, 在全屏模式时也</p>
 </span>
       
     </div>
