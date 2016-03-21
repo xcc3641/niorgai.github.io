@@ -275,6 +275,12 @@
 <li><strong>ContentParent</strong>: <code>ContentView</code> 的 parent , 实质为 <code>LinearLayout</code>.</li>
 <li><strong>ChildView</strong>: <code>ContentView</code> 的第一个子 View ,即布局文件中的 layout .</li>
 </ol>
+<p>再介绍一下相关的函数:</p>
+<ol>
+<li><code>fitsSystemWindows</code>, 该属性可以设置是否为系统 View 预留出空间, 当设置为 true 时,会预留出状态栏的空间.</li>
+<li><code>ContentView</code>, 实质为 <code>ContentFrameLayout</code>, 但是重写了 <code>dispatchFitSystemWindows</code> 方法, 所以对其设置 <code>fitsSystemWindows</code> 无效.</li>
+<li><code>ContentParent</code>, 实质为 <code>FitWindowsLinearLayout</code>, 里面第一个 View 是 <code>ViewStubCompat</code>, 如果主题没有设置 title ,它就不会 inflate .第二个 View 就是 <code>ContentView</code>.</li>
+</ol>
 <h2 id="5-0以上的处理:">5.0以上的处理:</h2><p>自5.0引入 Material Design ,状态栏对开发者更加直接,可以直接调用 <code>setStatusBarColor</code> 来设置状态栏的颜色.</p>
 <p><strong>全屏模式: </strong></p>
 <pre><code>Window window = activity.getWindow<span class="params">()</span>;
@@ -487,6 +493,11 @@ mContentView.addView<span class="params">(mTopView, <span class="number">0</span
 </tr>
 </tbody>
 </table>
+<h2 id="总结">总结</h2><ul>
+<li><code>StatusBarCompat2</code> 主要问题不能切换.</li>
+<li><code>StatusBarCompat1</code> 在4.4上会有一条黑线, 如果可以解决我觉得这是最靠谱的解决方法.</li>
+<li><code>StatusBarCompat</code> 类算是我最后给出的解决方案吧, 目前使用效果比较完善.<strong>推荐使用</strong></li>
+</ul>
 
             
           </span>
