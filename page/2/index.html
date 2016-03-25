@@ -381,6 +381,14 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
 <li><p>click事件需要触发网络请求时,最好在调用请求前<code>view.setClickable(false);</code>,网络请求结束后<code>view.setClickable(true)</code>.</p>
 </li>
 <li>对于布局中切换Visible的ViewGroup,可以通过<code>android:animateLayoutChanges=&quot;true&quot;</code>来开启默认的切换动画</li>
+<li><p>对于带有 <code>EditText</code> 等可输入控件的界面,需要考虑:</p>
+<ul>
+<li>软键盘弹出时是否会影响输入内容</li>
+<li>打开界面时软键盘是否需要弹出</li>
+<li>在退出界面时软键盘是否要隐藏</li>
+<li>已经输入内容时,退出时是否需要确认.</li>
+</ul>
+</li>
 </ol>
 
             
