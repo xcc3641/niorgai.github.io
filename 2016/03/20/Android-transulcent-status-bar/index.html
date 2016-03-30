@@ -69,7 +69,7 @@ Translucent System Bar 的最佳实践
 首先强调,对于状态栏的处理有两种不同的方式, 这里从Tran">
 <meta property="og:image" content="http://7sbqys.com1.z0.glb.clouddn.com/fullScreen.png">
 <meta property="og:image" content="http://7sbqys.com1.z0.glb.clouddn.com/Toolbar.png">
-<meta property="og:updated_time" content="2016-03-21T02:04:58.000Z">
+<meta property="og:updated_time" content="2016-03-30T03:44:43.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android-transulcent-status-bar">
 <meta name="twitter:description" content="最近业务上看到一个设计图挺好看,所以研究了一下透明状态栏,注意不是沉浸式状态栏,在参考了网上的一些资料后,整理出了这篇博客.
@@ -516,7 +516,11 @@ mContentView.addView<span class="params">(mTopView, <span class="number">0</span
 <h2 id="总结">总结</h2><ul>
 <li><code>StatusBarCompat2</code> 主要问题不能切换.</li>
 <li><code>StatusBarCompat1</code> 在4.4上会有一条黑线, 如果可以解决我觉得这是最靠谱的解决方法.</li>
-<li><code>StatusBarCompat</code> 类算是我最后给出的解决方案吧, 目前使用效果比较完善.<strong>推荐使用</strong></li>
+<li><code>StatusBarCompat</code> 类算是我最后给出的解决方案吧, 目前使用效果比较完善.<strong>推荐使用</strong><ul>
+<li>用户可以随时在同一个 Activity 中切换不同的状态栏模式.</li>
+<li>就算子 View 重写了 <code>dispatchFitSystemWindows</code> 也不会有影响.</li>
+</ul>
+</li>
 </ul>
 </span>
       

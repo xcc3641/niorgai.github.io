@@ -496,7 +496,11 @@ mContentView.addView<span class="params">(mTopView, <span class="number">0</span
 <h2 id="总结">总结</h2><ul>
 <li><code>StatusBarCompat2</code> 主要问题不能切换.</li>
 <li><code>StatusBarCompat1</code> 在4.4上会有一条黑线, 如果可以解决我觉得这是最靠谱的解决方法.</li>
-<li><code>StatusBarCompat</code> 类算是我最后给出的解决方案吧, 目前使用效果比较完善.<strong>推荐使用</strong></li>
+<li><code>StatusBarCompat</code> 类算是我最后给出的解决方案吧, 目前使用效果比较完善.<strong>推荐使用</strong><ul>
+<li>用户可以随时在同一个 Activity 中切换不同的状态栏模式.</li>
+<li>就算子 View 重写了 <code>dispatchFitSystemWindows</code> 也不会有影响.</li>
+</ul>
+</li>
 </ul>
 
             
