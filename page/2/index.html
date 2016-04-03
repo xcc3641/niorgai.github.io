@@ -255,31 +255,20 @@
         
           <span itemprop="articleBody">
             
-              <ol>
-<li>Activity中最外层布局不设置background的颜色,使用theme中的background来填充防止过度绘制.</li>
-<li>继承LinearLayout等布局自定义View时,可以在xml最外层使用<code>&lt;merge&gt;</code>标签减少layout层数.</li>
-<li><p>设置Alpha时,直接设置View的Alpha是性能最差的.</p>
-<ol>
-<li><p>TextView: <code>setTextColor</code>更好:</p>
-<pre><code><span class="keyword">int</span> newTextColor = (<span class="keyword">int</span>) (<span class="number">0xFF</span> * alpha) &lt;&lt; <span class="number">24</span> | baseTextColor &amp; <span class="number">0xFFFFFF</span><span class="comment">;</span>
-textView.setTextColor(newTextColor)<span class="comment">;</span>
-</code></pre></li>
-<li><p>ImageView: <code>setImageAlpha</code></p>
-<pre><code>imageView.setImageAlpha<span class="params">(<span class="params">(int)</span> alpha * <span class="number">255</span>)</span>;
-</code></pre></li>
-<li><p>自定义View: 设置<code>paint</code>的alpha</p>
-<pre><code>paint.setAlpha<span class="params">(<span class="params">(int)</span> alpha * <span class="number">255</span>)</span>;
-canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</span>;
-</code></pre></li>
-</ol>
-</li>
-<li><p>使用Handler定时滚动ViewPager时,当界面不可见时Handler还是会run,应该在不可见时停掉Handler.</p>
-</li>
-<li>对拍照或图库的图片裁剪时,设置BitmapConfig为Config.565,可以去掉alpha通道,减少内存.</li>
-</ol>
-
             
+Activity中最外层布局不设置background的颜色,使用theme中的background来填充防止过度绘制.
+继承LinearLayout等布局自定义View时,可以在xml最外层使用&lt;merge&gt;标签减少layout层数.
+设置Alpha时,直接设置View的Alpha是性能最差的.
+
+TextView: setTextColor更好:
+int newTextColor
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/12/11/Android性能提升/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -374,36 +363,23 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
         
           <span itemprop="articleBody">
             
-              <ol>
-<li><p>关于界面加载,为了更快的打开Activity,应该注意:</p>
-<ol>
-<li>尽量上一个Activity的<code>onPause()</code>的执行时间,因为上一个Activity的<code>onPause()</code>执行后才会执行下一个Activity的<code>onStart()</code></li>
-<li>参考<a href="http://www.androidperformance.com/2015/11/18/Android-app-lunch-optimize-delay-load.html" target="_blank" rel="external">Android应用启动优化:一种DelayLoad的实现和原理</a>中提到的延迟加载,在第一帧绘制结束后开始业务动作.</li>
-</ol>
-</li>
-<li><p>Activity的界面刷新与加载:</p>
-<ol>
-<li>进入Activity时显示空白界面(但是要有title).</li>
-<li>刷新过程中显示LoadingView.</li>
-<li>刷新完毕如果没有数据显示EmptyView.</li>
-<li>加载数据时最好使用自动加载,加载结束后底部露出新数据告知用户有更多数据.</li>
-</ol>
-</li>
-<li><p>click事件需要触发网络请求时,最好在调用请求前<code>view.setClickable(false);</code>,网络请求结束后<code>view.setClickable(true)</code>.</p>
-</li>
-<li>对于布局中切换Visible的ViewGroup,可以通过<code>android:animateLayoutChanges=&quot;true&quot;</code>来开启默认的切换动画</li>
-<li><p>对于带有 <code>EditText</code> 等可输入控件的界面,需要考虑:</p>
-<ul>
-<li>软键盘弹出时是否会影响输入内容</li>
-<li>打开界面时软键盘是否需要弹出</li>
-<li>在退出界面时软键盘是否要隐藏</li>
-<li>已经输入内容时,退出时是否需要确认.</li>
-</ul>
-</li>
-</ol>
-
             
+关于界面加载,为了更快的打开Activity,应该注意:
+
+尽量上一个Activity的onPause()的执行时间,因为上一个Activity的onPause()执行后才会执行下一个Activity的onStart()
+参考Android应用启动优化:一种DelayLoad的实现和原理中提到的延迟加载,在第一帧绘制结束后开始业务动作.
+
+
+Activity的界面刷新与加载:
+
+进入Activi
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/12/09/Android体验提升/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -498,54 +474,22 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
         
           <span itemprop="articleBody">
             
-              <p>下拉刷新,在我看来是非常有革命性的一种交互形式,使用过程非常自然.而与之对应的,就有上拉加载.为了实现下拉刷新和上拉加载,通常都是将整个界面分为三部分:</p>
-<pre><code><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span>
+            下拉刷新,在我看来是非常有革命性的一种交互形式,使用过程非常自然.而与之对应的,就有上拉加载.为了实现下拉刷新和上拉加载,通常都是将整个界面分为三部分:
+*************************
      TopLoadingView
-<span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span>
+*************************
 
        childView
 
-<span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span>
-    BottomLoadingView
-<span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span>
-</code></pre><h3 id="下拉刷新">下拉刷新</h3><p>目前常用的下拉刷新有几种样式,在这里推荐一个库<a href="https://github.com/Aspsine/SwipeToLoadLayout" target="_blank" rel="external">SwipeToLoadLayout</a>, </p>
-<p>这个库的Demo中把刷新的几种样式: </p>
-<table>
-<thead>
-<tr>
-<th>名字</th>
-<th>效果</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>classic</td>
-<td>拉动时LoadingView与childView一起滑动</td>
-</tr>
-<tr>
-<td>above</td>
-<td>拉动时只滑动LoadingView, childView不滑动</td>
-</tr>
-<tr>
-<td>below</td>
-<td>拉动时只滑动childView,不滑动LoadingView</td>
-</tr>
-<tr>
-<td>scale</td>
-<td>拉动时childView跟随拉动距离移动,loadingView滑动较慢</td>
-</tr>
-</tbody>
-</table>
-<h3 id="上拉加载">上拉加载</h3><p>与下拉刷新相同,上拉加载也可以同时支持这几种样式.</p>
-<h3 id="交互上的细节点:">交互上的细节点:</h3><ol>
-<li>无论是下拉刷新还是上拉加载,手指在整个过程中都不应该离开屏幕,应该让用户感觉更加自然.解决办法如下:<a href="http://niorgai.github.io/2015/10/12/%E6%BB%91%E5%8A%A8%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3-%E8%81%94%E5%8A%A8%E5%AD%90View/">联动子View</a>.</li>
-<li>注意与横向滑动View的冲突解决,如<code>ViewPager</code>等.解决方法可以参考<a href="http://niorgai.github.io/2015/10/15/%E6%BB%91%E5%8A%A8%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3-%E6%9B%B4%E5%90%88%E7%90%86%E7%9A%84%E6%8B%A6%E6%88%AA/">更合理的拦截</a>.</li>
-<li>下拉刷新是很多App培养出来的用户习惯,用户会习惯性下拉刷新.但是上拉加载却不是,用户并不能很明确得了解是否有更多.同时在除classic的其他模式中,刷新完后loadingView隐藏,界面布局并没有任何变化,用户并不知道是否加载出来.于是就想出一种更加直接的加载<strong><code>滑动到底部自动加载</code></strong>.</li>
-</ol>
-<h3 id="实现">实现</h3><p><a href="">RefreshView:包含下拉刷新和自动加载的View</a></p>
-
-            
+*************************
+    Bo
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/12/05/我眼中的刷新与加载/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -640,19 +584,15 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
         
           <span itemprop="articleBody">
             
-              <p>作为一个Android开发者,遇到好的交互当然希望引用过来.iphone的应用可以从屏幕左端右滑返回上一个界面,这个交互在单手操作上非常舒服.那么当然希望在Android上实现.</p>
-<p>起初看到知乎和微信都实现了这个功能,于是就自己偷懒没有去想怎么实现,而是先去网上找了一下别人的实现,最后找到了这个<a href="http://blog.csdn.net/xiaanming/article/details/20934541" target="_blank" rel="external">Android 向右滑动销毁（finish）Activity, 随着手势的滑动而滑动的效果</a>.作者的原理和代码都很简明,但是copy下来后发现还是有点小bug,于是做了点修复.以及我和它的思路有所区别,最后就没有fork他的库了,而是自己写了一个demo:<a href="https://github.com/niorgai/SlideFinishLayout" target="_blank" rel="external">Android 右滑销毁Activity的Layout</a>.</p>
-<p>最初实现的时候,我也想像知乎一样可以从屏幕中间滑动,但最后发现知乎并没有ViewPager之类的横向滑动的控件,所以对原来的库做了以下修改:</p>
-<ol>
-<li>采取了边缘滑动的返回方式.这样便不需要考虑横向滑动的控件的触摸事件冲突.</li>
-<li>根据滑动的比例动态改变背景色,使背景色从黑色40%透明到全透明变化,过渡更加自然.</li>
-<li>finish()的时候调用<code>overridePendingTransition(0, 0)</code>使Activity的关闭动画取消,用户感觉更加自然.</li>
-<li><code>dispatchTouchEvent()</code>中对Move进行判断,这样当子View不消费Touch事件时,<code>slideFinishLayout</code>可以从任意位置滑动返回.</li>
-</ol>
-<h2 id="待解决优化:">待解决优化:</h2><p>因为这里实现滑动返回的是把Activity设为透明,那么上一个Activity的<code>onStop()</code>方法不会被调用,当Activity打开过多,性能下降很快.</p>
-
-            
+            作为一个Android开发者,遇到好的交互当然希望引用过来.iphone的应用可以从屏幕左端右滑返回上一个界面,这个交互在单手操作上非常舒服.那么当然希望在Android上实现.
+起初看到知乎和微信都实现了这个功能,于是就自己偷懒没有去想怎么实现,而是先去网上找了一下别人的实现,最后找到了这个Android 向右滑动销毁（finish）Activity, 随着手势的滑动而滑动的效果.作者的原理和代
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/10/31/Android右滑返回/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -747,107 +687,15 @@ canvas.draw<span class="built_in">*</span><span class="params">(..., paint)</spa
         
           <span itemprop="articleBody">
             
-              <h2 id="问题说明:">问题说明:</h2><p>当<code>SwipeRefreshLayout</code>中放置了<code>ViewPager</code>控件,两者的滑动会相互冲突.具体表现为<code>ViewPager</code>的左右滑动不顺畅,容易被<code>SwipeRefreshLayout</code>拦截(即出现刷新的View).</p>
-<h2 id="问题原因:">问题原因:</h2><p><code>ViewPager</code>本身是处理了滚动事件的冲突,它在横向滑动时会调用<code>requestDisallowInterceptTouchEvent()</code>方法使父控件不拦截当前的Touch事件序列.但是<code>SwipeRefreshLayout</code>的<code>requestDisallowInterceptTouchEvent()</code>方法什么也没有做,所以仍然会拦截当前的Touch事件序列.</p>
-<h2 id="问题分析:">问题分析:</h2><p>为什么<code>SwipeRefreshLayout</code>的<code>requestDisallowInterceptTouchEvent()</code>方法什么都不做?</p>
-<p>首先<code>SwipeRefreshLayout</code>继承自<code>ViewGroup</code>.</p>
-<ul>
-<li>在<code>requestDisallowInterceptTouchEvent()</code>方法什么都不做的情况下,用户可以从底部下拉刷新一次拉出LoadingView.</li>
-<li>如果方法调用<code>ViewGroup</code>的<code>requestDisallowInterceptTouchEvent()</code>方法, 可以解决<code>ViewPager</code>的兼容问题,但是用户在界面底部下拉至头部后,无法继续下拉,需要手指放开一次才能拉出LoadingView.</li>
-</ul>
-<h2 id="目标分析:">目标分析:</h2><p>那么为了更加顺滑地滚动,想要的效果当然是<strong>一次性拉出LoadingView</strong>.既然ViewPager在左右滑动时才会调用<code>requestDisallowInterceptTouchEvent()</code>方法,那么<code>SwipeRefreshLayout</code><strong>只应该在上下滑动时</strong>才拦截Touch事件.</p>
-<p>具体逻辑如下:</p>
-<ol>
-<li>记录是否调用了<code>requestDisallowInterceptTouchEvent()</code>方法,并且设置为true.</li>
-<li>在<code>SwipeRefreshLayout</code>中判断是否是上下滑动.</li>
-<li>如果同时满足1,2,则调用<code>super.requestDisallowInterceptTouchEvent(true)</code>.</li>
-<li>否则调用<code>super.requestDisallowInterceptTouchEvent(false)</code>.</li>
-</ol>
-<p>注意:因为<code>ViewGroup</code>的<code>requestDisallowInterceptTouchEvent</code>方法设置true后,Touch事件在<code>dispatchTouchEvent()</code>方法中就会被拦截,所以需要在<code>dispatchTouchEvent()</code>方法中判断是否为上下滑动.</p>
-<h2 id="实现代码(部分):">实现代码(部分):</h2><pre><code><span class="comment">//非法按键</span>
-<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> INVALID_POINTER = -<span class="number">1</span>;
-
-<span class="comment">//dispatch方法记录第一次按下的x</span>
-<span class="keyword">private</span> <span class="keyword">float</span> mInitialDisPatchDownX;
-
-<span class="comment">//dispatch方法记录第一次按下的y</span>
-<span class="keyword">private</span> <span class="keyword">float</span> mInitialDisPatchDownY;
-
-<span class="comment">//dispatch方法记录的手指</span>
-<span class="keyword">private</span> <span class="keyword">int</span> mActiveDispatchPointerId = INVALID_POINTER;
-
-<span class="comment">//是否请求拦截</span>
-<span class="keyword">private</span> <span class="keyword">boolean</span> hasRequestDisallowIntercept = <span class="keyword">false</span>;
-
-<span class="annotation">@Override</span>
-<span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">requestDisallowInterceptTouchEvent</span><span class="params">(<span class="keyword">boolean</span> b)</span> </span>{
-    hasRequestDisallowIntercept = b;
-    <span class="comment">// Nope.</span>
-}
-
-<span class="annotation">@Override</span>
-<span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">dispatchTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>{
-    <span class="keyword">switch</span> (ev.getAction()) {
-        <span class="keyword">case</span> MotionEvent.ACTION_DOWN:
-            mActiveDispatchPointerId = MotionEventCompat.getPointerId(ev, 0);
-            <span class="keyword">final</span> <span class="keyword">float</span> initialDownX = getMotionEventX(ev, mActiveDispatchPointerId);
-            <span class="keyword">if</span> (initialDownX != INVALID_POINTER) {
-                mInitialDisPatchDownX = initialDownX;
-            }
-            <span class="keyword">final</span> <span class="keyword">float</span> initialDownY = getMotionEventY(ev, mActiveDispatchPointerId);
-            <span class="keyword">if</span> (mInitialDisPatchDownY != INVALID_POINTER) {
-                mInitialDisPatchDownY = initialDownY;
-            }
-            <span class="keyword">break</span>;
-        <span class="keyword">case</span> MotionEvent.ACTION_MOVE:
-            <span class="keyword">if</span> (hasRequestDisallowIntercept) {
-                <span class="comment">//解决viewPager滑动冲突问题</span>
-                <span class="keyword">final</span> <span class="keyword">float</span> x = getMotionEventX(ev, mActiveDispatchPointerId);
-                <span class="keyword">final</span> <span class="keyword">float</span> y = getMotionEventY(ev, mActiveDispatchPointerId);
-                <span class="keyword">if</span> (mInitialDisPatchDownX != INVALID_POINTER &amp;&amp; x != INVALID_POINTER &amp;&amp;
-                        mInitialDisPatchDownY != INVALID_POINTER &amp;&amp; y != INVALID_POINTER) {
-                    <span class="keyword">final</span> <span class="keyword">float</span> xDiff = Math.abs(x - mInitialDisPatchDownX);
-                    <span class="keyword">final</span> <span class="keyword">float</span> yDiff = Math.abs(y - mInitialDisPatchDownY);
-                    <span class="keyword">if</span> (xDiff &gt; mTouchSlop &amp;&amp; xDiff * <span class="number">0.7</span>f &gt; yDiff) {
-                        <span class="comment">//横向滚动不需要拦截</span>
-                        <span class="keyword">super</span>.requestDisallowInterceptTouchEvent(<span class="keyword">true</span>);
-                    } <span class="keyword">else</span> {
-                        <span class="keyword">super</span>.requestDisallowInterceptTouchEvent(<span class="keyword">false</span>);
-                    }
-                } <span class="keyword">else</span> {
-                    <span class="keyword">super</span>.requestDisallowInterceptTouchEvent(<span class="keyword">false</span>);
-                }
-            }
-            <span class="keyword">break</span>;
-        <span class="keyword">case</span> MotionEvent.ACTION_UP:
-        <span class="keyword">case</span> MotionEvent.ACTION_CANCEL:
-            <span class="keyword">if</span> (ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_CANCEL) {
-                hasRequestDisallowIntercept = <span class="keyword">false</span>;
-            }
-            <span class="keyword">break</span>;
-    }
-
-    <span class="function"><span class="keyword">return</span> <span class="keyword">super</span>.<span class="title">dispatchTouchEvent</span><span class="params">(ev)</span></span>;
-}
-
-<span class="keyword">private</span> <span class="function"><span class="keyword">float</span> <span class="title">getMotionEventY</span><span class="params">(MotionEvent ev, <span class="keyword">int</span> activePointerId)</span> </span>{
-    <span class="keyword">final</span> <span class="keyword">int</span> index = MotionEventCompat.findPointerIndex(ev, activePointerId);
-    <span class="keyword">if</span> (index &lt; <span class="number">0</span>) {
-        <span class="keyword">return</span> -<span class="number">1</span>;
-    }
-    <span class="function"><span class="keyword">return</span> MotionEventCompat.<span class="title">getY</span><span class="params">(ev, index)</span></span>;
-}
-
-<span class="keyword">private</span> <span class="function"><span class="keyword">float</span> <span class="title">getMotionEventX</span><span class="params">(MotionEvent ev, <span class="keyword">int</span> activePointerId)</span> </span>{
-    <span class="keyword">final</span> <span class="keyword">int</span> index = MotionEventCompat.findPointerIndex(ev, activePointerId);
-    <span class="keyword">if</span> (index &lt; <span class="number">0</span>) {
-        <span class="keyword">return</span> -<span class="number">1</span>;
-    }
-    <span class="function"><span class="keyword">return</span> MotionEventCompat.<span class="title">getX</span><span class="params">(ev, index)</span></span>;
-}
-</code></pre>
-            
+            问题说明:当SwipeRefreshLayout中放置了ViewPager控件,两者的滑动会相互冲突.具体表现为ViewPager的左右滑动不顺畅,容易被SwipeRefreshLayout拦截(即出现刷新的View).
+问题原因:ViewPager本身是处理了滚动事件的冲突,它在横向滑动时会调用requestDisallowInterceptTouchEvent()方法使父控件不拦截当前的Tou
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/10/15/滑动冲突解决-更合理的拦截/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>

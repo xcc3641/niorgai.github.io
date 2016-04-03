@@ -255,117 +255,18 @@
         
           <span itemprop="articleBody">
             
-              <ol>
-<li><p>ListView使用BaseAdapter作适配器的时候，在初始化获取View或者滚动获取View时，都会调用getView方法返回View添加到ListView中，这也是ListView每一项的item。</p>
-<pre><code><span class="keyword">public</span> View getView(<span class="built_in">int</span> <span class="keyword">position</span>, View convertView, ViewGroup parent)
-</code></pre><p> 所传递的三个参数中，</p>
-<p> position表示所添加的view的位置，parent一般为listview。</p>
-<p> 而convertView参数：</p>
-<ol>
-<li><p>如果listView的layout_height设置为wrap_content时，除了position=0时convertView为null，其他时候convertView都不为空。(因为这样会疯狂调用getView方法，不推荐)</p>
-</li>
-<li><p>如果listView的layout_height设置为fill_parent或者指定高度时，当listView没有填充到所需高度时，每一个convertView都为null，后面都不为null。</p>
-<p>因为listView所需的全部view不可能全部加载到内存中，所以不需要显示的view就需要回收，回收的view即为convertView。<br>以listview的高度为fill_parent为例：</p>
-</li>
-<li>当convertView为null时，每个item的View需要通过LayoutInflater实例化返回。</li>
-<li>当convertView不为null时，如果整个listView的item使用的是一样的布局，那我们可以直接使用这个view，只需更新convertView中的数据即可。</li>
-</ol>
-</li>
-<li><p>ViewHolder</p>
-<p> 经常在文章中看到ViewHolder来优化ListView，但其实ViewHolder不是库函数，而是需要自己定义的类。（<strong>注意viewHolder里面item方法重绘：如invalidate，setVisiblity，requestLayout后，会调用adapter的getView方法</strong>）</p>
-<p> 使用ViewHolder的原因是findViewById方法耗时较大，如果控件个数过多，会严重影响性能，而使用ViewHolder主要是为了可以省去这个时间。通过setTag，getTag直接获取View。</p>
-<pre><code><span class="class"><span class="keyword">class</span>  <span class="type">ViewHolder</span>{
-    <span class="type">ImageView</span> img;
-    <span class="type">TextView</span> name;
-}
-
-public <span class="type">View</span> getView<span class="container">(<span class="title">int</span> <span class="title">position</span>, <span class="type">View</span> <span class="title">convertView</span>, <span class="type">ViewGroup</span> <span class="title">parent</span>)</span> {
-    <span class="type">ViewHolder</span> holder = null;
-    if<span class="container">(<span class="title">convertView</span>==<span class="title">null</span>)</span>{
-        convertView = inflater.inflate<span class="container">(<span class="type">R</span>.<span class="title">layout</span>.<span class="title">list_item</span>, <span class="title">parent</span>, <span class="title">false</span>)</span>;
-        holder.img = <span class="container">(<span class="type">ImageView</span>)</span> convertView.findViewById<span class="container">(<span class="type">R</span>.<span class="title">id</span>.<span class="title">img</span>)</span>;
-        holder.name = <span class="container">(<span class="type">TextView</span>)</span> convertView.findViewById<span class="container">(<span class="type">R</span>.<span class="title">id</span>.<span class="title">name</span>)</span>;
-        holder = new <span class="type">ViewHolder</span><span class="container">()</span>;
-        convertView.setTag<span class="container">(<span class="title">holder</span>)</span>;
-    }else{
-        holder = <span class="container">(<span class="type">ViewHolder</span>)</span> convertView.getTag<span class="container">()</span>;
-    }
-    //设置holder
-    holder.img.setImageResource<span class="container">(<span class="type">R</span>.<span class="title">drawable</span>.<span class="title">ic_launcher</span>)</span>;
-    holder.name.setText<span class="container">(<span class="title">list</span>.<span class="title">get</span>(<span class="title">position</span>)</span>.partname);
-    return convertView;
-}</span>
-</code></pre></li>
-<li><p>OnScrollListener</p>
-<p> ListView经常需要展示图片，如果在滑动时对滑动过的每张图片都要加载，会比较占内存。推荐的优化方法是设置OnScrollListener，在滑动完成后再下载当前页面的图片。</p>
-<pre><code>listView.setOnScrollListener(<span class="keyword">new</span> AbsListView.OnScrollListener() {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="typename">void</span> onScrollStateChanged(AbsListView view, <span class="typename">int</span> scrollState) {
-        <span class="keyword">switch</span> (scrollState){
-            <span class="comment">// 用户手指滑动中</span>
-            <span class="keyword">case</span> <span class="string">SCROLL_STATE_TOUCH_SCROLL:</span>
-            <span class="comment">// 用户手指离开，但滑动动画进行中</span>
-            <span class="keyword">case</span> <span class="string">SCROLL_STATE_FLING:</span>
-                <span class="keyword">break</span>;
-            <span class="comment">// 滑动结束</span>
-            <span class="keyword">case</span> <span class="string">SCROLL_STATE_IDLE:</span>
-                <span class="typename">int</span> start = listView.getFirstVisiblePosition();
-                <span class="typename">int</span> end = listView.getLastVisiblePosition();
-                <span class="keyword">if</span>(end &gt;= listView.getCount()){
-                    end = listView.getCount() - <span class="number">1</span>;
-                }
-                <span class="comment">//展示start－end之间的图片</span>
-                <span class="keyword">break</span>;
-        }
-    }
-
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="typename">void</span> onScroll(AbsListView view, <span class="typename">int</span> firstVisibleItem, <span class="typename">int</span> visibleItemCount, <span class="typename">int</span> totalItemCount) {
-
-    }
-});
-</code></pre></li>
-<li><p><code>onClickListener</code>,当ListView的item中有比如button这些子view时，需要对其设置onclickListener，通常的写法是在getView方法中一个个设置，比如</p>
-<pre><code>holder<span class="class">.img</span><span class="class">.setonClickListener</span>(new onClickListenr)...
-</code></pre><p> 但是这种写法每次调用getView时都设置了一个新的onClick事件，效率很低。高效的写法可以直接在ViewHolder中设置一个position，然后viewHolder implements OnClickListenr：</p>
-<pre><code><span class="class"><span class="keyword">class</span>  <span class="title">ViewHolder</span> <span class="keyword">implements</span> <span class="title">OnClickListener</span></span>{
-    <span class="keyword">int</span> position;
-    TextView name;
-
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPosition</span><span class="params">(<span class="keyword">int</span> position)</span></span>{
-        <span class="keyword">this</span>.position = position;
-    }
-
-    <span class="annotation">@Override</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>{
-        <span class="keyword">switch</span> (v.getId()){
-            <span class="comment">//<span class="doctag">XXX</span>X</span>
-        }
-    }
-}
-
-<span class="function"><span class="keyword">public</span> View <span class="title">getView</span><span class="params">(<span class="keyword">int</span> position, View convertView, ViewGroup parent)</span> </span>{
-    ViewHolder holder = <span class="keyword">null</span>;
-    <span class="keyword">if</span> (convertView == <span class="keyword">null</span>) {
-        convertView = inflater.inflate(R.layout.list_item, parent, <span class="keyword">false</span>);
-        holder = <span class="keyword">new</span> ViewHolder();
-        holder.name = (TextView) convertView.findViewById(R.id.name);
-        holder.name.setOnClickListener(holder);
-        convertView.setTag(holder);
-    } <span class="keyword">else</span> {
-        holder = (ViewHolder) convertView.getTag();
-    }
-    <span class="comment">//设置holder</span>
-    holder.name.setText(list.get(position).partname);
-    <span class="comment">//设置position</span>
-    holder.setPosition(position);
-    <span class="keyword">return</span> convertView;
-}
-</code></pre></li>
-</ol>
-
             
+ListView使用BaseAdapter作适配器的时候，在初始化获取View或者滚动获取View时，都会调用getView方法返回View添加到ListView中，这也是ListView每一项的item。
+public View getView(int position, View convertView, ViewGroup parent)
+ 所传递的三个参数中，
+ position表示所添
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2014/12/13/ListView与BaseAdapter优化/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -460,48 +361,21 @@ public <span class="type">View</span> getView<span class="container">(<span clas
         
           <span itemprop="articleBody">
             
-              <ol>
-<li><p>光标设置</p>
-<p> 如果EditText设置的高度比较大，光标默认会显示在居中的坐标，需要设置android:gravity=”top”。<br>如果光标太贴近边框，只需设置android:paddingLeft即可。</p>
-</li>
-<li><p>多行输入</p>
-<p> 在多行输入后光标会水平往右滚动，为了保持换行输入的习惯，还要设置</p>
-<pre><code><span class="label">android:</span>inputType=<span class="string">"textMultiLine"</span>
-<span class="label">android:</span>singleLine=<span class="string">"false"</span>
-<span class="label">android:</span>scrollHorizontally=<span class="string">"false"</span>    
-</code></pre><p> 为了直观显示，可以设置</p>
-<pre><code><span class="label">android:</span>scrollbars=<span class="string">"vertical"</span>
-<span class="label">android:</span>scrollbarStyle=<span class="string">"insideInset"</span>
-</code></pre><p> 但输入框满了后，如果继续输入，EditText会不断增加高度，这样会隐藏上面的控件，最好设置    android:minLines和 android:maxLines确认最大最小行数。</p>
-</li>
-<li><p>软键盘遮挡<br> 可以在AndroidManifext.xml中设置Activity的软键盘：</p>
-<pre><code><span class="label">android:</span>windowSoftInputMode=<span class="string">"adjustPan"</span>
-</code></pre><p> 最后为了软键盘不挡住下方控件，最好还是全部添加一个scrollView。</p>
-<p> 为了防止ScorllView和EditText(TextView)的滚动相冲突：<br> 除了在xml中设置editText：</p>
-<pre><code><span class="label">android:</span>scrollbars=<span class="string">"vertical"</span>
-</code></pre><p> 还需要在代码中设置：</p>
-<pre><code>textViewExtras.setOnTouchListener<span class="params">(new View.OnTouchListener<span class="params">()</span> {
-    @Override
-    public boolean onTouch<span class="params">(View v, MotionEvent event)</span> {
-        textViewExtras.getParent<span class="params">()</span>.requestDisallowInterceptTouchEvent<span class="params">(<span class="literal">true</span>)</span>;
-        return <span class="literal">false</span>;
-    }
-})</span>;
-textViewExtras.setMovementMethod<span class="params">(ScrollingMovementMethod.getInstance<span class="params">()</span>)</span>;
-</code></pre></li>
-<li><ol>
-<li>中划线 : textview.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG );</li>
-<li>底部横线: textview.getPaint().setFlags(Paint. UNDERLINE_TEXT_FLAG )或者\<u>\</u></li>
-</ol>
-</li>
-<li><p>设置<code>android:imeOptions</code>属性时,有可能会失效.只需要再设置<code>android:singleLine</code>为true或者设置<code>android:inputType</code>为text,就可以修复~</p>
-</li>
-<li><p>EditText支持长按复制,TextView也可以通过<code>android:textIsSelectable=&quot;true&quot;</code>来设置.</p>
-</li>
-</ol>
-
             
+光标设置
+ 如果EditText设置的高度比较大，光标默认会显示在居中的坐标，需要设置android:gravity=”top”。如果光标太贴近边框，只需设置android:paddingLeft即可。
+
+多行输入
+ 在多行输入后光标会水平往右滚动，为了保持换行输入的习惯，还要设置
+android:inputType="textMultiLine"
+android:singleLine="fal
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2014/12/13/EditText优化/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -596,36 +470,17 @@ textViewExtras.setMovementMethod<span class="params">(ScrollingMovementMethod.ge
         
           <span itemprop="articleBody">
             
-              <p>Activity ： A,B,C,D。<br>回退栈： s1,s2.</p>
-<p>正常的生命周期：<br>开始－退出 ： onCreate -&gt; onStart -&gt; onResume -&gt; onPause -&gt; onStop -&gt; onDestroy</p>
-<p>启动Activity时，都会将Activity压入当前Application的回退栈中。</p>
-<h4 id="四种启动模式:standard，singleTop，singleTask，singleInstance。">四种启动模式:standard，singleTop，singleTask，singleInstance。</h4><h5 id="standard模式">standard模式</h5><p>launchMode属性的默认值，每次通过startActivity调用该Activity时都会new一个新对象。例如A1-&gt;A2.</p>
-<p>生命周期(点击时)： A1 onPause -&gt; A2 onCreate -&gt; A2 onStart -&gt; A2 onResume -&gt; A1 onSaveInstanceState -&gt; A1 onStop.</p>
-<h5 id="singleTop模式">singleTop模式</h5><ol>
-<li><p>如果当前Activity在回退栈的栈顶，则直接使用该Activity，同时调用该Activity的onNewIntent方法。</p>
-<p> 生命周期(点击时)：A1 onPause -&gt; A1 onNewIntent -&gt; A1 onResume.</p>
-</li>
-<li><p>如果不在栈顶，则与standard模式相同。</p>
-</li>
-</ol>
-<h5 id="singleTask模式">singleTask模式</h5><p>保证同一个窗口类在多个回退栈中只能有一个实例。</p>
-<ol>
-<li><p>调用同一应用程序内的Activity：</p>
-<ol>
-<li>如果Activity在栈顶，则直接使用并调用onNewIntent方法。</li>
-<li><p>如果Activity不在栈顶，则将该Activity之上的Activity全部出栈，并调用onNewIntent方法。</p>
-<p>生命周期(点击时)：A1 onPause -&gt; A1 onNewIntent -&gt; A1 onResume.</p>
-</li>
-</ol>
-</li>
-<li><p>调用不同应用程序内的Activity：<br> 同上，但是此时涉及到其他应用程序的切换，而不是单纯的出入栈操作。</p>
-</li>
-</ol>
-<h5 id="singleInstance模式">singleInstance模式</h5><p>同singleTask模式，但是新建立的任务只能有一个Activity对象。不能在该任务栈中启动其他Activity。</p>
-<p>生命周期(点击时)：A1 onPause -&gt; A1 onNewIntent -&gt; A1 onResume.</p>
-
-            
+            Activity ： A,B,C,D。回退栈： s1,s2.
+正常的生命周期：开始－退出 ： onCreate -&gt; onStart -&gt; onResume -&gt; onPause -&gt; onStop -&gt; onDestroy
+启动Activity时，都会将Activity压入当前Application的回退栈中。
+四种启动模式:standard，singleTop，s
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2014/12/08/Activity中launchMode的值/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -720,74 +575,16 @@ textViewExtras.setMovementMethod<span class="params">(ScrollingMovementMethod.ge
         
           <span itemprop="articleBody">
             
-              <ol>
-<li><h4 id="设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下：">设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下：</h4><pre><code>WallpaperManager wallpaperManager = WallpaperManager.getInstance<span class="params">(context)</span>;
-                       wallpaperManager.suggestDesiredDimensions<span class="params">(bitmap.getWidth<span class="params">()</span>,bitmap.getHeight<span class="params">()</span>)</span>;
-wallpaperManager.setBitmap<span class="params">(bitmap)</span>;
-</code></pre></li>
-</ol>
-<p>注意这里的</p>
-<pre><code><span class="tag">wallpaperManager</span><span class="class">.suggestDesiredDimensions</span>(<span class="tag">bitmap</span><span class="class">.getWidth</span>(),<span class="tag">bitmap</span><span class="class">.getHeight</span>());
-</code></pre><p>是表示设置目前的像素是图片的像素，最好先获取手机屏幕像素大小，然后传递宽度和高度作为参数。</p>
-<pre><code>WallpaperManager wallpaperManager = WallpaperManager.getInstance<span class="params">(DisplayPicture.this)</span>;
-        wallpaperManager.suggestDesiredDimensions<span class="params">(Utils.getDisplayWidth<span class="params">()</span>,Utils.getDisplayHeight<span class="params">()</span>)</span>;
-</code></pre><p>因为某些手机是可以设置壁纸跟桌面一起滑动的，这样所需的壁纸长宽跟手机屏幕的长宽是不一样的，所以需要这样设置。</p>
-<h3 id="但是问题来了，这样加载的bitmap需要裁减，并且加载后非常容易out_of_memory。所以尝试以下的解决方法：">但是问题来了，这样加载的bitmap需要裁减，并且加载后非常容易out of memory。所以尝试以下的解决方法：</h3><ol>
-<li><h4 id="通过系统intent来设置，即传递一个image对象，系统luancher选择相应的程序来处理，这种方法还可以设置锁屏壁纸~~">通过系统intent来设置，即传递一个image对象，系统luancher选择相应的程序来处理，这种方法还可以设置锁屏壁纸~~</h4></li>
-</ol>
-<p>传递的sendUri为图片的Uri，代码如下：</p>
-<pre><code>Intent setAs = new Intent<span class="params">(Intent.ACTION_ATTACH_DATA)</span>;
-        setAs.setDataAndType<span class="params">(sendUri, <span class="string">"image/jpg"</span>)</span>;
-        setAs.putExtra<span class="params">(<span class="string">"mimeType"</span>,<span class="string">"image/jpg"</span>)</span>;
-        startActivity<span class="params">(Intent.createChooser<span class="params">(setAs, <span class="string">"set As"</span>)</span>)</span>;
-</code></pre><p>其中</p>
-<pre><code>setAs.<span class="function"><span class="title">putExtra</span><span class="params">(<span class="string">"mineType"</span>,<span class="string">"image/jpg"</span>)</span></span>
-</code></pre><p>非常重要，通过这句告诉intent的Filter当前intent的data传递的是什么内容，不加这一句会导致某些机型的相册程序崩溃。如vivo。。</p>
-<p>另外关于mineType的其他可以参考<a href="http://www.apkbus.com/blog-56077-44963.html" target="_blank" rel="external">这里</a></p>
-<ol>
-<li><h4 id="将bitmap传入系统裁减intent，裁减至手机屏幕大小，然后在onActivitiyResult中捕捉bitmap并设置壁纸（强行避免OOM）">将bitmap传入系统裁减intent，裁减至手机屏幕大小，然后在onActivitiyResult中捕捉bitmap并设置壁纸（强行避免OOM）</h4><pre><code>Intent intent = new Intent<span class="params">(<span class="string">"com.android.camera.action.CROP"</span>)</span>;
-    intent.setDataAndType<span class="params">(sendUri, <span class="string">"image/*"</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"crop"</span>, <span class="string">"true"</span>)</span>;
-    <span class="comment">//裁剪框的比例，1：1</span>
-    DisplayMetrics dm = new DisplayMetrics<span class="params">()</span>;
-    dm = getResources<span class="params">()</span>.getDisplayMetrics<span class="params">()</span>;
-    <span class="comment">// float scale = (float)dm.heightPixels / (float)dm.widthPixels;</span>
-    intent.putExtra<span class="params">(<span class="string">"aspectX"</span>, dm.widthPixels)</span>;
-    intent.putExtra<span class="params">(<span class="string">"aspectY"</span>, dm.heightPixels)</span>;
-    intent.putExtra<span class="params">(<span class="string">"scale"</span>,<span class="literal">true</span>)</span>;
-    <span class="comment">//裁剪后输出图片的尺寸大小</span>
-    intent.putExtra<span class="params">(<span class="string">"outputX"</span>, dm.widthPixels)</span>;
-    intent.putExtra<span class="params">(<span class="string">"outputY"</span>, dm.heightPixels)</span>;
-    Uri uri = Uri.fromFile<span class="params">(file)</span>;
-    intent.putExtra<span class="params">(MediaStore.EXTRA_OUTPUT,uri)</span>;
-    <span class="comment">//图片格式</span>
-    intent.putExtra<span class="params">(<span class="string">"outputFormat"</span>, <span class="string">"JPEG"</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</span>, <span class="literal">true</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"return-data"</span>,<span class="literal">false</span>)</span>;
-    startActivityForResult<span class="params">(intent, <span class="number">1</span>)</span>;
-</code></pre></li>
-</ol>
-<p>返回这里(file是通过sendUri new出来的)：</p>
-<pre><code>@Override
-protected void onActivityResult<span class="params">(int requestCode, int resultCode, Intent data)</span> {
-    <span class="keyword">if</span><span class="params">(requestCode == <span class="number">1</span>)</span>{
-        Uri uri = Uri.fromFile<span class="params">(file)</span>;
-         Bitmap bitmap = null;
-        <span class="keyword">if</span><span class="params">(uri != null)</span>{
-            try {
-                bitmap= imgLoader.getBitmapByPath<span class="params">(uri.getPath<span class="params">()</span>)</span>;
-                WallpaperManager wallpaperManager = WallpaperManager.getInstance<span class="params">(DisplayPicture.this)</span>;
-                wallpaperManager.suggestDesiredDimensions<span class="params">(bitmap.getWidth<span class="params">()</span>,bitmap.getHeight<span class="params">()</span>)</span>;
-                wallpaperManager.setBitmap<span class="params">(bitmap)</span>;
-            }catch <span class="params">(Exception e)</span>{
-                e.printStackTrace<span class="params">()</span>;
-            }
-        }
-    super.onActivityResult<span class="params">(requestCode, resultCode, data)</span>;
-}
-</code></pre>
             
+设置壁纸最常规的想法就是通过默认的WallpaperManager,方法如下：WallpaperManager wallpaperManager = WallpaperManager.getInstance(context);
+                       wallpaperManager.suggestDesiredDimensions(bitmap.getWidth(),bi
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2014/12/06/Android壁纸设置/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -882,27 +679,17 @@ protected void onActivityResult<span class="params">(int requestCode, int result
         
           <span itemprop="articleBody">
             
-              <p>先插一句比较小白的话。。<br>点动成线，其实我们看到的屏幕是一个个像素点显示的，密集的点显示成所看到的图像。</p>
-<h3 id="常见的单位：in、px、dpi(ppi、density)、dp(dip)、sp">常见的单位：in、px、dpi(ppi、density)、dp(dip)、sp</h3><p>in：inch，英寸，每英寸大约是2.54厘米，一般手机所说的屏幕多少寸都是指对角线的长度。</p>
-<p>px：Pixel，像素，最小单位，指每一个像素点。通常所说的分辨率1920*1080就是指各个方向上的像素点的数量。</p>
-<p>dpi(ppi、density)：<br>dpi为Dots Per Inch的缩写，表示每英寸点的个数，一般用于打印分辨率。<br>ppi为Pixels Per Inch的缩写，表示每英寸像素点的个数，一般用于显示分辨率。<br>density，密度，表示每Inch点的个数。<br>计算方法为px/in即可。</p>
-<p>安卓的资源列表文件夹与其对应：</p>
-<pre><code>drawable-ldpi         <span class="list">(<span class="keyword">dpi=120</span> , density = <span class="number">0.75</span>)</span>
-drawable-mdpi         <span class="list">(<span class="keyword">dpi=160</span> , density = <span class="number">1</span>,这也是默认的layout文件夹)</span>
-drawable-hdpi         <span class="list">(<span class="keyword">dpi=240</span> , density = <span class="number">1.5</span>)</span>
-drawable-xhdpi         <span class="list">(<span class="keyword">dpi=320</span> , density = <span class="number">2</span>)</span>
-drawable-xxhdpi     <span class="list">(<span class="keyword">dpi=480</span> , density = <span class="number">3</span>)</span>
-</code></pre><p>dp(dip)：设备独立像素，Device Independent Pixels的缩写，Android特有的单位。不会因为像素而导致显示效果不同。</p>
-<p>sp：主要用于调整字体大小,转换方法与dp一样,但是会随着系统设置而变化字体大小.</p>
-<p><strong>默认的icon大小为48dp*48dp</strong></p>
-<p><strong>默认的通知栏icon大小为24dp*24dp</strong></p>
-<p>适配时建议根据设计图计算密度，如iphone5的设备分辨率为640X1164, 屏幕尺寸为4英寸，那么由勾股定理对角线平方为640*640+1164*1164=1764496,开根号得出对角线分辨率为1328，1328/4=332,这就是iphone5的”dpi”,所以可以把iphone5的对应设计图放在xhdpi文件夹中。</p>
-<p>加载资源时，Android会先根据屏幕的dpi在dpi相同的资源文件夹中找资源，然后从最大的资源文件夹开始找。<br>所以推荐在dpi最高的文件夹放置一套资源文件即可，对资源的长高设定wrap_content，系统会自动缩放保持显示效果。如100px*100px的图放在xhdpi中，那么mdpi的设备显示时,100<em>1/2 = 50px,那么该图就会以50px\</em>50px的大小显示。 </p>
-<p>LayoutParams实例化时传的参数为px，需要将布局的dp转为px才能使效果一样。<br>LayoutParams初始化时需要初始化为父布局的类型<br>dp转px的方法为：</p>
-<pre><code><span class="built_in">int</span> dip = (<span class="built_in">int</span>)<span class="type">TypedValue</span>.applyDimension(<span class="type">TypedValue</span>.<span class="type">COMPLEX_UNIT_DIP</span>,<span class="number">60</span>,getResources<span class="literal">()</span>.getDisplayMetrics<span class="literal">()</span>);
-</code></pre>
-            
+            先插一句比较小白的话。。点动成线，其实我们看到的屏幕是一个个像素点显示的，密集的点显示成所看到的图像。
+常见的单位：in、px、dpi(ppi、density)、dp(dip)、spin：inch，英寸，每英寸大约是2.54厘米，一般手机所说的屏幕多少寸都是指对角线的长度。
+px：Pixel，像素，最小单位，指每一个像素点。通常所说的分辨率1920*1080就是指各个方向上的像素点的数量。
+dpi
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2014/12/06/手机屏幕单位/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>

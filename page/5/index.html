@@ -255,50 +255,20 @@
         
           <span itemprop="articleBody">
             
-              <p>以下内容提取于<a href="http://blog.csdn.net/gemmem/article/details/8920039" target="_blank" rel="external">Android进程的内存管理分析</a>及<a href="http://blog.csdn.net/gemmem/article/details/13017999" target="_blank" rel="external">Android内存泄漏分析及调试</a>.</p>
-<p>Android中的内存分为：</p>
-<ol>
-<li>native进程：采用C/C++实现，不包含dalvik实例的进程。</li>
-<li>java进程：Android中运行于dalvik虚拟机之上的进程。每一个java进程都是存在于一个native进程中。</li>
-</ol>
-<p>内存空间是一定的，所以在对象无用时就要回收一些对象来留出空间。当Java Garbage Collection开始运行时，它会从他了解还存活的对象作为内存遍历的根节点(GC Root)，遍历heap内存空间，没有直接或间接引用到GC Root的对象便会被回收。</p>
-<p>而Android内存泄漏便是指进程中的对象，虽然没有使用价值了，但它仍然有直接或间接的引用到GC Root，那么该对象便不会被GC回收，导致内存持续被占用，使可用内存变小。</p>
-<h2 id="常见的内存泄漏">常见的内存泄漏</h2><ol>
-<li>查询数据库没有关闭Cursor。</li>
-<li>使用BaseAdapter作为适配器时没有复用convertView。可以参考<a href="http://niorgai.github.io/2014/12/13/ListView%E4%B8%8EBaseAdapter%E4%BC%98%E5%8C%96/">ListView与BaseAdapter优化</a>.</li>
-<li>bitmap没有回收，可以参考<a href="http://niorgai.github.io/2015/02/27/Bitmap%E7%9B%B8%E5%85%B3-%E7%AE%A1%E7%90%86Bitmap%E5%86%85%E5%AD%98/">Bitmap相关:管理Bitmap内存</a>.</li>
-<li>注册对象后没有反注册，比如Broadcast Receiver等。</li>
-<li>handler问题，如果handler是非静态的，会导致Activity或者Service不被回收，所以应当注册为静态内部类，同时在onDestroy时停止线程:<code>mThread.getLooper().quit();</code></li>
-<li>Activity被静态引用，特别是缓存bitmap时，解决方法可以考虑使用Application的context代替Activity的context。</li>
-<li><p>View在callback中被引用,可能回调还没有结束,但是view处于引用状态,无法回收</p>
-<pre><code><span class="tag">public</span> <span class="tag">void</span> <span class="tag">leak</span>(final View view) {
-    <span class="tag">api</span><span class="class">.callback</span>(new <span class="function">callBack</span>() {
-        <span class="tag">onCallBack</span>() {
-            ...
-        }
-    )
-}
-</code></pre></li>
-<li>WebView的泄露问题:在魅族上面发现webView打开再关闭就会内存泄露..目前使用的解决方法是在webview外面嵌套一层layout作为container.在Activity的<code>onDestroy</code>中调用<code>container.removeAllViews()</code>方法.</li>
-<li>Dialog导致Window泄露,如果需要在dialog依附的Activity销毁前没有调用dialog.dismiss().会导致Activity泄露</li>
-</ol>
-<h2 id="检测内存泄露的方法">检测内存泄露的方法</h2><ol>
-<li><p>Android Studio 自带的 Memory Monitor,手动触发GC可以看得比较直观,但是dump出来的文件需要处理才能用MAT打开,利用 <code>sdk/platforms-tool/</code> 下的 hprof-conv 文件,命令为:</p>
-<pre><code>/hprof-conv <span class="built_in">source</span> output
-</code></pre></li>
-<li><p>MAT<a href="http://androidperformance.com/2015/04/11/AndroidMemory-Usage-Of-MAT.html" target="_blank" rel="external">这篇文章</a>分析得比较透彻</p>
-</li>
-<li><a href="https://github.com/square/leakcanary" target="_blank" rel="external">Leakcanary</a>,检测一些容易忽略的内存泄露很好用.</li>
-<li><code>adb shell dumpsys meminfo [包名]</code>可以看到内存使用情况.</li>
-</ol>
-<h2 id="一些值得注意的地方">一些值得注意的地方</h2><ol>
-<li><p>理论上来说,当你退出一个 Activity 后,强制GC一次,内存值应该回到跟进入 Activity 差不多的状态,否则就有可能是内存泄露了.但是有可能是图片加载库中对新 Activity 中加载的图片做了内存缓存,然而这部分内存 GC 可能暂时不会回收.</p>
-<p> 比如在应用中我使用了 Fresco 去加载本地图库中的图片, Fresco 对这些图片做了内存缓存,然而这部分的图片其实是不需要在内存中缓存的.</p>
-</li>
-</ol>
+            以下内容提取于Android进程的内存管理分析及Android内存泄漏分析及调试.
+Android中的内存分为：
 
-            
+native进程：采用C/C++实现，不包含dalvik实例的进程。
+java进程：Android中运行于dalvik虚拟机之上的进程。每一个java进程都是存在于一个native进程中。
+
+内存空间是一定的，所以在对象无用时就要回收一些对象来留出空间。当Java Garbage C
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/03/03/Android内存泄漏/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -393,66 +363,18 @@
         
           <span itemprop="articleBody">
             
-              <p>Activity是很熟悉的东西，但是它的生命周期一直掌握的不够完全，所以就其方法和功能介绍一下：</p>
-<p>对于Activity来说,本质上就是以下四种状态:</p>
-<ol>
-<li>Activity处于前台,此时它保持活跃的状态.</li>
-<li>Activity失去焦点但任然可见(即被透明的或不是全屏的Activity挡住焦点),此时它会暂停(pause),暂停了的Activity任然是alive,它会维护住它的全部变量和状态,但可以在系统内存不足时被kill掉.</li>
-<li>Activity完全被其他Activity挡住,那么他会停止(stop),它任然会维护住它的全部变量和状态,但它会更容易在系统内存不足时被kill掉</li>
-<li>如果Activity被暂停或停止了,系统可以随时kill掉这个Activity或者直接kill整个进程.当它重新出现时,所有的状态必须重新创建.</li>
-</ol>
-<p>同时看一下官方给的一个说明图：<br><img src="http://7sbqys.com1.z0.glb.clouddn.com/activity_lifecycle.png" alt=""></p>
-<p>这个图是给了一些基本的方法，下面再逐个说一下。</p>
-<hr>
-<p>启动部分：</p>
-<ol>
-<li><p><strong>onCreate(Bundle savedInstanceState)</strong></p>
-<p> 在这里进行常见的初始化操作，比如绑定UI，初始化控件等。savedInstanceState参数存储了一些在<code>onSaveInstanceState(Bundle)</code>存储的数据，如果没有设置则为null。</p>
-</li>
-<li><p><strong>onRestart()</strong></p>
-<p> 用户重新导航至该Activity时调用。</p>
-</li>
-<li><p><strong>onStart()</strong></p>
-<p> 在<code>onCreate(Bundle savedInstanceState)</code>或<code>onRestart()</code>后调用。</p>
-</li>
-<li><p><strong>onRestoreInstanceState (Bundle savedInstanceState)</strong></p>
-<p> 在<code>onStart()</code>和<code>onPostCreate (Bundle savedInstanceState)</code>之间调用，用于恢复在<code>onSaveInstanceState(Bundle)</code>中存储的数据。</p>
-</li>
-<li><p><strong>onPostCreate (Bundle savedInstanceState)</strong></p>
-<p> 在Activity启动完成后调用，但通常不声明这个函数，它用于系统类的初始化。</p>
-</li>
-<li><p><strong>onResume ()</strong></p>
-<p> 准备与用户进行交互，但这不是最佳的方式去判断当前界面是否对用户可用，但像键盘等系统控件弹出时也会影响焦点，所以最佳方式是使用<a href="http://developer.android.com/intl/zh-cn/reference/android/app/Activity.html#onWindowFocusChanged(boolean" target="_blank" rel="external"><code>onWindowFocusChanged (boolean hasFocus)</code></a>)来判断当前界面是否获得了焦点。</p>
-</li>
-<li><p><strong>onPostResume ()</strong></p>
-<p> 当Activity resume完成后调用，但通常不声明这个函数，它用于系统类的初始化。</p>
-</li>
-</ol>
-<hr>
-<p>结束部分：</p>
-<ol>
-<li><p><strong>onPause ()</strong></p>
-<p> 当Activity失去焦点但不被kill的时候，onPause()会被调用。只有onPause结束，新Activity的onCreate方法才会开始。</p>
-</li>
-<li><p><strong>onSaveInstanceState (Bundle outState)</strong></p>
-<p> 本意是用于存储Activity数据，因为该方法不在Activity的生命周期内,所以谷歌不建议使用该方法存储数据,对用户的持久化数据处理应该放在onPause中.该数据可以通过<code>onCreate(Bundle)</code>或<code>onRestoreInstanceState (Bundle savedInstanceState)</code>恢复，该方法会在<code>onStop()</code>之前调用，但不一定会在<code>onPause</code>方法前调用。</p>
-</li>
-<li><p><strong>onStop ()</strong></p>
-<p> 当Activity对用户已经不可见时调用，但当系统内存较低时，Activity可能在<code>onPause()</code>后没有足够内存继续运行而导致<code>onStop()</code>不被调用。</p>
-</li>
-<li><p><strong>onDestroy ()</strong></p>
-<p> 在Activity销毁前执行最后工作，主要执行释放内存相关操作，不能在该方法内保存数据。</p>
-</li>
-</ol>
-<hr>
-<ol>
-<li>整个生命周期从onCreate到onDestroy,所以对于一些全局的变量,需要在onCreate初始化,在onDestroy中销毁,例如handler.</li>
-<li>可见的生命周期是从onStart到onStop,在这两个方法期间可以维护一些需要改变Activity展示的数据,比如BroadcastReceiver的注册和销毁.</li>
-<li>前台的生命周期是onResume到onPause,此时用户可以与Activity交互.</li>
-</ol>
+            Activity是很熟悉的东西，但是它的生命周期一直掌握的不够完全，所以就其方法和功能介绍一下：
+对于Activity来说,本质上就是以下四种状态:
 
-            
+Activity处于前台,此时它保持活跃的状态.
+Activity失去焦点但任然可见(即被透明的或不是全屏的Activity挡住焦点),此时它会暂停(pause),暂停了的Activity任然是alive,它会维护住它的全部变量和状态,但可以在系统
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/03/02/Activity生命周期/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -547,180 +469,22 @@
         
           <span itemprop="articleBody">
             
-              <p>应用经常会涉及一些耗时操作，尽管经常会开新线程去处理，但总是会耗时。所以就希望有一个loading界面,<br>想来想去觉得使用自定义的Dialog比较好。</p>
-<p>思路：</p>
-<ol>
-<li>使用Dialog，自定义其布局。</li>
-<li>布局中使用ProgressBar实现旋转的Loading。</li>
-<li>通过setText方法可以设置文字</li>
-</ol>
-<p><strong>LoadingDialog类</strong></p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoadingDialog</span> <span class="keyword">extends</span> <span class="title">Dialog</span></span>{
-    <span class="keyword">private</span> LinearLayout parentLayout;
-    <span class="keyword">private</span> TextView loadingText;
+            应用经常会涉及一些耗时操作，尽管经常会开新线程去处理，但总是会耗时。所以就希望有一个loading界面,想来想去觉得使用自定义的Dialog比较好。
+思路：
 
-    <span class="function"><span class="keyword">public</span> <span class="title">LoadingDialog</span><span class="params">(Context context)</span> </span>{
-        <span class="keyword">super</span>(context,R.style.loading_dialog);
-        init(context);
-    }
+使用Dialog，自定义其布局。
+布局中使用ProgressBar实现旋转的Loading。
+通过setText方法可以设置文字
 
-    <span class="function"><span class="keyword">public</span> <span class="title">LoadingDialog</span><span class="params">(Context context, <span class="keyword">int</span> theme)</span> </span>{
-        <span class="keyword">super</span>(context, R.style.loading_dialog);
-        init(context);
-    }
-
-    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(Context context)</span></span>{
-        <span class="keyword">this</span>.setContentView(LayoutInflater.from(context).inflate(R.layout.loading_dialog, <span class="keyword">null</span>));
-        parentLayout = (LinearLayout) findViewById(R.id.dialog_view);
-        loadingText = (TextView) findViewById(R.id.text);
-        <span class="keyword">this</span>.setCancelable(<span class="keyword">true</span>);
-    }
-
-    <span class="comment">//设置名字和外层背景色</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setText</span><span class="params">(String text, <span class="keyword">int</span> color)</span></span>{
-        <span class="keyword">if</span>(!TextUtils.isEmpty(text)) {
-            parentLayout.setBackgroundColor(color);
-            loadingText.setText(text);
-            loadingText.setVisibility(View.VISIBLE);
-        }<span class="keyword">else</span> {
-            loadingText.setVisibility(View.GONE);
-        }
-    }
-}
-</code></pre><p><strong>自定义样式R.style.loading_dialog(bg颜色值为#00000000全透明)</strong></p>
-<pre><code>&lt;style <span class="property">name</span>=<span class="string">"loading_dialog"</span> parent=<span class="string">"android:style/Theme.Dialog"</span>&gt;
-    &lt;<span class="property">item</span> <span class="property">name</span>=<span class="string">"android:windowFrame"</span>&gt;@null&lt;/<span class="property">item</span>&gt;
-    &lt;<span class="property">item</span> <span class="property">name</span>=<span class="string">"android:windowNoTitle"</span>&gt;<span class="constant">true</span>&lt;/<span class="property">item</span>&gt;
-    &lt;<span class="property">item</span> <span class="property">name</span>=<span class="string">"android:windowBackground"</span>&gt;@color/bg&lt;/<span class="property">item</span>&gt;
-    &lt;<span class="property">item</span> <span class="property">name</span>=<span class="string">"android:windowIsFloating"</span>&gt;<span class="constant">true</span>&lt;/<span class="property">item</span>&gt;
-    &lt;<span class="property">item</span> <span class="property">name</span>=<span class="string">"android:windowContentOverlay"</span>&gt;@null&lt;/<span class="property">item</span>&gt;
-&lt;/style&gt;
-</code></pre><p><strong>自定义布局loading_dialog.xml</strong></p>
-<pre><code>&lt;?xml <span class="variable">version=</span><span class="string">"1.0"</span> <span class="variable">encoding=</span><span class="string">"utf-8"</span>?&gt;
-&lt;LinearLayout xmlns:<span class="variable">android=</span><span class="string">"http://schemas.android.com/apk/res/android"</span>
-    android:<span class="variable">id=</span><span class="string">"@+id/dialog_view"</span>
-    android:<span class="variable">orientation=</span><span class="string">"vertical"</span>
-    android:<span class="variable">paddingTop=</span><span class="string">"20dp"</span>
-    android:<span class="variable">paddingBottom=</span><span class="string">"20dp"</span>
-    android:<span class="variable">paddingLeft=</span><span class="string">"10dp"</span>
-    android:<span class="variable">paddingRight=</span><span class="string">"10dp"</span>
-    android:<span class="variable">layout_width=</span><span class="string">"wrap_content"</span>
-    android:<span class="variable">layout_height=</span><span class="string">"wrap_content"</span>&gt;
-    &lt;ProgressBar
-        android:<span class="variable">layout_gravity=</span><span class="string">"center"</span>
-        android:<span class="variable">indeterminateDrawable=</span><span class="string">"@drawable/loading_drawable"</span>
-        android:<span class="variable">layout_width=</span><span class="string">"20dp"</span>
-        android:<span class="variable">layout_height=</span><span class="string">"20dp"</span> /&gt;
-    &lt;TextView
-        android:<span class="variable">id=</span><span class="string">"@+id/text"</span>
-        android:<span class="variable">layout_gravity=</span><span class="string">"center"</span>
-        android:<span class="variable">layout_marginTop=</span><span class="string">"10dp"</span>
-        android:<span class="variable">layout_width=</span><span class="string">"wrap_content"</span>
-        android:<span class="variable">layout_height=</span><span class="string">"wrap_content"</span>/&gt;
-&lt;/LinearLayout&gt;
-</code></pre><p><strong>ProgressBar的drawable文件loading_drawable.xml</strong></p>
-<pre><code>&lt;?xml <span class="variable">version=</span><span class="string">"1.0"</span> <span class="variable">encoding=</span><span class="string">"UTF-8"</span>?&gt;
-&lt;animation-list xmlns:<span class="variable">android=</span><span class="string">"http://schemas.android.com/apk/res/android"</span>
-    android:<span class="variable">oneshot=</span><span class="string">"false"</span> &gt;
-
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading1"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading2"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading3"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading4"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading5"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading6"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading7"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading8"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading9"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading10"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading11"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-    &lt;item android:<span class="variable">duration=</span><span class="string">"150"</span>&gt;
-        &lt;clip
-            android:<span class="variable">clipOrientation=</span><span class="string">"horizontal"</span>
-            android:<span class="variable">drawable=</span><span class="string">"@drawable/loading12"</span>
-            android:<span class="variable">gravity=</span><span class="string">"left"</span> /&gt;
-    &lt;/item&gt;
-
-&lt;/animation-list&gt;
-</code></pre><p>其实这些资源图片就是Loading菊花图按帧分割，效果还是不错的。</p>
-<p>下载地址：</p>
-<ol>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading1.png" target="_blank" rel="external">loading1</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading2.png" target="_blank" rel="external">loading2</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading3.png" target="_blank" rel="external">loading3</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading4.png" target="_blank" rel="external">loading4</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading5.png" target="_blank" rel="external">loading5</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading6.png" target="_blank" rel="external">loading6</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading7.png" target="_blank" rel="external">loading7</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading8.png" target="_blank" rel="external">loading8</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading9.png" target="_blank" rel="external">loading9</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading10.png" target="_blank" rel="external">loading10</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading11.png" target="_blank" rel="external">loading11</a></li>
-<li><a href="http://7sbqys.com1.z0.glb.clouddn.com/loading12.png" target="_blank" rel="external">loading12</a></li>
-</ol>
-<hr>
-<p>使用方式因为其实这只是一个Dialog，所以使用方式一样：</p>
-<pre><code>LoadingDialog dialog = new LoadingDialog(this)<span class="comment">;</span>
-dialog.show()<span class="comment">;</span>
-dialog.dismiss()<span class="comment">;</span>
-</code></pre>
-            
+LoadingDialog类
+public class LoadingDialog extends Dial
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/03/02/Loading界面简单实现/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -815,34 +579,16 @@ dialog.dismiss()<span class="comment">;</span>
         
           <span itemprop="articleBody">
             
-              <p>Android经常会需要拍照、裁剪及图库中选择图片，其实都是通过intent调用系统相机或者系统图册，然后在onActivityResult中捕捉返回即可。</p>
-<h5 id="正常拍照选择图片的代码：">正常拍照选择图片的代码：</h5><pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(MediaStore.ACTION_IMAGE_CAPTURE);
-</code></pre><p>在onActivityResult中通过返回的<code>intent.getExtras().get(&quot;data&quot;)</code>便可以获取图片，但Android默认可用的应用内存大约为16M.所以Android为了不超出内存限制，在拍照返回时通过intent返回的bitmap会被压缩，这样导致一直都是获取的小图。所以在拍照时如果想返回大图需要通过Uri返回。</p>
-<h5 id="拍照选择大图代码(tampUri为路径，开发者文档提供的代码)：">拍照选择大图代码(tampUri为路径，开发者文档提供的代码)：</h5><pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(MediaStore.ACTION_IMAGE_CAPTURE);
-// 指定调用相机拍照后照片的储存路径
-<span class="type">intent</span>.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
-</code></pre><p>在onActivityResult中通过tempUri进行下一步操作。</p>
-<p>说明：</p>
-<p>拍照获取的图片推荐存放在 <code>Activity.this.getExternalCacheDir()</code>返回的<code>/storage/sdcard0/Android/data/&lt;package name&gt;/cache</code>路径，通过<code>new File(path,fileName)</code>新建一个file，然后通过Uri.fromFile(file)即可获取正确的uri，记得fileName需要带后缀。</p>
-<p><strong>为了防止Uri路径不对导致不能保存，使用前必须确保文件路径无误，不然会导致“无法保存剪裁的图片”的错误。或者无提示但不能点击确定保存图片。正确获取的Uri最终以file://开头。</strong>。</p>
-<p><strong>uri获取bitmap对象的方法可以参考<a href="http://niorgai.github.io/2015/02/22/Bitmap%E7%9B%B8%E5%85%B3-%E8%AF%BB%E5%8F%96%E5%A4%A7%E5%9B%BE%E7%89%87/">Bitmap相关:读取大图片</a>。</strong></p>
-<p>代码示例：</p>
-<pre><code><span class="built_in">String</span> fileName ＝ <span class="string">"temp.jpg"</span>;
-File tmpFile = <span class="keyword">new</span> File(<span class="keyword">this</span>.getExternalCacheDir(),fileName);
-<span class="built_in">Uri</span> tmpUri = <span class="built_in">Uri</span>.fromFile(tmpFile);
-</code></pre><ol>
-<li>设置通过Uri返回后，onActivityResult中返回的intent为null。</li>
-<li><p>开发者文档中只说了简单调用的方法，其实可以添加一些其他属性。</p>
-<pre><code>intent.putExtra<span class="params">(<span class="string">"return-data"</span>,<span class="literal">false</span>)</span>;
-intent.putExtra<span class="params">(<span class="string">"outputFormat"</span>,Bitmap.CompressFormat.JPEG.toString<span class="params">()</span>)</span>;
-intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</span>, <span class="literal">true</span>)</span>;
-</code></pre></li>
-<li>不能添加<code>intent.setType(&quot;image/*&quot;);</code>，会因为找不到intent导致ActivityNotFoundException。</li>
-<li><code>intent.putExtra(&quot;android.intent.extras.CAMERA_FACING&quot;,1);</code>，系统默认开启的是后置摄像头，如果希望选择前置摄像头可以加这句。</li>
-</ol>
-
-            
+            Android经常会需要拍照、裁剪及图库中选择图片，其实都是通过intent调用系统相机或者系统图册，然后在onActivityResult中捕捉返回即可。
+正常拍照选择图片的代码：Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+在onActivityResult中通过返回的intent.getExtras().get(&q
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/01/31/Android拍照选取图片/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -937,51 +683,17 @@ intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</spa
         
           <span itemprop="articleBody">
             
-              <p>目前从图库选择图片可以有两种方法：</p>
-<p><strong>以下结果属于vivo Xplay,Android Version 4.4.4测试结果，如果有其他机型测试我会补充</strong><br>1.<strong>Intent.ACTION_PICK：</strong></p>
-<pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(<span class="type">Intent</span>.ACTION_PICK,
-            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-startActivityForResult(<span class="type">intent</span>, PHOTO_PICK);
-</code></pre><p> onActivityResult返回的Intent中：</p>
-<ul>
-<li><code>intent.getData()</code>会返回所选图片的Uri，格式为<code>content://media/external/images/media/919</code></li>
-<li><code>intent.getExtras()</code>返回的bundle中包含一个boolean变量，通过<code>data.getExtras().get(&quot;isFinishGallery&quot;)</code>获取,应该是指是否获取完毕，查询文档没有官方结果。</li>
-<li><code>intent.putExtra(&quot;return-data&quot;,false)</code>对返回值没有影响。</li>
-</ul>
-<p>2.<strong>Intent.ACTION_GET_CONTENT</strong></p>
-<pre><code><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(<span class="type">Intent</span>.ACTION_GET_CONTENT);
-<span class="type">intent</span>.setType(<span class="string">"image/*"</span>);//不加会导致crash
-</code></pre><p>  onActivityResult返回的Intent中：</p>
-<ul>
-<li><code>intent.getData()</code>返回所选图片的Uri：</li>
-</ul>
-<hr>
-<p>关于返回Uri格式的说明：</p>
-<ul>
-<li><p>系统版本大于等于19(KitKat):<code>content://com.android.providers.media.documents/document/image%3A919</code></p>
-</li>
-<li><p>系统版本低于19:<code>content://media/external/images/media/919</code></p>
-</li>
-</ul>
-<p>可以通过以下函数获取真实路径：</p>
-<pre><code><span class="keyword">private</span> <span class="keyword">String</span> getRealPathFromURI(Context context,Uri contentUri) {
-    <span class="keyword">String</span>[] proj = { MediaStore.Images.Media.DATA };
-    Cursor <span class="built_in">cursor</span> = context.getContentResolver().query(contentUri, proj, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);
-    <span class="keyword">if</span> (<span class="built_in">cursor</span> != <span class="keyword">null</span>) {
-        <span class="built_in">cursor</span>.moveToFirst();
-        <span class="built_in">int</span> columnIndex = <span class="built_in">cursor</span>.getColumnIndex(proj[<span class="number">0</span>]);
-        <span class="keyword">String</span> path = <span class="built_in">cursor</span>.getString(columnIndex);
-        <span class="built_in">cursor</span>.close();
-        <span class="keyword">return</span> path;
-    }
-    <span class="keyword">return</span> contentUri.getPath();
-   }
-</code></pre><ol>
-<li>Uri获取bitmap的方法可以参考<a href="http://niorgai.github.io/2015/02/22/Bitmap%E7%9B%B8%E5%85%B3-%E8%AF%BB%E5%8F%96%E5%A4%A7%E5%9B%BE%E7%89%87/">Bitmap相关:读取大图片</a>.</li>
-</ol>
-
-            
+            目前从图库选择图片可以有两种方法：
+以下结果属于vivo Xplay,Android Version 4.4.4测试结果，如果有其他机型测试我会补充1.Intent.ACTION_PICK：
+Intent intent = new Intent(Intent.ACTION_PICK,
+            android.provider.MediaStore.Images.Media.EXTE
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/01/31/Android相册选取图片/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>

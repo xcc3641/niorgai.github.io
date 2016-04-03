@@ -255,87 +255,16 @@
         
           <span itemprop="articleBody">
             
-              <p>默认情况下，Activity之间只能传递基本数据类型，如果需要传递某个对象，则需要将其序列化，Android中序列化便是实现Serializable或则Parcelable接口。</p>
-<p>序列化:永久性保存对象,即保存对象的字节序列到本地文件中。</p>
-<p>Serializable的作用是<strong>将对象的属性保存到本地文件、数据库、网络流以方便传输</strong>。Parcelable的设计初衷是因为Serializable的效率太慢，为了**在程序内不同组件间及不同Android程序间(AIDL)高效传输而设计。</p>
-<p>使用的选择：</p>
-<ol>
-<li>在内存间传递数据时，推荐使用Parcelable，因为其内存开销小，性能高。</li>
-<li>在需要保存时，推荐使用Serializable，因为Parcelable不适合做持久化存储。</li>
-<li>Serializable使用IO读写存储在硬盘上，而Parcelable是直接在内存中读写，很明显内存的读写速度通常大于IO读写，所以在Android中通常优先选择Parcelable。</li>
-</ol>
-<p>接下来利用一个例子说明如何实现这些接口。首先是初始对象：</p>
-<pre><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Test</span> {
-    <span class="keyword">int</span> num;
-    String <span class="keyword">string</span>;
-}
-</code></pre><hr>
-<p>如果实现Serializable接口，只需要继承java.io.Serializable，并提供一个serialVersionUID即可。</p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>{
-
-    <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">12345678</span>l;
-    <span class="keyword">int</span> num;
-    String string;
-}
-</code></pre><hr>
-<p>如果实现Parcelable,需要继承android.os.Parcelable，重写describeContents方法和writeToParcel方法，并定义一个Parcelable.Creator类型的静态变量，在该静态变量中实现readFromParcel方法(自己定义的名字)。</p>
-<p><strong>注意：</strong></p>
-<ol>
-<li>writeToParcel方法中将变量<strong>按顺序</strong>写入Parcel</li>
-<li><p>Parcelable.Creator的createFromParcel方法，从Parcel读入变量时<strong>必须按照writeToParcel方法中的顺序</strong>读入。</p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">implements</span> <span class="title">Parcelable</span></span>{
-    <span class="keyword">int</span> num;
-    String string;
-
-    <span class="annotation">@Override</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">describeContents</span><span class="params">()</span> </span>{
-            <span class="keyword">return</span> <span class="number">0</span>;
-        }
-
-        <span class="annotation">@Override</span>
-        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeToParcel</span><span class="params">(Parcel dest, <span class="keyword">int</span> flags)</span> </span>{
-            dest.writeInt(num);
-             dest.writeString(string);
-        }
-
-    <span class="keyword">public</span> <span class="keyword">static</span> Creator&lt;Test&gt; creator = <span class="keyword">new</span> Creator&lt;Test&gt;() {
-            <span class="annotation">@Override</span>
-        <span class="function"><span class="keyword">public</span> Test <span class="title">createFromParcel</span><span class="params">(Parcel source)</span> </span>{
-            <span class="keyword">return</span> <span class="keyword">new</span> Test(source);
-        }
-
-        <span class="annotation">@Override</span>
-        <span class="keyword">public</span> Test[] newArray(<span class="keyword">int</span> size) {
-            <span class="keyword">return</span> <span class="keyword">new</span> Test[size];
-        }
-    };
-
-    Test(){}
-
-    Test(Parcel source){
-                readFromParcel(source);
-        }
-
-    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readFromParcel</span><span class="params">(Parcel source)</span></span>{
-        <span class="comment">//读取对象数据，必须按照writeToParcel方法中</span>
-        <span class="comment">//写入数据的顺序依次读取数据</span>
-        num = source.readInt();
-        string = source.readString();
-    }
-
-}
-</code></pre></li>
-<li><p>如果需要序列化自定义的数据，该数据也需要实现Parcelable接口。</p>
-<p> 例如希望通过序列化类TestA，类TestA中有一个List存放类TestB。</p>
-<pre><code><span class="class"><span class="keyword">class</span> <span class="title">TestA</span></span>{
-    <span class="keyword">List</span>&lt;TestB&gt; <span class="keyword">list</span>;
-}
-</code></pre><p> 那么TestA与TestB都需要实现Parcelable接口。且类TestA通过<code>parcel.writeTypedList</code>写入list，通过<code>parcel.readTypedList(list,TestB.creator)</code>读取list。</p>
-</li>
-</ol>
-
-            
+            默认情况下，Activity之间只能传递基本数据类型，如果需要传递某个对象，则需要将其序列化，Android中序列化便是实现Serializable或则Parcelable接口。
+序列化:永久性保存对象,即保存对象的字节序列到本地文件中。
+Serializable的作用是将对象的属性保存到本地文件、数据库、网络流以方便传输。Parcelable的设计初衷是因为Serializable的效率太慢，为
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/01/12/Android序列化对象/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -430,65 +359,20 @@
         
           <span itemprop="articleBody">
             
-              <p>在<a href="http://niorgai.github.io/2014/12/23/Mac%E4%B8%8B%E5%8F%8D%E7%BC%96%E8%AF%91Android-APK/">这篇文章</a>中说了反编译Android APK的方法，当然作为开发者很多时候不希望某些涉及机密的代码被别人看到，于是需要在打包APK的时候做一些代码混淆。</p>
-<p>混淆技巧(感谢<a href="http://www.cnblogs.com/qianxudetianxia/p/4948499.html" target="_blank" rel="external">Android打包的那些事</a>):</p>
-<ol>
-<li><p>默认的混淆:</p>
-<p> sdk目录下的android-sdk/tools/proguard/proguard-android.txt文件包含了buildTools对应版本的混淆配置,不需要再改动.</p>
-</li>
-<li><p>project路径下的<code>proguard-rules.pro</code>文件(最新Android Studio新建的工程可能不叫这个名字)对应自己项目的混淆配置.</p>
-<ol>
-<li><p>第三方的包可以直接不混淆包名.如友盟(com.umeng):</p>
-<pre><code>-dontwarn com.umeng.<span class="keyword">*</span><span class="keyword">*</span>
--keep class com.umeng.<span class="keyword">*</span><span class="keyword">*</span> { <span class="keyword">*</span>; }
-</code></pre></li>
-<li><p>混淆后友盟错误统计需要上传mapping文件,追查bug很不好,所以建议开启行数.</p>
-<pre><code><span class="preprocessor">#不混淆行数,方便debug</span>
--keepattributes SourceFile,LineNumberTable
-</code></pre></li>
-</ol>
-</li>
-<li><p>其他技巧,这都是可以在proguard的文档上查到的.</p>
-<pre><code>#指定代码的压缩级别
--<span class="ruby">optimizationpasses <span class="number">5</span>
-</span>
-#包明不混合大小写
--<span class="ruby">dontusemixedcaseclassnames
-</span>
-#不去忽略非公共的库类
--<span class="ruby">dontskipnonpubliclibraryclasses
-</span>
- #不优化输入的类文件
--<span class="ruby">dontoptimize
-</span>
- #预校验
--<span class="ruby">dontpreverify
-</span>
- #混淆时是否记录日志
--<span class="ruby">verbose
-</span>
- # 混淆时所采用的算法
--<span class="ruby">optimizations !code/simplification/arithmetic,!field/*,!<span class="class"><span class="keyword">class</span>/<span class="title">merging</span>/*</span>
-</span>
-#保护注解
--<span class="ruby">keepattributes *<span class="constant">Annotation</span>*
-</span>
-#忽略警告
--<span class="ruby">ignorewarning
-</span>
-#apk 包内所有 class 的内部结构
--<span class="ruby">dump class_files.txt
-</span>#未混淆的类和成员
--<span class="ruby">printseeds seeds.txt
-</span>#列出从 apk 中删除的代码
--<span class="ruby">printusage unused.txt
-</span>#混淆前后的映射
--<span class="ruby">printmapping mapping.txt</span>
-</code></pre></li>
-</ol>
+            在这篇文章中说了反编译Android APK的方法，当然作为开发者很多时候不希望某些涉及机密的代码被别人看到，于是需要在打包APK的时候做一些代码混淆。
+混淆技巧(感谢Android打包的那些事):
 
-            
+默认的混淆:
+ sdk目录下的android-sdk/tools/proguard/proguard-android.txt文件包含了buildTools对应版本的混淆配置,不需要再改动.
+
+pro
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2014/12/26/Android代码混淆/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -583,54 +467,29 @@
         
           <span itemprop="articleBody">
             
-              <ol>
-<li><p>所需工具：</p>
-<ol>
-<li><p><a href="http://jd.benow.ca/" target="_blank" rel="external">JD-GUI</a>,主要反编译Java源代码。</p>
-</li>
-<li><p><a href="https://code.google.com/p/android-apktool/downloads/list" target="_blank" rel="external">apktool</a>,主要反编译xml等资源文件。需要下载apktool及apktool-install-macosx.</p>
-</li>
-<li><p><a href="http://code.google.com/p/dex2jar/" target="_blank" rel="external">dex2jar</a>,主要将apk中的dex文件转为jar。</p>
-</li>
-</ol>
-</li>
-<li><p>部署：</p>
-<ol>
-<li><p>JD-GUI直接解压就是app了。</p>
-</li>
-<li><p>apktool需要解压两个压缩包并将”apktool.jar”,”apktool”,”aapt”三个文件放在同一目录下，最好配置一下环境变量。</p>
-</li>
-<li><p>解压即可。使用时需要将”d2j-dex2jar.sh”文件及”lib”文件夹一起复制。</p>
-</li>
-</ol>
-</li>
-<li><p>获取xml(使用apktool)：</p>
-<ol>
-<li><p>使用apktool，命令如下： apktool d “apk的路径” “反编译后的文件路径”。</p>
-<p> eg(我已经cd到apk路径):</p>
-<pre><code>apktool <span class="keyword">d</span> <span class="keyword">test</span>.apk temp        
-</code></pre></li>
-<li><p>解压后的res路径就是你想要的了。</p>
-</li>
-</ol>
-</li>
-<li><p>获取java(使用dex2jar和JD-GUI)：</p>
-<ol>
-<li><p>将apk文件的后缀名改为.zip,然后直接解压。会得到一个名为”classes.dex”的文件。</p>
-</li>
-<li><p>将”d2j-dex2jar.sh”文件及”lib”文件夹一起复制到”classes.dex”的同一目录下，同时cd到该目录，命令为： d2j-dex2jar.sh “apk的路径” “反编译后的文件路径”。</p>
-<p>eg(我已经cd到该目录下):</p>
-<pre><code>./d2j-dex2jar<span class="class">.sh</span> classes<span class="class">.dex</span> ./temp
-</code></pre><p>然后在该目录下会产生一个”classes-dex2jar.jar”的jar文件。</p>
-</li>
-<li><p>利用JD-GUI打开该jar文件，所有的代码变一目了然了。可以使用File-Save All Source保存所有的源文件。</p>
-</li>
-</ol>
-</li>
-</ol>
-
             
+所需工具：
+
+JD-GUI,主要反编译Java源代码。
+
+apktool,主要反编译xml等资源文件。需要下载apktool及apktool-install-macosx.
+
+dex2jar,主要将apk中的dex文件转为jar。
+
+
+
+部署：
+
+JD-GUI直接解压就是app了。
+
+apktool需要解压两个压缩包并将”apktool.jar”,”apktool”,”aapt”三个文件放在同一
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2014/12/23/Mac下反编译Android-APK/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -725,104 +584,22 @@
         
           <span itemprop="articleBody">
             
-              <p>使用Intent：</p>
-<p>注意点：</p>
-<ol>
-<li><strong>非官方提供的代码，该方法并不通用，不是所有机器都支持这个intent，不推荐</strong></li>
-<li>裁剪时putExtra设置crop为true即可。</li>
-<li><strong>Uri必须以file://开头，不然会导致“无法保存剪裁的图片”的错误。</strong></li>
-</ol>
-<p>可以封装这样一段代码：</p>
-<pre><code>private void cropImageUri<span class="params">(Uri uri, int outputX, int outputY, int requestCode,Uri outputUri)</span>{
-    Intent intent = new Intent<span class="params">(<span class="string">"com.android.camera.action.CROP"</span>)</span>;
-    intent.setDataAndType<span class="params">(uri, <span class="string">"image/*"</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"crop"</span>, <span class="string">"true"</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"aspectX"</span>, <span class="number">2</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"aspectY"</span>, <span class="number">1</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"outputX"</span>, outputX)</span>;
-    intent.putExtra<span class="params">(<span class="string">"outputY"</span>, outputY)</span>;
-    intent.putExtra<span class="params">(<span class="string">"scale"</span>, <span class="literal">true</span>)</span>;
-    intent.putExtra<span class="params">(MediaStore.EXTRA_OUTPUT, outputUri)</span>;
-    intent.putExtra<span class="params">(<span class="string">"return-data"</span>, <span class="literal">false</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"outputFormat"</span>, Bitmap.CompressFormat.JPEG.toString<span class="params">()</span>)</span>;
-    intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</span>, <span class="literal">true</span>)</span>; <span class="comment">// no face detection</span>
-    startActivityForResult<span class="params">(intent, requestCode)</span>;
-}
-</code></pre><p>另外关于putExtra的信号：</p>
-<table>
-<thead>
-<tr>
-<th>附加选项</th>
-<th>数据类型</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>crop</td>
-<td>String</td>
-<td>发送裁剪信号</td>
-</tr>
-<tr>
-<td>aspectX</td>
-<td>int</td>
-<td>X方向上的比例</td>
-</tr>
-<tr>
-<td>aspectY</td>
-<td>int</td>
-<td>Y方向上的比例</td>
-</tr>
-<tr>
-<td>outputX</td>
-<td>int</td>
-<td>裁剪区的宽</td>
-</tr>
-<tr>
-<td>outputY</td>
-<td>int</td>
-<td>裁剪区的高</td>
-</tr>
-<tr>
-<td>scale</td>
-<td>boolean</td>
-<td>是否保留比例</td>
-</tr>
-<tr>
-<td>return-data</td>
-<td>boolean</td>
-<td>是否将数据保留在Bitmap中返回</td>
-</tr>
-<tr>
-<td>data</td>
-<td>Parcelable</td>
-<td>相应的Bitmap数据</td>
-</tr>
-<tr>
-<td>circleCrop</td>
-<td>String</td>
-<td>圆形裁剪区域？</td>
-</tr>
-<tr>
-<td>MediaStore.EXTRA_OUTPUT (“output”)</td>
-<td>URI</td>
-<td>将URI指向相应的file:///…</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>使用Github lib,<br>以下是一些star比较高的lib：</p>
-<ul>
-<li><p><a href="https://github.com/lvillani/android-cropimage" target="_blank" rel="external">https://github.com/lvillani/android-cropimage</a></p>
-<p>  这是基于Gradle的，可以收到加上com.android.camera这个包里面的代码，加上resource即可使用，example里面有使用示例。</p>
-</li>
-<li><p><a href="https://github.com/biokys/cropimage" target="_blank" rel="external">https://github.com/biokys/cropimage</a></p>
-<p>  提供ant及gradle的lib，但在我机器(vivo Xplay)上crash了。。</p>
-</li>
-</ul>
+            使用Intent：
+注意点：
 
-            
+非官方提供的代码，该方法并不通用，不是所有机器都支持这个intent，不推荐
+裁剪时putExtra设置crop为true即可。
+Uri必须以file://开头，不然会导致“无法保存剪裁的图片”的错误。
+
+可以封装这样一段代码：
+private void cropImageUri(Uri uri, int outputX, int outputY, int requ
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2014/12/18/Android裁剪图片/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -917,56 +694,23 @@
         
           <span itemprop="articleBody">
             
-              <p>PopupWindow顾名思义，就是一个弹出窗口。不过特性倒是挺好玩的：</p>
-<ol>
-<li>以弹出窗口的形式展示，可以替代系统的dialog。</li>
-<li>可以在任意位置出现，并且会浮动在当前窗口的顶部(获取焦点)。</li>
-<li>可以用来装载任意的view。</li>
-<li>通过设置背景颜色0xaa000000可以实现半透明效果</li>
-<li><p>关于点击消失：</p>
-<ol>
-<li><p>如果需要点击外部消失，只需设置背景，focus，outSideTouchable。</p>
-<pre><code><span class="keyword">this</span>.setBackgroundDrawable(<span class="keyword">new</span> ColorDrawable(<span class="number">0xaa000000</span>));
-<span class="keyword">this</span>.setFocusable(<span class="literal">true</span>);
-<span class="keyword">this</span>.setOutsideTouchable(<span class="literal">true</span>);
-</code></pre></li>
-<li><p>如果需要点击自身(非按钮控件)消失，在自身设置onclick就好。</p>
-<pre><code>mWindow.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() {
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>{
-        GetExpressAlert.<span class="keyword">this</span>.dismiss();
-    }
-});
-</code></pre></li>
-</ol>
-</li>
-<li><p>因为某些机型是虚拟按键的,所以要加上以下设置防止挡住按键.</p>
-<pre><code><span class="tag">this</span><span class="class">.setSoftInputMode</span>(<span class="tag">WindowManager</span><span class="class">.LayoutParams</span><span class="class">.SOFT_INPUT_ADJUST_RESIZE</span>);
-</code></pre></li>
-</ol>
-<p>整个类也特别简单：</p>
-<pre><code>public <span class="class"><span class="keyword">class</span> <span class="title">GetExpressAlert</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">PopupWindow</span> {</span>
-    <span class="type">Context</span> mContext;
-    <span class="type">View</span> mWindow;
+            PopupWindow顾名思义，就是一个弹出窗口。不过特性倒是挺好玩的：
 
-    public <span class="type">GetExpressAlert</span>(<span class="type">Context</span> context) {
-    mContext = context;
-    <span class="type">LayoutInflater</span> inflater = (<span class="type">LayoutInflater</span>) context
-            .getSystemService(<span class="type">Context</span>.<span class="type">LAYOUT_INFLATER_SERVICE</span>);
-    mWindow = inflater.inflate(<span class="type">R</span>.layout.get_express_alert, <span class="literal">null</span>);
-    <span class="keyword">this</span>.setContentView(mWindow);
-    <span class="keyword">this</span>.setWidth(<span class="type">LayoutParams</span>.<span class="type">MATCH_PARENT</span>);
-    <span class="keyword">this</span>.setHeight(<span class="type">LayoutParams</span>.<span class="type">MATCH_PARENT</span>);
+以弹出窗口的形式展示，可以替代系统的dialog。
+可以在任意位置出现，并且会浮动在当前窗口的顶部(获取焦点)。
+可以用来装载任意的view。
+通过设置背景颜色0xaa000000可以实现半透明效果
+关于点击消失：
 
-    <span class="keyword">this</span>.setBackgroundDrawable(<span class="keyword">new</span> <span class="type">ColorDrawable</span>(<span class="number">0xaa000000</span>));
-    }
-
-}
-</code></pre><p>显示效果：<br><img src="http://7sbqys.com1.z0.glb.clouddn.com/alert.png" alt=""></p>
-<p>xml代码没有什么特别的，所以不贴了。</p>
-
-            
+如果需要点击外部消失，只需设置背景，focus，outSideTouchable。
+this.setBac
+            ...
           </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2014/12/16/PopupWindow相关/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
