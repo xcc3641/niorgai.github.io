@@ -61,7 +61,7 @@ Activity重建导致Fragment重叠.
 
 复现方式: 系统销毁Activity,如改变字体大小.
 问题原因: A">
-<meta property="og:updated_time" content="2016-03-13T16:10:07.000Z">
+<meta property="og:updated_time" content="2016-04-09T08:44:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android使用Fragment切换tab">
 <meta name="twitter:description" content="目前按照iOS的设计风格,很多应用都是采用的底部导航+Tab的方式.虽然我是希望各平台遵循各自的规范,但是不得不说.这样确实比抽屉式菜单更加直接.目前项目中采用的是RadioButton + FrameLayout + Fragment的实现方式,所以总结一下遇到的几个问题.
@@ -278,6 +278,16 @@ Activity重建导致Fragment重叠.
 </li>
 </ul>
 </li>
+<li><p>FragmentTransaction 在 commit 时, 如果 Activity 正在销毁, 会导致崩溃.</p>
+<p> 异常为: <code>java.lang.IllegalStateException: Can not perform this action after onSaveInstance！</code></p>
+<p> 所以在提交的时候需要判断:</p>
+<pre><code>FragmentTransaction ft = getSupportFragmentManager<span class="params">()</span>.beginTransaction<span class="params">()</span>;
+<span class="keyword">if</span> <span class="params">(!isFinishing<span class="params">()</span>)</span> {
+    ft.commitAllowingStateLoss<span class="params">()</span>;
+}
+</code></pre></li>
+</ol>
+<ol>
 <li><p>Fragment中调用<code>getContext()</code>或<code>getActivity()</code>为null导致崩溃.</p>
 <ul>
 <li>复现方式: detach一个Fragment,然后异步函数调用<code>getContext()</code>.</li>
