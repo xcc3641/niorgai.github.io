@@ -61,7 +61,7 @@ Activity重建导致Fragment重叠.
 
 复现方式: 系统销毁Activity,如改变字体大小.
 问题原因: A">
-<meta property="og:updated_time" content="2016-04-09T08:44:05.000Z">
+<meta property="og:updated_time" content="2016-04-14T15:58:42.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android使用Fragment切换tab">
 <meta name="twitter:description" content="目前按照iOS的设计风格,很多应用都是采用的底部导航+Tab的方式.虽然我是希望各平台遵循各自的规范,但是不得不说.这样确实比抽屉式菜单更加直接.目前项目中采用的是RadioButton + FrameLayout + Fragment的实现方式,所以总结一下遇到的几个问题.
@@ -353,6 +353,24 @@ Activity重建导致Fragment重叠.
 }
 </code></pre><p> 注意需要在 <code>onDestroyView()</code>中复位标志位,因为 ViewPager 的切换会导致 Fragment 的销毁.</p>
 </li>
+<li><p>在 Fragment 中嵌套 Fragment 时, 最好使用 <code>getChildFragmentManager()</code> 来获取 FragmentManager 示例,同时在 Fragment 销毁时, 利用反射将其置为空. 否则会导致错误 <code>java.lang.IllegalStateException: Activity has been destroyed</code> : </p>
+<pre><code>@Override
+<span class="keyword">public</span> <span class="keyword">void</span> onDestroyView() {
+    <span class="keyword">super</span>.onDestroyView();
+
+    <span class="comment">//解决嵌套 Fragment 的<span class="doctag"><span class="keyword">bug</span></span></span>
+    <span class="keyword">try</span> {
+        Field childFragmentManager = Fragment.<span class="keyword">class</span>.getDeclaredField(<span class="string">"mChildFragmentManager"</span>);
+        childFragmentManager.setAccessible(<span class="literal">true</span>);
+        childFragmentManager.<span class="keyword">set</span>(<span class="keyword">this</span>, <span class="literal">null</span>);
+
+    } <span class="keyword">catch</span> (NoSuchFieldException e) {
+        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(e);
+    } <span class="keyword">catch</span> (IllegalAccessException e) {
+        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(e);
+    }
+}
+</code></pre></li>
 </ol>
 </span>
       
