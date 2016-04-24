@@ -61,7 +61,7 @@ Activity重建导致Fragment重叠.
 
 复现方式: 系统销毁Activity,如改变字体大小.
 问题原因: A">
-<meta property="og:updated_time" content="2016-04-14T15:58:42.000Z">
+<meta property="og:updated_time" content="2016-04-24T14:28:31.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android使用Fragment切换tab">
 <meta name="twitter:description" content="目前按照iOS的设计风格,很多应用都是采用的底部导航+Tab的方式.虽然我是希望各平台遵循各自的规范,但是不得不说.这样确实比抽屉式菜单更加直接.目前项目中采用的是RadioButton + FrameLayout + Fragment的实现方式,所以总结一下遇到的几个问题.
@@ -321,6 +321,11 @@ Activity重建导致Fragment重叠.
 </li>
 <li><p>如果使用 ViewPager + Fragment, ViewPager 在初始化时会缓存多个 Fragment, 这里可以通过 <code>setUserVisibleHint</code> 来判断 Fragment 是否可见.一个简单封装的 Fragment 如下:</p>
 <pre><code><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseFragment</span> <span class="keyword">extends</span> <span class="title">Fragment</span> </span>{
+
+    <span class="comment">//必须有空的构造函数</span>
+    <span class="function"><span class="keyword">public</span> <span class="title">BaseFragment</span><span class="params">()</span> </span>{
+
+    }
 
     <span class="comment">//避免ViewPager在一开始创建</span>
     <span class="keyword">private</span> <span class="keyword">boolean</span> hasLazyLoad = <span class="keyword">false</span>;
