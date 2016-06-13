@@ -55,7 +55,7 @@
 <meta property="og:description" content="由于业务需要,有一些实时性要求高的接口从无状态的 HTTP 连接切换到了长连接, 所以最近基于 Apache mina 来实现了 TCP 的长连接.主要说明一下 Android 客户端的实现.
 依赖对于 Android 客户端来说, 不需要引入太多的包.
 首先下载 mina , 目前我用的版本是 2.0.13, 解压后引入 mina-core-2.0.13.jar 包. 然后下载 slf4j-an">
-<meta property="og:updated_time" content="2016-06-13T04:14:26.000Z">
+<meta property="og:updated_time" content="2016-06-13T08:07:41.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用 Apache mina 建立 TCP 长连接">
 <meta name="twitter:description" content="由于业务需要,有一些实时性要求高的接口从无状态的 HTTP 连接切换到了长连接, 所以最近基于 Apache mina 来实现了 TCP 的长连接.主要说明一下 Android 客户端的实现.
@@ -358,8 +358,12 @@ heartFilter.setRequestTimeout<span class="params">(<span class="number">10</span
 
 }
 </code></pre><h2 id="断开链接">断开链接    </h2><p>断开链接也不能在主线程中调用.</p>
-<pre><code><span class="tag">mSession</span><span class="class">.getCloseFuture</span>()<span class="class">.awaitUninterruptibly</span>();
-<span class="tag">mSocketConnector</span><span class="class">.dispose</span>();
+<pre><code>mFuture.cancel<span class="params">()</span>;
+   mSession.closeNow<span class="params">()</span>;
+   mSession.getCloseFuture<span class="params">()</span>.setClosed<span class="params">()</span>;
+   mSession.getCloseFuture<span class="params">()</span>.awaitUninterruptibly<span class="params">()</span>;
+<span class="comment">//如果完全不连接了</span>
+mSocketConnector.dispose<span class="params">()</span>;
 </code></pre><h2 id="总结">总结</h2><p>之前没有实现过长连接, 一开始做的时候还以为要自己实现三次握手,拆包等问题,后面才发现这些东西都已经通过 mina 实现好了, 同时无论 netty 还是 mina, 通过 filterchain 这种方式对消息处理的解耦很方便, 每个步骤只需要实现它对应需要实现的方法即可.客户端只需要维护一个 client 对象, 通过广播等方式分发数据, 目前实现还没有遇到什么大坑~.</p>
 </span>
       
