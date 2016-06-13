@@ -195,6 +195,95 @@
             
             
               
+                <a class="post-title-link" href="/2016/06/13/use-Apache-mina-to-build-TCP-connect/" itemprop="url">
+                  使用 Apache mina 建立 TCP 长连接
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-06-13T10:47:18+08:00" content="2016 Jun 13">
+              2016 Jun 13
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/06/13/use-Apache-mina-to-build-TCP-connect/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/06/13/use-Apache-mina-to-build-TCP-connect/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+            由于业务需要,有一些实时性要求高的接口从无状态的 HTTP 连接切换到了长连接, 所以最近基于 Apache mina 来实现了 TCP 的长连接.主要说明一下 Android 客户端的实现.
+依赖对于 Android 客户端来说, 不需要引入太多的包.
+首先下载 mina , 目前我用的版本是 2.0.13, 解压后引入 mina-core-2.0.13.jar 包. 然后下载 slf4j-an
+            ...
+          </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/06/13/use-Apache-mina-to-build-TCP-connect/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
                 <a class="post-title-link" href="/2016/04/16/Android-Filter-Java/" itemprop="url">
                   Android Java代码实现滤镜
                 </a>
@@ -590,110 +679,6 @@ Activity重建导致Fragment重叠.
 
 
     
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2016/01/13/无限滚动ViewPager的实现/" itemprop="url">
-                  无限滚动ViewPager的实现
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-01-13T22:46:22+08:00" content="2016 Jan 13">
-              2016 Jan 13
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
-                    <span itemprop="name">Android开发经验</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/01/13/无限滚动ViewPager的实现/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/01/13/无限滚动ViewPager的实现/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-            Andorid默认提供的ViewPager是不可以循环滚动的,当滑动到边界时就不能滚动了.但是实现Banner时,体验最好的还是无限滚动,为此需要自定义ViewPager来实现无限滚动.
-PagerAdapter部分:
-首先为了实现无限滚动,getCount()需要返回一个很大的数,注意不要使用太大的数,比如Integer.MAX_VALUE.在实际运行时使用Integer.MAX_VALUE发现
-            ...
-          </span>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/01/13/无限滚动ViewPager的实现/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -736,7 +721,7 @@ PagerAdapter部分:
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">36</span>
+              <span class="site-state-item-count">37</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
