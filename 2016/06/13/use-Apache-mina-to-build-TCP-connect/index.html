@@ -45,22 +45,22 @@
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
 
 
-<meta name="description" content="由于业务需要,有一些实时性要求高的接口从无状态的 HTTP 连接切换到了长连接, 所以最近基于 Apache mina 来实现了 TCP 的长连接.主要说明一下 Android 客户端的实现.
+<meta name="description" content="由于业务需要,有一些实时性要求高的接口从无状态的 HTTP 连接切换到了长连接, 所以最近基于 Apache mina 来实现了长连接.主要说明一下 Android 客户端的实现.
 依赖对于 Android 客户端来说, 不需要引入太多的包.
-首先下载 mina , 目前我用的版本是 2.0.13, 解压后引入 mina-core-2.0.13.jar 包. 然后下载 slf4j-an">
+首先下载 mina , 目前我用的版本是 2.0.13, 解压后引入 mina-core-2.0.13.jar 包. 然后下载 slf4j-android">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用 Apache mina 建立 TCP 长连接">
+<meta property="og:title" content="使用 Apache mina 建立长连接">
 <meta property="og:url" content="http://niorgai.github.io/2016/06/13/use-Apache-mina-to-build-TCP-connect/index.html">
 <meta property="og:site_name" content="Jianqiu's blog">
-<meta property="og:description" content="由于业务需要,有一些实时性要求高的接口从无状态的 HTTP 连接切换到了长连接, 所以最近基于 Apache mina 来实现了 TCP 的长连接.主要说明一下 Android 客户端的实现.
+<meta property="og:description" content="由于业务需要,有一些实时性要求高的接口从无状态的 HTTP 连接切换到了长连接, 所以最近基于 Apache mina 来实现了长连接.主要说明一下 Android 客户端的实现.
 依赖对于 Android 客户端来说, 不需要引入太多的包.
-首先下载 mina , 目前我用的版本是 2.0.13, 解压后引入 mina-core-2.0.13.jar 包. 然后下载 slf4j-an">
-<meta property="og:updated_time" content="2016-06-13T08:07:41.000Z">
+首先下载 mina , 目前我用的版本是 2.0.13, 解压后引入 mina-core-2.0.13.jar 包. 然后下载 slf4j-android">
+<meta property="og:updated_time" content="2016-06-14T03:58:18.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用 Apache mina 建立 TCP 长连接">
-<meta name="twitter:description" content="由于业务需要,有一些实时性要求高的接口从无状态的 HTTP 连接切换到了长连接, 所以最近基于 Apache mina 来实现了 TCP 的长连接.主要说明一下 Android 客户端的实现.
+<meta name="twitter:title" content="使用 Apache mina 建立长连接">
+<meta name="twitter:description" content="由于业务需要,有一些实时性要求高的接口从无状态的 HTTP 连接切换到了长连接, 所以最近基于 Apache mina 来实现了长连接.主要说明一下 Android 客户端的实现.
 依赖对于 Android 客户端来说, 不需要引入太多的包.
-首先下载 mina , 目前我用的版本是 2.0.13, 解压后引入 mina-core-2.0.13.jar 包. 然后下载 slf4j-an">
+首先下载 mina , 目前我用的版本是 2.0.13, 解压后引入 mina-core-2.0.13.jar 包. 然后下载 slf4j-android">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -72,7 +72,7 @@
 
 
 
-  <title> 使用 Apache mina 建立 TCP 长连接 | Jianqiu's blog </title>
+  <title> 使用 Apache mina 建立长连接 | Jianqiu's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -200,7 +200,7 @@
             
             
               
-                使用 Apache mina 建立 TCP 长连接
+                使用 Apache mina 建立长连接
               
             
           </h1>
@@ -240,7 +240,7 @@
       
 
       
-        <span itemprop="articleBody"><p>由于业务需要,有一些实时性要求高的接口从无状态的 HTTP 连接切换到了长连接, 所以最近基于 Apache mina 来实现了 TCP 的长连接.主要说明一下 Android 客户端的实现.</p>
+        <span itemprop="articleBody"><p>由于业务需要,有一些实时性要求高的接口从无状态的 HTTP 连接切换到了长连接, 所以最近基于 Apache mina 来实现了长连接.主要说明一下 Android 客户端的实现.</p>
 <h2 id="依赖">依赖</h2><p>对于 Android 客户端来说, 不需要引入太多的包.</p>
 <p>首先<a href="http://mina.apache.org/mina-project/downloads.html" target="_blank" rel="external">下载 mina </a>, 目前我用的版本是 2.0.13, 解压后引入 <code>mina-core-2.0.13.jar</code> 包. 然后<a href="http://www.slf4j.org/android/" target="_blank" rel="external">下载 slf4j-android </a>包,引入 <code>slf4j-android-1.6.1-RC1.jar</code>包.只需两个 jar 包即可.</p>
 <h2 id="连接">连接</h2><p>主要代码如下(<strong>注意一定不能在主线程中连接</strong>):</p>
@@ -408,7 +408,7 @@ mSocketConnector.dispose<span class="params">()</span>;
           <div class="comments" id="comments">
             
               <div class="ds-thread" data-thread-key="2016/06/13/use-Apache-mina-to-build-TCP-connect/"
-                   data-title="使用 Apache mina 建立 TCP 长连接" data-url="http://niorgai.github.io/2016/06/13/use-Apache-mina-to-build-TCP-connect/">
+                   data-title="使用 Apache mina 建立长连接" data-url="http://niorgai.github.io/2016/06/13/use-Apache-mina-to-build-TCP-connect/">
               </div>
             
           </div>
