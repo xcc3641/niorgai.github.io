@@ -63,7 +63,7 @@ android:singleLine=&quot;fals">
  在多行输入后光标会水平往右滚动，为了保持换行输入的习惯，还要设置
 android:inputType=&quot;textMultiLine&quot;
 android:singleLine=&quot;fals">
-<meta property="og:updated_time" content="2016-02-24T08:16:28.000Z">
+<meta property="og:updated_time" content="2016-08-25T02:25:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="EditText优化">
 <meta name="twitter:description" content="光标设置
@@ -303,8 +303,11 @@ textViewExtras.setMovementMethod<span class="params">(ScrollingMovementMethod.ge
 </li>
 <li><p>设置<code>android:imeOptions</code>属性时,有可能会失效.只需要再设置<code>android:singleLine</code>为true或者设置<code>android:inputType</code>为text,就可以修复~</p>
 </li>
-<li><p>EditText支持长按复制,TextView也可以通过<code>android:textIsSelectable=&quot;true&quot;</code>来设置.</p>
+<li><p>设置<code>setOnEditorActionListener()</code>在键盘控制模拟器时会失效(检测不到回车键), 所以还是建议使用<code>setOnKeyListener()</code>.</p>
 </li>
+</ol>
+<ol>
+<li>EditText支持长按复制,TextView也可以通过<code>android:textIsSelectable=&quot;true&quot;</code>来设置.</li>
 </ol>
 </span>
       
