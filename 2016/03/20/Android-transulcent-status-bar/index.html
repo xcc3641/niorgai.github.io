@@ -45,42 +45,33 @@
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
 
 
-<meta name="description" content="最近业务上看到一个设计图挺好看,所以研究了一下透明状态栏,注意不是沉浸式状态栏,在参考了网上的一些资料后,整理出了这篇博客.
+<meta name="description" content="最近业务上看到一个设计图挺好看,所以研究了一下透明状态栏,注意不是沉浸式状态栏,在参考了网上的一些资料后,整理出了这篇博客.主要适用场景为一个Activity多个tab在不同状态栏模式下切换.
 Github Demo 链接: StatusBarCompat
 参考文章:
 由沉浸式状态栏引发的血案
 Translucent System Bar 的最佳实践
-该使用 fitsSystemWindows 了！
-
-
-首先强调,对于状态栏的处理有两种不同的方式, 这里从Tran">
+该使用 fitsSystemWindows 了">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android-transulcent-status-bar">
 <meta property="og:url" content="http://niorgai.github.io/2016/03/20/Android-transulcent-status-bar/index.html">
 <meta property="og:site_name" content="Jianqiu's blog">
-<meta property="og:description" content="最近业务上看到一个设计图挺好看,所以研究了一下透明状态栏,注意不是沉浸式状态栏,在参考了网上的一些资料后,整理出了这篇博客.
+<meta property="og:description" content="最近业务上看到一个设计图挺好看,所以研究了一下透明状态栏,注意不是沉浸式状态栏,在参考了网上的一些资料后,整理出了这篇博客.主要适用场景为一个Activity多个tab在不同状态栏模式下切换.
 Github Demo 链接: StatusBarCompat
 参考文章:
 由沉浸式状态栏引发的血案
 Translucent System Bar 的最佳实践
-该使用 fitsSystemWindows 了！
-
-
-首先强调,对于状态栏的处理有两种不同的方式, 这里从Tran">
+该使用 fitsSystemWindows 了">
 <meta property="og:image" content="http://7sbqys.com1.z0.glb.clouddn.com/fullScreen.png">
 <meta property="og:image" content="http://7sbqys.com1.z0.glb.clouddn.com/Toolbar.png">
-<meta property="og:updated_time" content="2016-03-30T03:44:43.000Z">
+<meta property="og:updated_time" content="2016-09-12T16:18:43.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android-transulcent-status-bar">
-<meta name="twitter:description" content="最近业务上看到一个设计图挺好看,所以研究了一下透明状态栏,注意不是沉浸式状态栏,在参考了网上的一些资料后,整理出了这篇博客.
+<meta name="twitter:description" content="最近业务上看到一个设计图挺好看,所以研究了一下透明状态栏,注意不是沉浸式状态栏,在参考了网上的一些资料后,整理出了这篇博客.主要适用场景为一个Activity多个tab在不同状态栏模式下切换.
 Github Demo 链接: StatusBarCompat
 参考文章:
 由沉浸式状态栏引发的血案
 Translucent System Bar 的最佳实践
-该使用 fitsSystemWindows 了！
-
-
-首先强调,对于状态栏的处理有两种不同的方式, 这里从Tran">
+该使用 fitsSystemWindows 了">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -275,7 +266,7 @@ Translucent System Bar 的最佳实践
       
 
       
-        <span itemprop="articleBody"><p>最近业务上看到一个设计图挺好看,所以研究了一下透明状态栏,注意不是沉浸式状态栏,在参考了网上的一些资料后,整理出了这篇博客.</p>
+        <span itemprop="articleBody"><p>最近业务上看到一个设计图挺好看,所以研究了一下透明状态栏,注意不是沉浸式状态栏,在参考了网上的一些资料后,整理出了这篇博客.主要适用场景为一个<code>Activity</code>多个<code>tab</code>在不同状态栏模式下切换.</p>
 <p>Github Demo 链接: <a href="https://github.com/niorgai/StatusBarCompat" target="_blank" rel="external">StatusBarCompat</a></p>
 <h2 id="参考文章:">参考文章:</h2><ol>
 <li><a href="http://www.jianshu.com/p/140be70b84cd?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">由沉浸式状态栏引发的血案</a></li>
@@ -304,235 +295,88 @@ Translucent System Bar 的最佳实践
 <li><strong>着色模式</strong>: 右边图所示.</li>
 <li><strong>ContentView</strong>: <code>activity.findViewById(Window.ID_ANDROID_CONTENT)</code> 获取的 View , 即 <code>setContentView</code> 方法所设置的 View, 实质为 <code>FrameLayout</code>.</li>
 <li><strong>ContentParent</strong>: <code>ContentView</code> 的 parent , 实质为 <code>LinearLayout</code>.</li>
-<li><strong>ChildView</strong>: <code>ContentView</code> 的第一个子 View ,即布局文件中的 layout .</li>
+<li><strong>ChildView</strong>: <code>ContentView</code> 的第一个子 View ,即布局文件中的 root layout .</li>
 </ol>
 <p>再介绍一下相关的函数:</p>
 <ol>
 <li><code>fitsSystemWindows</code>, 该属性可以设置是否为系统 View 预留出空间, 当设置为 true 时,会预留出状态栏的空间.</li>
 <li><code>ContentView</code>, 实质为 <code>ContentFrameLayout</code>, 但是重写了 <code>dispatchFitSystemWindows</code> 方法, 所以对其设置 <code>fitsSystemWindows</code> 无效.</li>
 <li><code>ContentParent</code>, 实质为 <code>FitWindowsLinearLayout</code>, 里面第一个 View 是 <code>ViewStubCompat</code>, 如果主题没有设置 title ,它就不会 inflate .第二个 View 就是 <code>ContentView</code>.</li>
+<li><code>FLAG_TRANSLUCENT_STATUS</code>, 通过这个 Flag 可以设置状态栏透明(即没有状态栏).</li>
+<li><code>FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS</code>, 5.0以上引入的 Flag, 通过这个 Flag 可以设置状态栏颜色.</li>
+<li><code>setStatusBarColor()</code>, 5.0以上直接设置状态栏的方法,但是调用时必须<strong>设置</strong><code>FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS</code>且<strong>不能设置</strong><code>FLAG_TRANSLUCENT_STATUS</code>.如果状态栏颜色是不透明的,设置<code>SYSTEM_UI_FLAG_LAYOUT_STABLE</code>和<code>SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN</code>可以取消5.0上的状态栏阴影.</li>
+<li><code>requestApplyInsets()</code>, 当窗口(Window)大小改变了,通知 View 去消费窗口的改变.</li>
 </ol>
 <h2 id="5-0以上的处理:">5.0以上的处理:</h2><p>自5.0引入 Material Design ,状态栏对开发者更加直接,可以直接调用 <code>setStatusBarColor</code> 来设置状态栏的颜色.</p>
 <p><strong>全屏模式: </strong></p>
 <pre><code>Window window = activity.getWindow<span class="params">()</span>;
-<span class="comment">//设置透明状态栏,这样才能让 ContentView 向上</span>
-window.addFlags<span class="params">(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)</span>; 
 
-<span class="comment">//需要设置这个 flag 才能调用 setStatusBarColor 来设置状态栏颜色</span>
-window.addFlags<span class="params">(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)</span>; 
-<span class="comment">//设置状态栏颜色</span>
-window.setStatusBarColor<span class="params">(statusColor)</span>;
+window.addFlags<span class="params">(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)</span>;
+<span class="keyword">if</span> <span class="params">(hideStatusBarBackground)</span> {
+    window.clearFlags<span class="params">(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)</span>;
+    window.setStatusBarColor<span class="params">(Color.TRANSPARENT)</span>;
+    <span class="comment">//隐藏状态栏的阴影window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);</span>
+} <span class="keyword">else</span> {
+    window.addFlags<span class="params">(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)</span>;
+    window.getDecorView<span class="params">()</span>.setSystemUiVisibility<span class="params">(View.SYSTEM_UI_FLAG_VISIBLE)</span>;
+}
 
-ViewGroup mContentView = <span class="params">(ViewGroup)</span> activity.findViewById<span class="params">(Window.ID_ANDROID_CONTENT)</span>;
+ViewGroup mContentView = <span class="params">(ViewGroup)</span> window.findViewById<span class="params">(Window.ID_ANDROID_CONTENT)</span>;
 View mChildView = mContentView.getChildAt<span class="params">(<span class="number">0</span>)</span>;
 <span class="keyword">if</span> <span class="params">(mChildView != null)</span> {
-    <span class="comment">//注意不是设置 ContentView 的 FitsSystemWindows, 而是设置 ContentView 的第一个子 View . 使其不为系统 View 预留空间.</span>
+    ViewCompat.setOnApplyWindowInsetsListener<span class="params">(mChildView, new OnApplyWindowInsetsListener<span class="params">()</span> {
+        @Override
+        public WindowInsetsCompat onApplyWindowInsets<span class="params">(View v, WindowInsetsCompat insets)</span> {
+            return insets;
+        }
+    })</span>;
     ViewCompat.setFitsSystemWindows<span class="params">(mChildView, <span class="literal">false</span>)</span>;
+    ViewCompat.requestApplyInsets<span class="params">(mChildView)</span>;
+
 }
 </code></pre><p><strong>着色模式: </strong></p>
 <pre><code>Window window = activity.getWindow<span class="params">()</span>;
-<span class="comment">//取消设置透明状态栏,使 ContentView 内容不再覆盖状态栏</span>
-window.clearFlags<span class="params">(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)</span>; 
 
-<span class="comment">//需要设置这个 flag 才能调用 setStatusBarColor 来设置状态栏颜色</span>
-window.addFlags<span class="params">(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)</span>; 
-<span class="comment">//设置状态栏颜色</span>
+window.clearFlags<span class="params">(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)</span>;
+window.addFlags<span class="params">(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)</span>;
 window.setStatusBarColor<span class="params">(statusColor)</span>;
+<span class="comment">//清除全屏模式下的 Flag</span>
+window.getDecorView<span class="params">()</span>.setSystemUiVisibility<span class="params">(View.SYSTEM_UI_FLAG_VISIBLE)</span>;
 
-ViewGroup mContentView = <span class="params">(ViewGroup)</span> activity.findViewById<span class="params">(Window.ID_ANDROID_CONTENT)</span>;
+ViewGroup mContentView = <span class="params">(ViewGroup)</span> window.findViewById<span class="params">(Window.ID_ANDROID_CONTENT)</span>;
 View mChildView = mContentView.getChildAt<span class="params">(<span class="number">0</span>)</span>;
 <span class="keyword">if</span> <span class="params">(mChildView != null)</span> {
-    <span class="comment">//注意不是设置 ContentView 的 FitsSystemWindows, 而是设置 ContentView 的第一个子 View . 预留出系统 View 的空间.</span>
+    ViewCompat.setOnApplyWindowInsetsListener<span class="params">(mChildView, new OnApplyWindowInsetsListener<span class="params">()</span> {
+        @Override
+        public WindowInsetsCompat onApplyWindowInsets<span class="params">(View v, WindowInsetsCompat insets)</span> {
+            return insets;
+        }
+    })</span>;
     ViewCompat.setFitsSystemWindows<span class="params">(mChildView, <span class="literal">true</span>)</span>;
-}    
-</code></pre><h2 id="4-4-5-0的处理:">4.4-5.0的处理:</h2><p>4.4-5.0因为没有直接的 API 可以调用,需要自己兼容处理,网上的解决方法基本都是创建一下高度为状态栏的 View ,通过设置这个 View 的背景色来模拟状态栏. 这里我尝试了三种方法来兼容处理.</p>
-<p><strong>方法1: 向 <code>ContentView</code> 添加假 View , 设置 <code>ChildView</code> 的 marginTop 属性来模拟 fitsSystemWindows .</strong></p>
-<p>全屏模式: </p>
-<pre><code>Window window = activity.getWindow<span class="params">()</span>;
-ViewGroup mContentView = <span class="params">(ViewGroup)</span> activity.findViewById<span class="params">(Window.ID_ANDROID_CONTENT)</span>;
-
-<span class="comment">//首先使 ChildView 不预留空间</span>
-View mChildView = mContentView.getChildAt<span class="params">(<span class="number">0</span>)</span>;
-<span class="keyword">if</span> <span class="params">(mChildView != null)</span> {
-    ViewCompat.setFitsSystemWindows<span class="params">(mChildView, <span class="literal">false</span>)</span>;
+    ViewCompat.requestApplyInsets<span class="params">(mChildView)</span>;
 }
-
-int statusBarHeight = getStatusBarHeight<span class="params">(activity)</span>;
-<span class="comment">//需要设置这个 flag 才能设置状态栏</span>
-window.addFlags<span class="params">(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)</span>;
-<span class="comment">//避免多次调用该方法时,多次移除了 View</span>
-<span class="keyword">if</span> <span class="params">(mChildView != null &amp;&amp; mChildView.getLayoutParams<span class="params">()</span> != null &amp;&amp; mChildView.getLayoutParams<span class="params">()</span>.height == statusBarHeight)</span> {
-    <span class="comment">//移除假的 View.</span>
-    mContentView.removeView<span class="params">(mChildView)</span>;
-    mChildView = mContentView.getChildAt<span class="params">(<span class="number">0</span>)</span>;
-}
-<span class="keyword">if</span> <span class="params">(mChildView != null)</span> {
-    FrameLayout.LayoutParams lp = <span class="params">(FrameLayout.LayoutParams)</span> mChildView.getLayoutParams<span class="params">()</span>;
-    <span class="comment">//清除 ChildView 的 marginTop 属性</span>
-    <span class="keyword">if</span> <span class="params">(lp != null &amp;&amp; lp.topMargin &gt;= statusBarHeight)</span> {
-        lp.topMargin -= statusBarHeight;
-        mChildView.setLayoutParams<span class="params">(lp)</span>;
-    }
-}
-</code></pre><p>着色模式:</p>
-<pre><code>Window window = activity.getWindow<span class="params">()</span>;
-ViewGroup mContentView = <span class="params">(ViewGroup)</span> activity.findViewById<span class="params">(Window.ID_ANDROID_CONTENT)</span>;
-
-<span class="comment">//First translucent status bar.</span>
-window.addFlags<span class="params">(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)</span>;
-int statusBarHeight = getStatusBarHeight<span class="params">(activity)</span>;
-
-View mChildView = mContentView.getChildAt<span class="params">(<span class="number">0</span>)</span>;
-<span class="keyword">if</span> <span class="params">(mChildView != null)</span> {
-    FrameLayout.LayoutParams lp = <span class="params">(FrameLayout.LayoutParams)</span> mChildView.getLayoutParams<span class="params">()</span>;
-    <span class="comment">//如果已经为 ChildView 设置过了 marginTop, 再次调用时直接跳过</span>
-    <span class="keyword">if</span> <span class="params">(lp != null &amp;&amp; lp.topMargin &lt; statusBarHeight &amp;&amp; lp.height != statusBarHeight)</span> {
-        <span class="comment">//不预留系统空间</span>
-        ViewCompat.setFitsSystemWindows<span class="params">(mChildView, <span class="literal">false</span>)</span>; 
-        lp.topMargin += statusBarHeight;
-        mChildView.setLayoutParams<span class="params">(lp)</span>;
-    }
-}
-
-View statusBarView = mContentView.getChildAt<span class="params">(<span class="number">0</span>)</span>;
-<span class="keyword">if</span> <span class="params">(statusBarView != null &amp;&amp; statusBarView.getLayoutParams<span class="params">()</span> != null &amp;&amp; statusBarView.getLayoutParams<span class="params">()</span>.height == statusBarHeight)</span> {
-    <span class="comment">//避免重复调用时多次添加 View</span>
-    statusBarView.setBackgroundColor<span class="params">(statusColor)</span>;
-    return;
-}
-statusBarView = new View<span class="params">(activity)</span>;
-ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams<span class="params">(ViewGroup.LayoutParams.MATCH_PARENT, statusBarHeight)</span>;
-statusBarView.setBackgroundColor<span class="params">(statusColor)</span>;
-<span class="comment">//向 ContentView 中添加假 View</span>
-mContentView.addView<span class="params">(statusBarView, <span class="number">0</span>, lp)</span>;
-</code></pre><p><strong> 方法2: 向 <code>ContentParent</code> 添加假 View ,设置 <code>ContentView</code> 和 <code>ChildView</code> 的 fitsSystemWindows.</strong></p>
-<p>全屏模式:</p>
-<pre><code>Window window = activity.getWindow<span class="params">()</span>;
-window.addFlags<span class="params">(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)</span>;
-
-ViewGroup mContentView = <span class="params">(ViewGroup)</span> activity.findViewById<span class="params">(Window.ID_ANDROID_CONTENT)</span>;
-ViewGroup mContentParent = <span class="params">(ViewGroup)</span> mContentView.getParent<span class="params">()</span>;
-
-View statusBarView = mContentParent.getChildAt<span class="params">(<span class="number">0</span>)</span>;
-<span class="keyword">if</span> <span class="params">(statusBarView != null &amp;&amp; statusBarView.getLayoutParams<span class="params">()</span> != null &amp;&amp; statusBarView.getLayoutParams<span class="params">()</span>.height == getStatusBarHeight<span class="params">(activity)</span>)</span> {
-    <span class="comment">//移除假的 View</span>
-    mContentParent.removeView<span class="params">(statusBarView)</span>;
-}
-<span class="comment">//ContentView 不预留空间</span>
-<span class="keyword">if</span> <span class="params">(mContentParent.getChildAt<span class="params">(<span class="number">0</span>)</span> != null)</span> {
-    ViewCompat.setFitsSystemWindows<span class="params">(mContentParent.getChildAt<span class="params">(<span class="number">0</span>)</span>, <span class="literal">false</span>)</span>;
-}
-
-<span class="comment">//ChildView 不预留空间</span>
-View mChildView = mContentView.getChildAt<span class="params">(<span class="number">0</span>)</span>;
-<span class="keyword">if</span> <span class="params">(mChildView != null)</span> {
-    ViewCompat.setFitsSystemWindows<span class="params">(mChildView, <span class="literal">false</span>)</span>;
-}
-</code></pre><p>着色模式(会有一条黑线,无法解决):</p>
-<pre><code>Window window = activity.getWindow<span class="params">()</span>;
-window.addFlags<span class="params">(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)</span>;
-
-ViewGroup mContentView = <span class="params">(ViewGroup)</span> activity.findViewById<span class="params">(Window.ID_ANDROID_CONTENT)</span>;
-ViewGroup mContentParent = <span class="params">(ViewGroup)</span> mContentView.getParent<span class="params">()</span>;
-
-View statusBarView = mContentParent.getChildAt<span class="params">(<span class="number">0</span>)</span>;
-<span class="keyword">if</span> <span class="params">(statusBarView != null &amp;&amp; statusBarView.getLayoutParams<span class="params">()</span> != null &amp;&amp; statusBarView.getLayoutParams<span class="params">()</span>.height == getStatusBarHeight<span class="params">(activity)</span>)</span> {
-    <span class="comment">//避免重复调用时多次添加 View</span>
-    statusBarView.setBackgroundColor<span class="params">(statusColor)</span>;
-    return;
-}
-
-<span class="comment">//创建一个假的 View, 并添加到 ContentParent</span>
-statusBarView = new View<span class="params">(activity)</span>;
-ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams<span class="params">(ViewGroup.LayoutParams.MATCH_PARENT,
-        getStatusBarHeight<span class="params">(activity)</span>)</span>;
-statusBarView.setBackgroundColor<span class="params">(statusColor)</span>;
-mContentParent.addView<span class="params">(statusBarView, <span class="number">0</span>, lp)</span>;
-
-<span class="comment">//ChildView 不需要预留系统空间</span>
-View mChildView = mContentView.getChildAt<span class="params">(<span class="number">0</span>)</span>;
-<span class="keyword">if</span> <span class="params">(mChildView != null)</span> {
-    ViewCompat.setFitsSystemWindows<span class="params">(mChildView, <span class="literal">false</span>)</span>;
-}
-</code></pre><p><strong>方法3:向 <code>ContentView</code> 添加假 View , 设置 <code>ChildView</code> 的 fitsSystemWindows.</strong></p>
-<p>全屏模式:</p>
-<pre><code>Window window = activity.getWindow<span class="params">()</span>;
-window.addFlags<span class="params">(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)</span>;
-
-ViewGroup mContentView = <span class="params">(ViewGroup)</span> activity.findViewById<span class="params">(Window.ID_ANDROID_CONTENT)</span>;
-View statusBarView = mContentView.getChildAt<span class="params">(<span class="number">0</span>)</span>;
-<span class="comment">//移除假的 View</span>
-<span class="keyword">if</span> <span class="params">(statusBarView != null &amp;&amp; statusBarView.getLayoutParams<span class="params">()</span> != null &amp;&amp; statusBarView.getLayoutParams<span class="params">()</span>.height == getStatusBarHeight<span class="params">(activity)</span>)</span> {
-    mContentView.removeView<span class="params">(statusBarView)</span>;
-}
-<span class="comment">//不预留空间</span>
-<span class="keyword">if</span> <span class="params">(mContentView.getChildAt<span class="params">(<span class="number">0</span>)</span> != null)</span> {
-    ViewCompat.setFitsSystemWindows<span class="params">(mContentView.getChildAt<span class="params">(<span class="number">0</span>)</span>, <span class="literal">false</span>)</span>;
-}
-</code></pre><p>着色模式:</p>
-<pre><code>Window window = activity.getWindow<span class="params">()</span>;
-window.addFlags<span class="params">(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)</span>;
-
-ViewGroup mContentView = <span class="params">(ViewGroup)</span> activity.findViewById<span class="params">(Window.ID_ANDROID_CONTENT)</span>;
-int statusBarHeight = getStatusBarHeight<span class="params">(activity)</span>;
-
-View mTopView = mContentView.getChildAt<span class="params">(<span class="number">0</span>)</span>;
-<span class="keyword">if</span> <span class="params">(mTopView != null &amp;&amp; mTopView.getLayoutParams<span class="params">()</span> != null &amp;&amp; mTopView.getLayoutParams<span class="params">()</span>.height == statusBarHeight)</span> {
-    <span class="comment">//避免重复添加 View</span>
-    mTopView.setBackgroundColor<span class="params">(statusColor)</span>;
-    return;
-}
-<span class="comment">//使 ChildView 预留空间</span>
-<span class="keyword">if</span> <span class="params">(mTopView != null)</span> {
-    ViewCompat.setFitsSystemWindows<span class="params">(mTopView, <span class="literal">true</span>)</span>;
-}
-
-<span class="comment">//添加假 View</span>
-mTopView = new View<span class="params">(activity)</span>;
-ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams<span class="params">(ViewGroup.LayoutParams.MATCH_PARENT, statusBarHeight)</span>;
-mTopView.setBackgroundColor<span class="params">(statusColor)</span>;
-mContentView.addView<span class="params">(mTopView, <span class="number">0</span>, lp)</span>;
-</code></pre><p>其实<strong>全屏模式在三种模式下实现都是一样的</strong>,主要是<strong>着色模式</strong>实现不同.</p>
-<p>对比一下三种<strong>着色模式</strong>实现的方式:</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>方法1</th>
-<th>方法2</th>
-<th>方法3</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>原理</td>
-<td>向 <code>ContentView</code> 中添加假 View, 然后利用 <code>ChildView</code> 的 marginTop 属性来模拟 <code>fitsSystemWindows</code> ,主要是通过修改 marginTop 的值可以在全屏模式和着色模式之间切换.</td>
-<td>因为 <code>ParentView</code> 的实质是一个 <code>LinearLayout</code> , 可以再其顶部添加 View .</td>
-<td>向 <code>ContentView</code> 中添加假 View, 然后利用 <code>ChildView</code> 的 <code>fitsSystemWindows</code> 属性来控制位置, 但是实现缺陷就是不能随时切换两种模式.</td>
-</tr>
-<tr>
-<td>缺陷</td>
-<td>改变了 <code>ChildView</code> 的 marginTop 值</td>
-<td>着色模式下,会像<a href="http://www.jianshu.com/p/140be70b84cd?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">由沉浸式状态栏引发的血案</a>中一样出现一条黑线</td>
-<td>不能在不重启 Activity 的情况下切换模式.</td>
-</tr>
-<tr>
-<td>对应 Github demo 中代码</td>
-<td>StatusBarCompat类</td>
-<td>StatusBarCompat1类</td>
-<td>StatusBarCompat2 类</td>
-</tr>
-</tbody>
-</table>
-<h2 id="总结">总结</h2><ul>
-<li><code>StatusBarCompat2</code> 主要问题不能切换.</li>
-<li><code>StatusBarCompat1</code> 在4.4上会有一条黑线, 如果可以解决我觉得这是最靠谱的解决方法.</li>
-<li><code>StatusBarCompat</code> 类算是我最后给出的解决方案吧, 目前使用效果比较完善.<strong>推荐使用</strong><ul>
-<li>用户可以随时在同一个 Activity 中切换不同的状态栏模式.</li>
-<li>就算子 View 重写了 <code>dispatchFitSystemWindows</code> 也不会有影响.</li>
-</ul>
-</li>
-</ul>
+</code></pre><h2 id="4-4-5-0的处理:">4.4-5.0的处理:</h2><p>4.4-5.0因为没有直接的 API 可以调用,需要自己兼容处理.参考了网上的解决方法及结合我自己遇到的坑,最后想出的解决办法如下:</p>
+<p><strong>着色模式</strong></p>
+<ol>
+<li>向 <code>DecorView</code> 中添加一个 View, 高度为状态栏的高度(反射获取).</li>
+<li>将 <code>ChildView</code> 的 marginTop 加上状态栏的高度,以此来模拟 <code>fitsSystemWindows</code>.</li>
+<li>设置 <code>ChildView</code> 的 fitsSystemWindow 为 false, 不预留系统栏位置.</li>
+<li>为 <code>DecorView</code> 设置一个 tag, 防止重复添加 View.</li>
+</ol>
+<p>这里与其他地方不同的是:</p>
+<ol>
+<li>向 <code>ContentView</code> 添加 View 在部分机型(华为)上没有效果.</li>
+<li>向 <code>ContentParent</code> 上添加 View 会有一条黑线.</li>
+<li>使用 marginTop 而不是 <code>fitsSystemWindows</code> 是因为无法在<strong>不重启 Activity </strong>的情况下切换 root layout 的<code>fitsSystemWindows</code>属性, 即直接设置不会生效, 所以用 marginTop 来模拟.</li>
+</ol>
+<p><strong>全屏模式</strong></p>
+<ol>
+<li>设置 <code>ChildView</code> 的 fitsSystemWindow 为 false, 不预留系统栏位置.</li>
+<li>如果在 <code>ChildView</code> 的 marginTop 中添加了状态栏的高度, 则移除.</li>
+<li>设置 tag, 防止重复移除.</li>
+</ol>
+<p><strong> CollaspingToolbarLayout </strong><br>这个 support 包中的控件, 由于重写了 <code>onApplySystemInsets()</code> 方法, 按照我所理解的状态栏模式, 它在滑动时在两种模式中切换, 对此我的兼容方法就是让其处于 <strong>着色模式</strong> 下,在滑动时保持状态栏颜色不变. 当然有更好的解决办法, 但我这里为了方便调用(只需要传递 Activity 对象), 就用了比较简单的处理方法.</p>
+<h2 id="关于博客和库">关于博客和库</h2><p>博客主要提供思路解析,因为博客的通知不及时,大家有问题有想法想交流时还请在 Github issues 页联系.</p>
 </span>
       
     </div>
