@@ -55,7 +55,7 @@
 <meta property="og:description" content="Android经常会需要拍照、裁剪及图库中选择图片，其实都是通过intent调用系统相机或者系统图册，然后在onActivityResult中捕捉返回即可。
 正常拍照选择图片的代码：Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 在onActivityResult中通过返回的intent.getExtras().get(&amp;q">
-<meta property="og:updated_time" content="2015-11-29T13:19:18.000Z">
+<meta property="og:updated_time" content="2016-10-02T11:11:18.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android拍照选取图片">
 <meta name="twitter:description" content="Android经常会需要拍照、裁剪及图库中选择图片，其实都是通过intent调用系统相机或者系统图册，然后在onActivityResult中捕捉返回即可。
@@ -263,14 +263,47 @@
 <span class="type">intent</span>.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
 </code></pre><p>在onActivityResult中通过tempUri进行下一步操作。</p>
 <p>说明：</p>
-<p>拍照获取的图片推荐存放在 <code>Activity.this.getExternalCacheDir()</code>返回的<code>/storage/sdcard0/Android/data/&lt;package name&gt;/cache</code>路径，通过<code>new File(path,fileName)</code>新建一个file，然后通过Uri.fromFile(file)即可获取正确的uri，记得fileName需要带后缀。</p>
-<p><strong>为了防止Uri路径不对导致不能保存，使用前必须确保文件路径无误，不然会导致“无法保存剪裁的图片”的错误。或者无提示但不能点击确定保存图片。正确获取的Uri最终以file://开头。</strong>。</p>
-<p><strong>uri获取bitmap对象的方法可以参考<a href="http://niorgai.github.io/2015/02/22/Bitmap%E7%9B%B8%E5%85%B3-%E8%AF%BB%E5%8F%96%E5%A4%A7%E5%9B%BE%E7%89%87/">Bitmap相关:读取大图片</a>。</strong></p>
-<p>代码示例：</p>
+<ol>
+<li>存储图片的路径建议使用 <code>Activity.this.getExternalCacheDir()</code>返回的<code>/storage/sdcard0/Android/data/&lt;package name&gt;/cache</code>路径.</li>
+<li><p>通过路径获取 Uri 的方法,需要对不同版本兼容处理:</p>
+<ol>
+<li><p>7.0 以下系统: 使用 <code>Uri.fromFile(new File(path))</code> 等即可.</p>
 <pre><code><span class="built_in">String</span> fileName ＝ <span class="string">"temp.jpg"</span>;
 File tmpFile = <span class="keyword">new</span> File(<span class="keyword">this</span>.getExternalCacheDir(),fileName);
 <span class="built_in">Uri</span> tmpUri = <span class="built_in">Uri</span>.fromFile(tmpFile);
-</code></pre><ol>
+</code></pre></li>
+<li><p>7.0 系统上,因为不允许传递通过 intent 传递 file:// 路径, 如果设置 targetSDK 为 24(7.0), 系统相机则无法获得 Uri.需要使用以下方法来获取 Uri.</p>
+<ol>
+<li><p>在 <code>AndroidManifest.xml</code> 中设置 provider: </p>
+<pre><code> &lt;provider
+     android:<span class="variable">authorities=</span><span class="string">"<span class="subst">${applicationId}</span>"</span>
+     android:<span class="variable">name=</span><span class="string">"android.support.v4.content.FileProvider"</span>
+     android:<span class="variable">exported=</span><span class="string">"false"</span>
+     android:<span class="variable">grantUriPermissions=</span><span class="string">"true"</span>&gt;
+     &lt;meta-data
+         android:<span class="variable">name=</span><span class="string">"android.support.FILE_PROVIDER_PATHS"</span>
+          android:<span class="variable">resource=</span><span class="string">"@xml/provider_paths"</span>/&gt;
+&lt;/provider&gt;
+</code></pre></li>
+<li><p>在 <code>res</code> 目录下新建 <code>xml</code> 目录, 新建 <code>provider_paths.xml</code> 文件:</p>
+<pre><code><span class="pi">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<span class="tag">&lt;<span class="title">paths</span> <span class="attribute">xmlns:android</span>=<span class="value">"http://schemas.android.com/apk/res/android"</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">external-path</span> <span class="attribute">name</span>=<span class="value">"image_file"</span> <span class="attribute">path</span>=<span class="value">"."</span>/&gt;</span>
+<span class="tag">&lt;/<span class="title">paths</span>&gt;</span>
+</code></pre></li>
+<li><p>判断系统版本大于7.0时,采用 FileProvider 获取 Uri:</p>
+<pre><code>tring fileName ＝ <span class="string">"temp.jpg"</span>;
+<span class="keyword">File</span> tmpFile = <span class="keyword">new</span> <span class="keyword">File</span>(<span class="keyword">this</span>.getExternalCacheDir(),fileName);
+tmpUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID, tmpFile)
+</code></pre></li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<p><strong>为了防止Uri路径不对导致不能保存，使用前必须确保文件路径无误，不然会导致“无法保存剪裁的图片”的错误。或者无提示但不能点击确定保存图片。正确获取的Uri最终以file://开头。</strong>。</p>
+<p>代码示例：</p>
+<ol>
 <li>设置通过Uri返回后，onActivityResult中返回的intent为null。</li>
 <li><p>开发者文档中只说了简单调用的方法，其实可以添加一些其他属性。</p>
 <pre><code>intent.putExtra<span class="params">(<span class="string">"return-data"</span>,<span class="literal">false</span>)</span>;
@@ -305,8 +338,8 @@ intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</spa
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/03/02/Loading界面简单实现/" rel="prev" title="Loading界面简单实现">
-                Loading界面简单实现 <i class="fa fa-chevron-right"></i>
+              <a href="/2015/03/02/Activity生命周期/" rel="prev" title="Activity生命周期">
+                Activity生命周期 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -367,7 +400,7 @@ intent.putExtra<span class="params">(<span class="string">"noFaceDetection"</spa
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">37</span>
+              <span class="site-state-item-count">35</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

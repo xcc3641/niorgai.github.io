@@ -195,114 +195,6 @@
             
             
               
-                <a class="post-title-link" href="/2015/03/14/ScrollView中放置ListView/" itemprop="url">
-                  ScrollView中放置ListView
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-03-14T00:17:40+08:00" content="2015 Mar 14">
-              2015 Mar 14
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
-                    <span itemprop="name">Android开发经验</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/03/14/ScrollView中放置ListView/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/14/ScrollView中放置ListView/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-            最近有个需求是需要在ScrollView中放置一个ListView，如果不做处理的话，直接放置控件会导致：
-
-ListView的高度设置为wrap_content时，每个item的高度无法控制，可能导致item高度为0而不显示。
-ListView的高度设置为wrap_content时，疯狂调用getView方法导致卡顿。
-ListView的高度设置了合适的高度后，ListView无法滑动。
-
-其对
-            ...
-          </span>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/03/14/ScrollView中放置ListView/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 <a class="post-title-link" href="/2015/03/11/Android复用Layout/" itemprop="url">
                   Android复用Layout
                 </a>
@@ -624,8 +516,8 @@ Activity失去焦点但任然可见(即被透明的或不是全屏的Activity挡
             
             
               
-                <a class="post-title-link" href="/2015/03/02/Loading界面简单实现/" itemprop="url">
-                  Loading界面简单实现
+                <a class="post-title-link" href="/2015/01/31/Android拍照选取图片/" itemprop="url">
+                  Android拍照选取图片
                 </a>
               
             
@@ -635,8 +527,8 @@ Activity失去焦点但任然可见(即被透明的或不是全屏的Activity挡
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2015-03-02T00:54:38+08:00" content="2015 Mar 2">
-              2015 Mar 2
+            <time itemprop="dateCreated" datetime="2015-01-31T00:44:05+08:00" content="2015 Jan 31">
+              2015 Jan 31
             </time>
           </span>
 
@@ -645,8 +537,8 @@ Activity失去焦点但任然可见(即被透明的或不是全屏的Activity挡
               &nbsp; | &nbsp; 分类于
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Android开发tips/" itemprop="url" rel="index">
-                    <span itemprop="name">Android开发tips</span>
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
                   </a>
                 </span>
 
@@ -661,8 +553,8 @@ Activity失去焦点但任然可见(即被透明的或不是全屏的Activity挡
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2015/03/02/Loading界面简单实现/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/02/Loading界面简单实现/" itemprop="commentsCount"></span>
+                <a href="/2015/01/31/Android拍照选取图片/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/31/Android拍照选取图片/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -684,19 +576,118 @@ Activity失去焦点但任然可见(即被透明的或不是全屏的Activity挡
         
           <span itemprop="articleBody">
             
-            应用经常会涉及一些耗时操作，尽管经常会开新线程去处理，但总是会耗时。所以就希望有一个loading界面,想来想去觉得使用自定义的Dialog比较好。
-思路：
-
-使用Dialog，自定义其布局。
-布局中使用ProgressBar实现旋转的Loading。
-通过setText方法可以设置文字
-
-LoadingDialog类
-public class LoadingDialog extends Dial
+            Android经常会需要拍照、裁剪及图库中选择图片，其实都是通过intent调用系统相机或者系统图册，然后在onActivityResult中捕捉返回即可。
+正常拍照选择图片的代码：Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+在onActivityResult中通过返回的intent.getExtras().get(&q
             ...
           </span>
           <div class="post-more-link text-center">
-            <a class="btn" href="/2015/03/02/Loading界面简单实现/#more" rel="contents">
+            <a class="btn" href="/2015/01/31/Android拍照选取图片/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                <a class="post-title-link" href="/2015/01/31/Android相册选取图片/" itemprop="url">
+                  Android相册选取图片
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-01-31T00:39:36+08:00" content="2015 Jan 31">
+              2015 Jan 31
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/01/31/Android相册选取图片/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/31/Android相册选取图片/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+            目前从图库选择图片可以有两种方法：
+以下结果属于vivo Xplay,Android Version 4.4.4测试结果，如果有其他机型测试我会补充1.Intent.ACTION_PICK：
+Intent intent = new Intent(Intent.ACTION_PICK,
+            android.provider.MediaStore.Images.Media.EXTE
+            ...
+          </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/01/31/Android相册选取图片/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -722,7 +713,7 @@ public class LoadingDialog extends Dial
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -760,7 +751,7 @@ public class LoadingDialog extends Dial
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">37</span>
+              <span class="site-state-item-count">35</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

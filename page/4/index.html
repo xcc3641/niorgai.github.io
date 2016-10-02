@@ -195,111 +195,6 @@
             
             
               
-                <a class="post-title-link" href="/2015/07/25/高效使用Volley/" itemprop="url">
-                  高效使用Volley
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-07-25T00:01:24+08:00" content="2015 Jul 25">
-              2015 Jul 25
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
-                    <span itemprop="name">Android开发经验</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/07/25/高效使用Volley/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/07/25/高效使用Volley/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-            Volley,在使用时是通过Volley.newRequestQueue(mContext)来初始化,但其实这些方法都是导致其内部类的重复初始化,更高效的方法是使用单例模式来实现~这样最大的好处是使RequestQueue维持在整个Application的生命周期.
-比如Google给出的例子:
-public class MySingleton {
-    private static MySin
-            ...
-          </span>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/07/25/高效使用Volley/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 <a class="post-title-link" href="/2015/05/13/ProgressBar相关/" itemprop="url">
                   ProgressBar相关
                 </a>
@@ -732,11 +627,119 @@ Android studio卡顿优化
 
 
     
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                <a class="post-title-link" href="/2015/03/14/ScrollView中放置ListView/" itemprop="url">
+                  ScrollView中放置ListView
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-03-14T00:17:40+08:00" content="2015 Mar 14">
+              2015 Mar 14
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android开发经验/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发经验</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/03/14/ScrollView中放置ListView/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/14/ScrollView中放置ListView/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+            最近有个需求是需要在ScrollView中放置一个ListView，如果不做处理的话，直接放置控件会导致：
+
+ListView的高度设置为wrap_content时，每个item的高度无法控制，可能导致item高度为0而不显示。
+ListView的高度设置为wrap_content时，疯狂调用getView方法导致卡顿。
+ListView的高度设置了合适的高度后，ListView无法滑动。
+
+其对
+            ...
+          </span>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/03/14/ScrollView中放置ListView/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -774,7 +777,7 @@ Android studio卡顿优化
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">37</span>
+              <span class="site-state-item-count">35</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
