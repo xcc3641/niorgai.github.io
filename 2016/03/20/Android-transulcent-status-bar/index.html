@@ -63,7 +63,7 @@ Translucent System Bar 的最佳实践
 该使用 fitsSystemWindows 了">
 <meta property="og:image" content="http://7sbqys.com1.z0.glb.clouddn.com/fullScreen.png">
 <meta property="og:image" content="http://7sbqys.com1.z0.glb.clouddn.com/Toolbar.png">
-<meta property="og:updated_time" content="2016-09-12T16:18:43.000Z">
+<meta property="og:updated_time" content="2016-10-16T06:33:32.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android-transulcent-status-bar">
 <meta name="twitter:description" content="最近业务上看到一个设计图挺好看,所以研究了一下透明状态栏,注意不是沉浸式状态栏,在参考了网上的一些资料后,整理出了这篇博客.主要适用场景为一个Activity多个tab在不同状态栏模式下切换.
@@ -315,7 +315,8 @@ window.addFlags<span class="params">(WindowManager.LayoutParams.FLAG_DRAWS_SYSTE
 <span class="keyword">if</span> <span class="params">(hideStatusBarBackground)</span> {
     window.clearFlags<span class="params">(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)</span>;
     window.setStatusBarColor<span class="params">(Color.TRANSPARENT)</span>;
-    <span class="comment">//隐藏状态栏的阴影window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);</span>
+    <span class="comment">//隐藏状态栏的阴影</span>
+    window.getDecorView<span class="params">()</span>.setSystemUiVisibility<span class="params">(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)</span>;
 } <span class="keyword">else</span> {
     window.addFlags<span class="params">(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)</span>;
     window.getDecorView<span class="params">()</span>.setSystemUiVisibility<span class="params">(View.SYSTEM_UI_FLAG_VISIBLE)</span>;
@@ -324,12 +325,6 @@ window.addFlags<span class="params">(WindowManager.LayoutParams.FLAG_DRAWS_SYSTE
 ViewGroup mContentView = <span class="params">(ViewGroup)</span> window.findViewById<span class="params">(Window.ID_ANDROID_CONTENT)</span>;
 View mChildView = mContentView.getChildAt<span class="params">(<span class="number">0</span>)</span>;
 <span class="keyword">if</span> <span class="params">(mChildView != null)</span> {
-    ViewCompat.setOnApplyWindowInsetsListener<span class="params">(mChildView, new OnApplyWindowInsetsListener<span class="params">()</span> {
-        @Override
-        public WindowInsetsCompat onApplyWindowInsets<span class="params">(View v, WindowInsetsCompat insets)</span> {
-            return insets;
-        }
-    })</span>;
     ViewCompat.setFitsSystemWindows<span class="params">(mChildView, <span class="literal">false</span>)</span>;
     ViewCompat.requestApplyInsets<span class="params">(mChildView)</span>;
 
@@ -346,16 +341,13 @@ window.getDecorView<span class="params">()</span>.setSystemUiVisibility<span cla
 ViewGroup mContentView = <span class="params">(ViewGroup)</span> window.findViewById<span class="params">(Window.ID_ANDROID_CONTENT)</span>;
 View mChildView = mContentView.getChildAt<span class="params">(<span class="number">0</span>)</span>;
 <span class="keyword">if</span> <span class="params">(mChildView != null)</span> {
-    ViewCompat.setOnApplyWindowInsetsListener<span class="params">(mChildView, new OnApplyWindowInsetsListener<span class="params">()</span> {
-        @Override
-        public WindowInsetsCompat onApplyWindowInsets<span class="params">(View v, WindowInsetsCompat insets)</span> {
-            return insets;
-        }
-    })</span>;
     ViewCompat.setFitsSystemWindows<span class="params">(mChildView, <span class="literal">true</span>)</span>;
     ViewCompat.requestApplyInsets<span class="params">(mChildView)</span>;
 }
-</code></pre><h2 id="4-4-5-0的处理:">4.4-5.0的处理:</h2><p>4.4-5.0因为没有直接的 API 可以调用,需要自己兼容处理.参考了网上的解决方法及结合我自己遇到的坑,最后想出的解决办法如下:</p>
+</code></pre><p><strong>CollapsingToolbarLayout的处理</strong></p>
+<p>support包中新增的 <code>CollapsingToolbarLayout</code> , 使用 <code>OnApplyWindowInsetsListener</code> 来控制 <code>fitsSystemWindow</code> 属性, 在5.0上会进入状态栏的位置.所以如果已经仿照 <code>cheeseSquare</code> 正确使用 layout, 在 5.0 上不需要特别处理, 只需要调用 <code>collapsingToolbarLayout.setStatusBarScrimColor()</code> 设置状态栏颜色即可. </p>
+<p>但是由于在前面处理 <code>全屏模式</code> 和 <code>着色模式</code> 时, 设置了 <code>ChildView</code> 的 <code>fitsSystemWindow</code> 为 <code>false</code>, 所以这里要改为 <code>true</code>. 而我没有找到在不重启 <code>Activity</code> 的情况下切换 <code>fitsSystemWindow</code> 的方法, 所以只好采用 <code>OnApplyWindowInsetsListener</code> 来改变 <code>CollapsingToolbarLayout</code> 的高度, 不过仍然会有一些问题.</p>
+<h2 id="4-4-5-0的处理:">4.4-5.0的处理:</h2><p>4.4-5.0因为没有直接的 API 可以调用,需要自己兼容处理.参考了网上的解决方法及结合我自己遇到的坑,最后想出的解决办法如下:</p>
 <p><strong>着色模式</strong></p>
 <ol>
 <li>向 <code>DecorView</code> 中添加一个 View, 高度为状态栏的高度(反射获取).</li>
@@ -472,7 +464,7 @@ View mChildView = mContentView.getChildAt<span class="params">(<span class="numb
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">42</span>
+              <span class="site-state-item-count">41</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
