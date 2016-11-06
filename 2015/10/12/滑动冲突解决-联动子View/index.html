@@ -53,18 +53,18 @@
 
 普通状态(图1)
 拉动中(图2)
-刷新中(图3)
+刷新中(图3) 
 
 
 
 
+  
+
+ 
 
 
 
-
-
-
-当用户从普">
+当">
 <meta property="og:type" content="article">
 <meta property="og:title" content="滑动冲突解决-联动子View">
 <meta property="og:url" content="http://niorgai.github.io/2015/10/12/滑动冲突解决-联动子View/index.html">
@@ -77,22 +77,22 @@
 
 普通状态(图1)
 拉动中(图2)
-刷新中(图3)
+刷新中(图3) 
 
 
 
 
+  
+
+ 
 
 
 
-
-
-
-当用户从普">
+当">
 <meta property="og:image" content="http://7sbqys.com1.z0.glb.clouddn.com/refresh_normal.jpg">
 <meta property="og:image" content="http://7sbqys.com1.z0.glb.clouddn.com/refresh_draging.jpg">
 <meta property="og:image" content="http://7sbqys.com1.z0.glb.clouddn.com/refresh_refreshing.jpg">
-<meta property="og:updated_time" content="2015-11-29T13:29:18.000Z">
+<meta property="og:updated_time" content="2016-11-05T07:23:11.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="滑动冲突解决-联动子View">
 <meta name="twitter:description" content="在做SuperRefreshLayout这个下拉刷新的控件时,发现了一个问题,这也是很多下拉刷新控件都会有的问题.
@@ -103,18 +103,18 @@
 
 普通状态(图1)
 拉动中(图2)
-刷新中(图3)
+刷新中(图3) 
 
 
 
 
+  
+
+ 
 
 
 
-
-
-
-当用户从普">
+当">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -317,14 +317,14 @@
 <tr>
 <th>普通状态(图1)</th>
 <th>拉动中(图2)</th>
-<th>刷新中(图3)</th>
+<th>刷新中(图3) </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><img src="http://7sbqys.com1.z0.glb.clouddn.com/refresh_normal.jpg" alt=""></td>
+<td>  <img src="http://7sbqys.com1.z0.glb.clouddn.com/refresh_normal.jpg" alt=""></td>
 <td><img src="http://7sbqys.com1.z0.glb.clouddn.com/refresh_draging.jpg" alt=""></td>
-<td><img src="http://7sbqys.com1.z0.glb.clouddn.com/refresh_refreshing.jpg" alt=""></td>
+<td><img src="http://7sbqys.com1.z0.glb.clouddn.com/refresh_refreshing.jpg" alt=""> </td>
 </tr>
 </tbody>
 </table>
@@ -351,24 +351,25 @@
 <tr>
 <th>问题</th>
 <th>原因</th>
-<th>解决</th>
+<th>解决 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>怎么判断是”错误”的拦截</td>
+<td>  怎么判断是”错误”的拦截</td>
 <td>有需要拦截的Touch事件(如滑动到顶部后继续下拉)</td>
-<td>在拦截后记录标志位, 在RefreshLayout的<code>onTouchEvent()</code>方法中不该处理(return false)的情况中判断该标志位</td>
+<td>在拦截后记录标志位, 在RefreshLayout的<code>onTouchEvent()</code>方法中不该处理(return false)的情况中判断该标志位 </td>
 </tr>
 <tr>
-<td>为什么子View无法接收Touch事件</td>
+<td>  为什么子View无法接收Touch事件</td>
 <td>在一开始滚动的过程中RefreshLayout的<code>onInterceptTouchEvent()</code>方法返回true,拦截了所有的Touch事件</td>
-<td>事件传递机制是系统设定的,不好更改.但可以在RefreshLayout的<code>onTouchEvent()</code>方法中调用子View的<code>dispatchTouchEvent()</code>方法,让子View接受并处理该Touch事件</td>
+<td>事件传递机制是系统设定的,不好更改.但可以在RefreshLayout的<code>onTouchEvent()</code>方法中调用子View的<code>dispatchTouchEvent()</code>方法,让子View接受并处理该Touch事件 </td>
 </tr>
 <tr>
-<td>怎么让子View能够处理该Touch事件</td>
+<td>  怎么让子View能够处理该Touch事件</td>
 <td>RefreshLayout拦截Touch事件后,子View会接收到Action_cancel事件,后续事件无法处理</td>
 <td>判断是否为拦截后的第一个Touch事件,是的话先模拟一个Action_down事件并传递给子View,使子View认为这是一个新的Touch事件序列.</td>
+<td></td>
 </tr>
 </tbody>
 </table>
