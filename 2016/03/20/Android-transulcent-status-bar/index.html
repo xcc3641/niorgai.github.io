@@ -63,7 +63,7 @@ Translucent System Bar 的最佳实践
 该使用 fitsSystemWindows 了">
 <meta property="og:image" content="http://7sbqys.com1.z0.glb.clouddn.com/fullScreen.png">
 <meta property="og:image" content="http://7sbqys.com1.z0.glb.clouddn.com/Toolbar.png">
-<meta property="og:updated_time" content="2016-10-16T06:33:32.000Z">
+<meta property="og:updated_time" content="2016-11-07T07:29:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android-transulcent-status-bar">
 <meta name="twitter:description" content="最近业务上看到一个设计图挺好看,所以研究了一下透明状态栏,注意不是沉浸式状态栏,在参考了网上的一些资料后,整理出了这篇博客.主要适用场景为一个Activity多个tab在不同状态栏模式下切换.
@@ -272,6 +272,8 @@ Translucent System Bar 的最佳实践
 <li><a href="http://www.jianshu.com/p/140be70b84cd?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">由沉浸式状态栏引发的血案</a></li>
 <li><a href="http://www.jianshu.com/p/0acc12c29c1b" target="_blank" rel="external">Translucent System Bar 的最佳实践</a></li>
 <li><a href="http://blog.chengyunfeng.com/?p=905#ixzz43Roc61no" target="_blank" rel="external">该使用 fitsSystemWindows 了！</a></li>
+<li><a href="http://gold.xitu.io/entry/570736071ea493005dc640ac" target="_blank" rel="external">Android 透明状态栏实现方案</a></li>
+<li><a href="http://blog.csdn.net/u013260551/article/details/51150336" target="_blank" rel="external">更简单更全的material design状态栏</a></li>
 </ol>
 <hr>
 <p>首先强调,对于状态栏的处理有两种不同的方式, 这里从<a href="http://www.jianshu.com/p/0acc12c29c1b" target="_blank" rel="external">Translucent System Bar 的最佳实践</a>直接盗了两张图做对比~.</p>
@@ -279,13 +281,13 @@ Translucent System Bar 的最佳实践
 <thead>
 <tr>
 <th>全屏( ContentView 可以进入状态栏)</th>
-<th>非全屏 ( ContentView 与状态栏分离, 状态栏直接着色)</th>
+<th>非全屏 ( ContentView 与状态栏分离, 状态栏直接着色) </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><img src="http://7sbqys.com1.z0.glb.clouddn.com/fullScreen.png" alt=""></td>
-<td><img src="http://7sbqys.com1.z0.glb.clouddn.com/Toolbar.png" alt=""></td>
+<td> <img src="http://7sbqys.com1.z0.glb.clouddn.com/fullScreen.png" alt=""></td>
+<td><img src="http://7sbqys.com1.z0.glb.clouddn.com/Toolbar.png" alt=""> </td>
 </tr>
 </tbody>
 </table>
@@ -302,51 +304,32 @@ Translucent System Bar 的最佳实践
 <li><code>fitsSystemWindows</code>, 该属性可以设置是否为系统 View 预留出空间, 当设置为 true 时,会预留出状态栏的空间.</li>
 <li><code>ContentView</code>, 实质为 <code>ContentFrameLayout</code>, 但是重写了 <code>dispatchFitSystemWindows</code> 方法, 所以对其设置 <code>fitsSystemWindows</code> 无效.</li>
 <li><code>ContentParent</code>, 实质为 <code>FitWindowsLinearLayout</code>, 里面第一个 View 是 <code>ViewStubCompat</code>, 如果主题没有设置 title ,它就不会 inflate .第二个 View 就是 <code>ContentView</code>.</li>
-<li><code>FLAG_TRANSLUCENT_STATUS</code>, 通过这个 Flag 可以设置状态栏透明(即没有状态栏).</li>
-<li><code>FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS</code>, 5.0以上引入的 Flag, 通过这个 Flag 可以设置状态栏颜色.</li>
-<li><code>setStatusBarColor()</code>, 5.0以上直接设置状态栏的方法,但是调用时必须<strong>设置</strong><code>FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS</code>且<strong>不能设置</strong><code>FLAG_TRANSLUCENT_STATUS</code>.如果状态栏颜色是不透明的,设置<code>SYSTEM_UI_FLAG_LAYOUT_STABLE</code>和<code>SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN</code>可以取消5.0上的状态栏阴影.</li>
 <li><code>requestApplyInsets()</code>, 当窗口(Window)大小改变了,通知 View 去消费窗口的改变.</li>
 </ol>
 <h2 id="5-0以上的处理:">5.0以上的处理:</h2><p>自5.0引入 Material Design ,状态栏对开发者更加直接,可以直接调用 <code>setStatusBarColor</code> 来设置状态栏的颜色.</p>
+<p><strong>着色模式: </strong></p>
+<p>通过查看 <code>setStatusBarColor()</code> 方法的文档,发现在调用该方法时需要设置以下属性:</p>
+<ol>
+<li>添加 <code>FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS</code> Flag(绘制系统栏).</li>
+<li>清除 <code>FLAG_TRANSLUCENT_STATUS</code> Flag(透明状态栏).</li>
+<li>调用 <code>setStatusBarColor()</code> 设置状态栏颜色.</li>
+</ol>
 <p><strong>全屏模式: </strong></p>
-<pre><code>Window window = activity.getWindow<span class="params">()</span>;
-
-window.addFlags<span class="params">(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)</span>;
-<span class="keyword">if</span> <span class="params">(hideStatusBarBackground)</span> {
-    window.clearFlags<span class="params">(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)</span>;
-    window.setStatusBarColor<span class="params">(Color.TRANSPARENT)</span>;
-    <span class="comment">//隐藏状态栏的阴影</span>
-    window.getDecorView<span class="params">()</span>.setSystemUiVisibility<span class="params">(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)</span>;
-} <span class="keyword">else</span> {
-    window.addFlags<span class="params">(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)</span>;
-    window.getDecorView<span class="params">()</span>.setSystemUiVisibility<span class="params">(View.SYSTEM_UI_FLAG_VISIBLE)</span>;
-}
-
-ViewGroup mContentView = <span class="params">(ViewGroup)</span> window.findViewById<span class="params">(Window.ID_ANDROID_CONTENT)</span>;
-View mChildView = mContentView.getChildAt<span class="params">(<span class="number">0</span>)</span>;
-<span class="keyword">if</span> <span class="params">(mChildView != null)</span> {
-    ViewCompat.setFitsSystemWindows<span class="params">(mChildView, <span class="literal">false</span>)</span>;
-    ViewCompat.requestApplyInsets<span class="params">(mChildView)</span>;
-
-}
-</code></pre><p><strong>着色模式: </strong></p>
-<pre><code>Window window = activity.getWindow<span class="params">()</span>;
-
-window.clearFlags<span class="params">(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)</span>;
-window.addFlags<span class="params">(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)</span>;
-window.setStatusBarColor<span class="params">(statusColor)</span>;
-<span class="comment">//清除全屏模式下的 Flag</span>
-window.getDecorView<span class="params">()</span>.setSystemUiVisibility<span class="params">(View.SYSTEM_UI_FLAG_VISIBLE)</span>;
-
-ViewGroup mContentView = <span class="params">(ViewGroup)</span> window.findViewById<span class="params">(Window.ID_ANDROID_CONTENT)</span>;
-View mChildView = mContentView.getChildAt<span class="params">(<span class="number">0</span>)</span>;
-<span class="keyword">if</span> <span class="params">(mChildView != null)</span> {
-    ViewCompat.setFitsSystemWindows<span class="params">(mChildView, <span class="literal">true</span>)</span>;
-    ViewCompat.requestApplyInsets<span class="params">(mChildView)</span>;
-}
-</code></pre><p><strong>CollapsingToolbarLayout的处理</strong></p>
-<p>support包中新增的 <code>CollapsingToolbarLayout</code> , 使用 <code>OnApplyWindowInsetsListener</code> 来控制 <code>fitsSystemWindow</code> 属性, 在5.0上会进入状态栏的位置.所以如果已经仿照 <code>cheeseSquare</code> 正确使用 layout, 在 5.0 上不需要特别处理, 只需要调用 <code>collapsingToolbarLayout.setStatusBarScrimColor()</code> 设置状态栏颜色即可. </p>
-<p>但是由于在前面处理 <code>全屏模式</code> 和 <code>着色模式</code> 时, 设置了 <code>ChildView</code> 的 <code>fitsSystemWindow</code> 为 <code>false</code>, 所以这里要改为 <code>true</code>. 而我没有找到在不重启 <code>Activity</code> 的情况下切换 <code>fitsSystemWindow</code> 的方法, 所以只好采用 <code>OnApplyWindowInsetsListener</code> 来改变 <code>CollapsingToolbarLayout</code> 的高度, 不过仍然会有一些问题.</p>
+<p>由于 5.0 以上为状态栏添加了一个阴影, 所以为全屏模式添加了是否隐藏状态栏阴影的方法.</p>
+<ul>
+<li><p>隐藏阴影</p>
+<ol>
+<li>像着色模式一样添加 flag ,然后通过 <code>setStatusBarColor()</code> 设置颜色为透明.</li>
+<li>通过 <code>setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)</code> 隐藏状态栏颜色.</li>
+</ol>
+</li>
+<li><p>显示阴影</p>
+<ol>
+<li>设置 <code>FLAG_TRANSLUCENT_STATUS</code> 来隐藏状态栏.</li>
+<li>通过 <code>setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE)</code> 来恢复默认状态栏样式.</li>
+</ol>
+</li>
+</ul>
 <h2 id="4-4-5-0的处理:">4.4-5.0的处理:</h2><p>4.4-5.0因为没有直接的 API 可以调用,需要自己兼容处理.参考了网上的解决方法及结合我自己遇到的坑,最后想出的解决办法如下:</p>
 <p><strong>着色模式</strong></p>
 <ol>
@@ -368,6 +351,55 @@ View mChildView = mContentView.getChildAt<span class="params">(<span class="numb
 <li>设置 tag, 防止重复移除.</li>
 </ol>
 <p><strong> CollaspingToolbarLayout </strong><br>这个 support 包中的控件, 由于重写了 <code>onApplySystemInsets()</code> 方法, 按照我所理解的状态栏模式, 它在滑动时在两种模式中切换, 对此我的兼容方法就是让其处于 <strong>着色模式</strong> 下,在滑动时保持状态栏颜色不变. 当然有更好的解决办法, 但我这里为了方便调用(只需要传递 Activity 对象), 就用了比较简单的处理方法.</p>
+<h2 id="CollapsingToolbarLayout">CollapsingToolbarLayout</h2><p>support 包中提供的 <code>CollapsingToolbarLayout</code>, 在使用的时候大概的布局是这样的(参考 <a href="https://github.com/chrisbanes/cheesesquare" target="_blank" rel="external">CheeseSquare</a> ):</p>
+<pre><code><span class="tag">&lt;<span class="title">CoordinatorLayout</span>
+    <span class="attribute">android:fitsSystemWindows</span>=<span class="value">"true"</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="title">AppBarLayout</span>
+        <span class="attribute">android:fitsSystemWindows</span>=<span class="value">"true"</span>&gt;</span>
+
+        <span class="tag">&lt;<span class="title">CollapsingToolbarLayout</span>
+            <span class="attribute">android:fitsSystemWindows</span>=<span class="value">"true"</span>&gt;</span>
+
+            <span class="tag">&lt;<span class="title">View</span>
+                <span class="attribute">android:fitsSystemWindows</span>=<span class="value">"true"</span>
+                 <span class="attribute">app:layout_collapseMode</span>=<span class="value">"parallax"</span>/&gt;</span>
+
+          <span class="tag">&lt;<span class="title">ToolBar</span>
+              <span class="attribute">app:layout_collapseMode</span>=<span class="value">"pin"</span>/&gt;</span>
+
+       <span class="tag">&lt;/<span class="title">CollapsingToolbarLayout</span>&gt;</span>
+
+   <span class="tag">&lt;<span class="title">AppBarLayout</span>/&gt;</span>
+
+   <span class="tag">&lt;<span class="title">View</span>
+           <span class="attribute">app:layout_behavior</span>=<span class="value">"@string/appbar_scrolling_view_behavior"</span>/&gt;</span>
+
+<span class="tag">&lt;/<span class="title">CoordinatorLayout</span>&gt;</span>
+</code></pre><p>在适配的时候主要遇到以下几个问题:</p>
+<ol>
+<li>如果按照我上面介绍的方式来说, 它在显示图片的时候是 <code>全屏模式</code> , 在显示 <code>Toolbar</code> 的时候是 <code>着色模式</code>.</li>
+<li><code>CollapsingToolbarLayout</code> 的内部在 5.0 及以上的版本中通过 <code>OnApplyWindowInsetsListener()</code> 中获取的 Insets 对象, 在 Layout 的过程中将 View 向下偏移了, 所以它在 5.0 及以上系统中可以占据状态栏, 在 4.4 系统上则不能.</li>
+<li>仿照 <a href="https://github.com/chrisbanes/cheesesquare" target="_blank" rel="external">CheeseSquare</a> 这个库中的写法, <code>CollapsingToolbarLayout</code> 需要设置 <code>FitsSystemWindow</code> 为 true, 而我在前面兼容 <code>全屏模式</code> 和 <code>着色模式</code> 的时候, 都是设置 <code>FitsSystemWindow</code> 为 false. 同时目前我没找到方法在不重启 Activity 的情况下切换 <code>FitsSystemWindow</code>.</li>
+</ol>
+<p>在参考了网上的文章后,最后决定通过以下方法来处理.</p>
+<ul>
+<li><p>4.4版本:</p>
+<ol>
+<li>变为全屏模式,设置 View 的 <code>fitsSystemWindow</code> 为 false, 这一步可以使 <code>CollapsingToolbarLayout</code> 占据状态栏.</li>
+<li>改变 <code>Toolbar</code> 的高度, 加上状态栏的高度, 这一步可以让 <code>Toolbar</code> 正常显示.</li>
+<li>添加假的 <code>StatusView</code> 模拟状态栏颜色, 通过 <code>AppBarLayout</code> 的 <code>OnOffsetChangedListener()</code> 监听 <code>AppBarLayout</code> 的滑动, 使 <code>StatusView</code> 跟随 <code>CollapsingToolbarLayout</code> 的显示隐藏.</li>
+</ol>
+</li>
+<li><p>5.0及以上版本:</p>
+<ol>
+<li>变为全屏模式,设置 View 的 <code>fitsSystemWindow</code> 为 false, 这一步可以使 <code>CollapsingToolbarLayout</code> 占据状态栏.</li>
+<li>改变 <code>Toolbar</code> 的高度, 加上状态栏的高度, 这一步可以让 <code>Toolbar</code> 正常显示. 这两部都和 4.4 的处理一样.</li>
+<li>为 <code>CollapsingToolbarLayout</code> 设置 <code>OnApplyWindowInsetsListener()</code> 使其正常 Layout ,因为此时 <code>CollapsingToolbarLayout</code> 已经显示到状态栏了, 不需要在 Layout 过程中向下偏移.</li>
+<li>通过 <code>collapsingToolbarLayout.setStatusBarScrimColor()</code> 设置状态栏颜色即可.</li>
+</ol>
+</li>
+</ul>
 <h2 id="关于博客和库">关于博客和库</h2><p>博客主要提供思路解析,因为博客的通知不及时,大家有问题有想法想交流时还请在 Github issues 页联系.</p>
 </span>
       
